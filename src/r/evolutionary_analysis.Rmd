@@ -1,0 +1,110 @@
+---
+title: "evolutionary_analysis"
+author: "Sahil Shah"
+date: "7/2/2019"
+output: pdf_document
+---
+
+Saves sum of squares data
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(cowplot)
+library(dplyr)
+library(gridExtra)
+library(ggplot2)
+
+setwd("/home/sahil/pinetree-toys/three_genes_evolution/final_program/")
+
+all_sos_data <- read.table("sos_data.tsv", header=TRUE)
+sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
+
+sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sos_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
+sos_plots <- grid.arrange(sos_line_plot, nrow=1, top="Sum of Squares Data")
+ggsave("/home/sahil/pinetree-toys/three_genes_evolution/final_program/sos_graphs.pdf", sos_plots, width=20, height=10)
+```
+## R Markdown
+
+Generational Analysis of Mutations
+```{r cars}
+library(gtools)
+
+setwd("/home/sahil/pinetree-toys/three_genes_evolution/final_program/")
+
+best_file <- list.files("/home/sahil/pinetree-toys/three_genes_evolution/fixed_memory_leak/latest_version", pattern="three_genes_replicated_")
+best_file <- mixedsort(sort(best_file))
+
+original_data <- read.table("random_data.tsv", header=TRUE)
+original_data <- filter(original_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+original_line_plot <-  ggplot(original_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Original Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+gen1_data <- read.table("gen_1_data.tsv", header=TRUE)
+gen1_data <- filter(gen1_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+gen1_line_plot <-  ggplot(gen1_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+  
+gen5000_data <- read.table("gen_5000_data.tsv", header=TRUE)
+gen5000_data <- filter(gen5000_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+gen5000_line_plot <-  ggplot(gen5000_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 5000") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+gen10000_data <- read.table("gen_10000_data.tsv", header=TRUE)
+gen10000_data <- filter(gen10000_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+gen10000_line_plot <-  ggplot(gen10000_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 10000") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+final_data <- last(best_file)
+gen_final1_data <- read.table(final_data, header=TRUE, fill=TRUE)
+gen_final1_data <- filter(gen_final1_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+gen_final1_line_plot <-  ggplot(gen_final1_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function of Best Genome Found") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+gen_plots <- grid.arrange(original_line_plot, gen1_line_plot, gen5000_line_plot, gen10000_line_plot, gen_final1_line_plot, nrow=2, ncol=3, top="Generational Pattern of Gene Transcripts")
+ggsave("/home/sahil/pinetree-toys/three_genes_evolution/final_program/gen_graphs.pdf", gen_plots, width=20, height=10)
+
+```
+Evolutionary Analysis of Mutations
+
+```{r pressure, echo=FALSE}
+library(reshape2)
+library(gridExtra)
+library(gtools)
+
+setwd("/home/sahil/pinetree-toys/three_genes_evolution/final_program/")
+
+plots_list <- list()
+
+best_files <- list.files("/home/sahil/pinetree-toys/three_genes_evolution/final_program/", pattern="three_genes_replicated_")
+best_files <- mixedsort(sort(best_files))
+plots_list <- list()
+target_data <- read.table("random_data5.tsv", header=TRUE)
+target_data <- filter(target_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+panel.background = element_blank(), axis.line = element_line(colour = "black"))
+#gen1_data <- read.table("gen_1_data.tsv", header=TRUE)
+#gen1_data <- filter(gen1_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+#gen1_line_plot <-  ggplot(gen1_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+for(i in 1:length(best_files)){
+  best <- "best"
+  best_plot <- "best_plot"
+  evolution_title <- "Genome Evolution "
+  plot_title <- paste(evolution_title, i, sep="")
+  file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
+  file_name <- filter(file_name, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+  plot_name <- assign(paste(best_plot, i, sep=""), ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title))
+  plot <- ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title)
+  plots_list[[i]] <- plot
+  
+}
+
+#evo_plot <- grid.arrange(plots_list, nrow=ceiling(length(best_files) / 2), ncol=ceiling(length(best_files) / 2), top="Evolutionary Pattern of Gene Transcripts") 
+evo_plot <- grid.arrange(target_line_plot, best_plot1, best_plot2, best_plot3, best_plot4, best_plot5, best_plot6, best_plot7, best_plot8, best_plot9, best_plot10, best_plot11, best_plot12, best_plot13, best_plot14, best_plot15, best_plot16, best_plot17, best_plot18, best_plot19, best_plot20, nrow=7, ncol=3, top="Evolutionary Pattern of Gene Transcripts")
+ggsave("/home/sahil/pinetree-toys/three_genes_evolution/final_program/evolution_graphs.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
