@@ -55,5 +55,7 @@ def test_mutation(df, output_dir, mutation_number):
     df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / len(dfs)
 
     df_mean.to_csv(output_dir+'three_genes_replicated.tsv', sep='\t', index=False)
+    nf = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
+    nf = file_setup.rearrange_file(nf)
 
-    return sum_of_squares.calc_sum_of_squares(df, df_mean)
+    return sum_of_squares.calc_sum_of_squares(df, nf)
