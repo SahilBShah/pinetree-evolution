@@ -2,6 +2,7 @@
 import argparse
 import pinetree as pt
 import random
+import time
 import yaml
 
 

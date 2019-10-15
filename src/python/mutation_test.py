@@ -39,22 +39,27 @@ import sum_of_squares
 def test_mutation(df, output_dir, mutation_number):
     dfs = []
 
+    #Creates test files from pinetree to find average number of transcripts at each time
     for i in range(1, mutation_number+1):
         call_pt.pt_call(output_dir)
         save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
-        save_df.to_csv(output_dir+"test_{}.tsv".format(i), sep='\t', index=False)
+        save_df['time'] = save_df['time'].round().astype(int)
+        dfs.append(save_df)
+        # save_df.to_csv(output_dir+"test_{}.tsv".format(i), sep='\t', index=False)
+    #assert not dfs[0].equals(dfs[1])
+    #Rounds the time column in each test file
+    # for infile in glob.glob(output_dir+'test_*.tsv'):
+    #     temp_df = pd.read_csv(infile, header=0, sep='\t')
+    #     temp_df['time'] = temp_df['time'].round().astype(int)
+    #     dfs.append(temp_df)
 
-    for infile in glob.glob(output_dir+'test_*.tsv'):
-        temp_df = pd.read_csv(infile, header=0, sep='\t')
-        temp_df['time'] = temp_df['time'].round().astype(int)
-        dfs.append(temp_df)
-
+    #Averages all the values in each file and creates a new file with those averages
     df_concat = pd.concat(dfs)
     df_gb = df_concat.groupby(['time', 'species'], as_index=False)
     df_mean = df_gb.sum()
-    df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / len(dfs)
-
+    df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / mutation_number
     df_mean.to_csv(output_dir+'three_genes_replicated.tsv', sep='\t', index=False)
+    #New file is read in as a dataframe
     nf = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
     nf = file_setup.rearrange_file(nf)
 

@@ -38,7 +38,7 @@ parser.add_argument('generation_number', type=int, default=1, nargs='?', help='I
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
 args = parser.parse_args()
 
-output_dir = output_dir + '{}_nf{}_rep{}/'.format(args.filename.strip('.tsv'), args.N, args.replicate_number)
+output_dir = output_dir + '{}_nf{}_rep{}_nmut{}/'.format(args.filename.strip('.tsv'), args.N, args.replicate_number, args.replicate_mutation_number)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
