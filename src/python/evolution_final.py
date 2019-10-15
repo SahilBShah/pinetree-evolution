@@ -55,7 +55,7 @@ with open(starting_file) as f:
     genome_tracker_new = yaml.safe_load(f)
 
 #Start of evolution program
-while i < args.generation_number+1:
+while i <= args.generation_number:
 
     #Mutation is chosen and performed on best genome
     possibilities = [mutation_choices.modify_promoter, mutation_choices.modify_rnase, mutation_choices.modify_terminator]

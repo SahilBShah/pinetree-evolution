@@ -14,7 +14,7 @@ library(dplyr)
 library(gridExtra)
 library(ggplot2)
 
-setwd("/home/sahil/pinetree-toys/three_genes_evolution/final_program/")
+setwd("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/")
 
 all_sos_data <- read.table("sos_data.tsv", header=TRUE)
 sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
@@ -22,7 +22,7 @@ sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
 sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sos_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
 sos_plots <- grid.arrange(sos_line_plot, nrow=1, top="Sum of Squares Data")
-ggsave("/home/sahil/pinetree-toys/three_genes_evolution/final_program/sos_graphs.pdf", sos_plots, width=20, height=10)
+ggsave("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/sos_graphs.pdf", sos_plots, width=20, height=10)
 ```
 ## R Markdown
 
@@ -72,11 +72,11 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 
-setwd("/home/sahil/pinetree-toys/three_genes_evolution/final_program/")
+setwd("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/")
 
 plots_list <- list()
 
-best_files <- list.files("/home/sahil/pinetree-toys/three_genes_evolution/final_program/", pattern="three_genes_replicated_")
+best_files <- list.files("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/", pattern="three_genes_replicated_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
 target_data <- read.table("random_data5.tsv", header=TRUE)
@@ -102,8 +102,8 @@ for(i in 1:length(best_files)){
 }
 
 #evo_plot <- grid.arrange(plots_list, nrow=ceiling(length(best_files) / 2), ncol=ceiling(length(best_files) / 2), top="Evolutionary Pattern of Gene Transcripts") 
-evo_plot <- grid.arrange(target_line_plot, best_plot1, best_plot2, best_plot3, best_plot4, best_plot5, best_plot6, best_plot7, best_plot8, best_plot9, best_plot10, best_plot11, best_plot12, best_plot13, best_plot14, best_plot15, best_plot16, best_plot17, best_plot18, best_plot19, best_plot20, nrow=7, ncol=3, top="Evolutionary Pattern of Gene Transcripts")
-ggsave("/home/sahil/pinetree-toys/three_genes_evolution/final_program/evolution_graphs.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+evo_plot <- grid.arrange(target_line_plot, best_plot1, best_plot2, best_plot3, best_plot4, best_plot5, best_plot6, best_plot7, best_plot8, best_plot9, nrow=4, ncol=3, top="Evolutionary Pattern of Gene Transcripts")
+ggsave("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/evolution_graphs.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
 
