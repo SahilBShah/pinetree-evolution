@@ -29,4 +29,3 @@ def create_yaml(starting_file):
 
     with open(starting_file, 'w') as outfile:
         yaml.dump(data, outfile, default_flow_style=False)
-    outfile.close()

@@ -82,8 +82,8 @@ def modify_promoter(genome_tracker_new, output_dir):
         genome_tracker_new[chosen_promoter]['previous_strength'] = genome_tracker_new[chosen_promoter]['current_strength']
         genome_tracker_new[chosen_promoter]['current_strength'] = 0.0
 
-    with open(output_dir+'new_gene.yml', 'w') as prom_yaml:
-        yaml.dump(genome_tracker_new, prom_yaml)
+    with open(output_dir, 'w') as prom_yaml:
+        yaml.dump(genome_tracker_new, prom_yaml, default_flow_style=False)
 
 
 def modify_rnase(genome_tracker_new, output_dir):
@@ -152,8 +152,8 @@ def modify_rnase(genome_tracker_new, output_dir):
         genome_tracker_new[chosen_rnase]['start'] = 0
         genome_tracker_new[chosen_rnase]['stop'] = 0
 
-    with open(output_dir+'new_gene.yml', 'w') as rnase_yaml:
-        yaml.dump(genome_tracker_new, rnase_yaml)
+    with open(output_dir, 'w') as rnase_yaml:
+        yaml.dump(genome_tracker_new, rnase_yaml, default_flow_style=False)
 
 
 def modify_terminator(genome_tracker_new, output_dir):
@@ -243,5 +243,5 @@ def modify_terminator(genome_tracker_new, output_dir):
         genome_tracker_new[chosen_terminator]['previous_strength'] = genome_tracker_new[chosen_terminator]['current_strength']
         genome_tracker_new[chosen_terminator]['current_strength'] = 0.0
 
-    with open(output_dir+'new_gene.yml', 'w') as term_yaml:
-        yaml.dump(genome_tracker_new, term_yaml)
+    with open(output_dir, 'w') as term_yaml:
+        yaml.dump(genome_tracker_new, term_yaml, default_flow_style=False)
