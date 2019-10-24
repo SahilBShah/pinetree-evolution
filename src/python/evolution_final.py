@@ -32,7 +32,7 @@ output_dir = '../../results/{}_{}_{}/'.format(year, month, day)
 #Command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='Input target tsv file name with transcript information.')
-parser.add_argument('replicate_number', type=int, default=1, nargs='?', help='Input desired effective population size value.')
+parser.add_argument('replicate_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
 parser.add_argument('N', type=int, nargs='?', default=10, help='Input desired effective population size value.')
 parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
@@ -49,10 +49,10 @@ df = file_setup.rearrange_file(df)
 
 #Opens yaml files containing genome coordinates
 initialize_yaml.create_yaml(starting_file)
-with open(starting_file) as f:
-    genome_tracker_old = yaml.safe_load(f)
-with open(starting_file) as f:
-    genome_tracker_new = yaml.safe_load(f)
+with open(starting_file) as old:
+    genome_tracker_old = yaml.safe_load(old)
+with open(starting_file) as new:
+    genome_tracker_new = yaml.safe_load(new)
 
 #Start of evolution program
 while i <= args.generation_number:
@@ -60,8 +60,8 @@ while i <= args.generation_number:
     #Mutation is chosen and performed on best genome
     possibilities = [mutation_choices.modify_promoter, mutation_choices.modify_rnase, mutation_choices.modify_terminator]
     random.choice(possibilities)(genome_tracker_new, output_dir)
-    with open(output_dir+'new_gene.yml') as f:
-        genome_tracker_new = yaml.safe_load(f)
+    with open(output_dir+'new_gene.yml') as current:
+        genome_tracker_new = yaml.safe_load(current)
 
     #Sum of squares is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
@@ -74,8 +74,8 @@ while i <= args.generation_number:
     if accept_prob > random.random():
         #If accepted the old genome is replace by the new genome
         genome_tracker_old = genome_tracker_new
-        with open(output_dir+'gene_{}.yml'.format(i), 'w') as f:
-            yaml.dump(genome_tracker_old, f)
+        with open(output_dir+'gene_{}.yml'.format(i), 'w') as save_yaml:
+            yaml.dump(genome_tracker_old, save_yaml)
         save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
         save_df.to_csv(output_dir+"three_genes_replicated_{}.tsv".format(i), sep='\t', index=False)
         ss_old = ss_new
@@ -87,11 +87,6 @@ while i <= args.generation_number:
         is_accepted.append("no")
 
 
-    i+=1
-    print("i =", i)
-
-
 all_sos_list = all_sos_list[1:]
 sos_dataframe = pd.DataFrame(data=zip(sos_iter_list, all_sos_list, is_accepted), columns=["Iteration", "Sum_of_Squares", "Accepted"])
 export_csv = sos_dataframe.to_csv(output_dir + 'sos_data.tsv', index=False, sep='\t')
-print("Accepted mutations =", accepted)
