@@ -8,13 +8,13 @@ proteinY_list = []
 proteinZ_list = []
 
 for i in range(1, 251):
-    transcript_list.append([i, "proteinX", (0.2 * i)])
+    transcript_list.append([i, "proteinX", (0.16 * i)])
     if i == 150:
         proteinX_list = transcript_list[-1]
-    transcript_list.append([i, "proteinY", (0.15 * i)])
+    transcript_list.append([i, "proteinY", (0.12 * i)])
     if i == 150:
         proteinY_list = transcript_list[-1]
-    transcript_list.append([i, "proteinZ", (0.1 * i)])
+    transcript_list.append([i, "proteinZ", (0.08 * i)])
     if i == 150:
         proteinZ_list = transcript_list[-1]
 # for i in range(151, 251):
