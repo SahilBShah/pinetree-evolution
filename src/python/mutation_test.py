@@ -1,6 +1,6 @@
+import genome_simulator
 import glob
 import file_setup
-from os_genome import call_pt
 import numpy as np
 import pandas as pd
 import sum_of_squares
@@ -41,7 +41,7 @@ def test_mutation(df, output_dir, mutation_number):
 
     #Creates test files from pinetree to find average number of transcripts at each time
     for i in range(1, mutation_number+1):
-        call_pt.pt_call(output_dir)
+        genome_simulator.pt_call(output_dir)
         save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
