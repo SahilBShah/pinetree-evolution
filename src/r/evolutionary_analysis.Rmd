@@ -24,47 +24,7 @@ panel.background = element_blank(), axis.line = element_line(color = "black")) +
 sos_plots <- grid.arrange(sos_line_plot, nrow=1, top="Sum of Squares Data")
 ggsave("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/sos_graphs.pdf", sos_plots, width=20, height=10)
 ```
-## R Markdown
 
-Generational Analysis of Mutations
-```{r cars}
-library(gtools)
-
-setwd("/home/sahil/pinetree-toys/three_genes_evolution/final_program/")
-
-best_file <- list.files("/home/sahil/pinetree-toys/three_genes_evolution/fixed_memory_leak/latest_version", pattern="three_genes_replicated_")
-best_file <- mixedsort(sort(best_file))
-
-original_data <- read.table("random_data.tsv", header=TRUE)
-original_data <- filter(original_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-original_line_plot <-  ggplot(original_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Original Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
-
-gen1_data <- read.table("gen_1_data.tsv", header=TRUE)
-gen1_data <- filter(gen1_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-gen1_line_plot <-  ggplot(gen1_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
-  
-gen5000_data <- read.table("gen_5000_data.tsv", header=TRUE)
-gen5000_data <- filter(gen5000_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-gen5000_line_plot <-  ggplot(gen5000_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 5000") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
-
-gen10000_data <- read.table("gen_10000_data.tsv", header=TRUE)
-gen10000_data <- filter(gen10000_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-gen10000_line_plot <-  ggplot(gen10000_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 10000") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
-
-final_data <- last(best_file)
-gen_final1_data <- read.table(final_data, header=TRUE, fill=TRUE)
-gen_final1_data <- filter(gen_final1_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-gen_final1_line_plot <-  ggplot(gen_final1_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function of Best Genome Found") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(colour = "black"))
-
-gen_plots <- grid.arrange(original_line_plot, gen1_line_plot, gen5000_line_plot, gen10000_line_plot, gen_final1_line_plot, nrow=2, ncol=3, top="Generational Pattern of Gene Transcripts")
-ggsave("/home/sahil/pinetree-toys/three_genes_evolution/final_program/gen_graphs.pdf", gen_plots, width=20, height=10)
-
-```
 Evolutionary Analysis of Mutations
 
 ```{r pressure, echo=FALSE}
@@ -83,26 +43,22 @@ target_data <- read.table("/home/sahil/pinetree-toys/data/grant_data/grant_data1
 target_data <- filter(target_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
-#gen1_data <- read.table("gen_1_data.tsv", header=TRUE)
-#gen1_data <- filter(gen1_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-#gen1_line_plot <-  ggplot(gen1_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Genome Function at Generation 1") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-#panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
-# for(i in 1:length(best_files)){
-#   best <- "best"
-#   best_plot <- "best_plot"
-#   evolution_title <- "Genome Evolution "
-#   plot_title <- paste(evolution_title, i, sep="")
-#   file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
-#   file_name <- filter(file_name, species == "proteinX" | species == "proteinY" | species == "proteinZ")
-#   plot_name <- assign(paste(best_plot, i, sep=""), ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title))
-#   plot <- ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title)
-#   plots_list[[i]] <- plot
-#   
-# }
+for(i in 1:length(best_files)){
+  best <- "best"
+  best_plot <- "best_plot"
+  evolution_title <- "Genome Evolution "
+  plot_title <- paste(evolution_title, i, sep="")
+  file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
+  file_name <- filter(file_name, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+  plot_name <- assign(paste(best_plot, i, sep=""), ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title))
+  plot <- ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title)
+  plots_list[[i]] <- plot
+
+}
 
 #evo_plot <- grid.arrange(plots_list, nrow=ceiling(length(best_files) / 2), ncol=ceiling(length(best_files) / 2), top="Evolutionary Pattern of Gene Transcripts") 
-evo_plot <- grid.arrange(target_line_plot, top="Evolutionary Pattern of Gene Transcripts")
+evo_plot <- grid.arrange(target_line_plot, nrow=3, ncol=3, top="Evolutionary Pattern of Gene Transcripts")
 ggsave("/home/sahil/pinetree-toys/data/grant_data/grant_data10.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
