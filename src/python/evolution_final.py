@@ -12,9 +12,19 @@ import pandas as pd
 import random
 import yaml
 
+#Command line arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('filename', help='Input target tsv file name with transcript information.')
+parser.add_argument('replicate_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
+parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
+parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
+parser.add_argument('initial_sum_of_squares', type=int, default=1000000, nargs='?', help='Input the desired initial sum of squares value')
+parser.add_argument('N', type=int, default=10, nargs='?', help='Input desired effective population size value.')
+parser.add_argument('beta', type=float, default=0.001, nargs='?', help='Input desired beta value based on starting sum of squares value for fitness calculation.')
+args = parser.parse_args()
 
 #General setup
-ss_old = 1000000
+ss_old = args.initial_sum_of_squares
 all_sos_list = [ss_old]
 sos_iter_list = []
 is_accepted = []
@@ -26,17 +36,6 @@ year = datetime.date.today().year
 month = datetime.date.today().month
 day = datetime.date.today().day
 output_dir = '../../results/{}_{}_{}/'.format(year, month, day)
-
-
-#Command line arguments
-parser = argparse.ArgumentParser()
-parser.add_argument('filename', help='Input target tsv file name with transcript information.')
-parser.add_argument('replicate_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
-parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
-parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
-parser.add_argument('N', type=int, default=10, nargs='?', help='Input desired effective population size value.')
-parser.add_argument('beta', type=float, default=0.001, nargs='?', help='Input desired beta value based on starting sum of squares value for fitness calculation.')
-args = parser.parse_args()
 
 output_dir = output_dir + '{}_nf{}_rep{}_nmut{}/'.format(args.filename.strip('.tsv'), args.N, args.replicate_number, args.replicate_mutation_number)
 if not os.path.exists(output_dir):

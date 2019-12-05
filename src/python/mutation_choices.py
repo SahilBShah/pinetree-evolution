@@ -6,11 +6,19 @@ import yaml
 starting_promoter_strength = 10e8
 max_promoter_strength = 3e10
 min_promoter_strength = 10e5
+promoter_offset = 9
+max_rnase_strength = 10e17
+min_rnase_strength = 1e-2
+rnase_offset = 10
+max_terminator_strength = 1.0
+min_terminator_strength = 0.0
+terminator_starting_strength = 0.85
+terminator_offset = 1
 
 
 def modify_promoter(genome_tracker_new, output_dir):
     """
-    Promoters are either added with randomized polymerase strengths or removed from the genome all together.
+    Promoters are either added with a starting polymerase strength, removed from the genome all together, or has its polymerase strength modified.
     """
 
     promoter_modification = ['add', 'remove', 'modify']
@@ -55,7 +63,7 @@ def modify_promoter(genome_tracker_new, output_dir):
                 region = regionB
                 region_end = region_endB
             prom_start = genome_tracker_new[chosen_promoter]['start'] = random.randint(genome_tracker_new[region]['start'], region_end)
-            prom_stop = genome_tracker_new[chosen_promoter]['stop'] = prom_start + 9
+            prom_stop = genome_tracker_new[chosen_promoter]['stop'] = prom_start + promoter_offset
 
         genome_tracker_new[chosen_promoter]['previous_strength'] = genome_tracker_new[chosen_promoter]['current_strength']
         genome_tracker_new[chosen_promoter]['current_strength'] = starting_promoter_strength
@@ -88,10 +96,10 @@ def modify_promoter(genome_tracker_new, output_dir):
 
 def modify_rnase(genome_tracker_new, output_dir):
     """
-    Rnases are added or removed.
+    Rnases are either added with a starting polymerase strength, removed from the genome all together, or has its degredation rate modified.
     """
 
-    rnase_modification = ['remove', 'add']
+    rnase_modification = ['remove', 'add', 'modify']
     chosen_rnase_modification = random.choice(rnase_modification)
     rnase_possibilities = ["rnase1", "rnase2", "rnase3"]
     chosen_rnase = random.choice(rnase_possibilities)
@@ -120,7 +128,7 @@ def modify_rnase(genome_tracker_new, output_dir):
         if chosen_rnase == "rnase1":
             #Adds rnase after first promoter
             rnase1_start = genome_tracker_new['rnase1']['start'] = random.randint(genome_tracker_new['region1']['start'], 15)
-            rnase1_stop = genome_tracker_new['rnase1']['stop'] = rnase1_start + 10
+            rnase1_stop = genome_tracker_new['rnase1']['stop'] = rnase1_start + rnase_offset
         else:
             items = [promoter, terminator]
             for item in items:
@@ -146,11 +154,31 @@ def modify_rnase(genome_tracker_new, output_dir):
                     region = regionC
                     region_end = region_endC
                 rnase_start = genome_tracker_new[chosen_rnase]['start'] = random.randint(genome_tracker_new[region]['start'], region_end)
-                rnase_stop = genome_tracker_new[chosen_rnase]['stop'] = rnase_start + 10
+                rnase_stop = genome_tracker_new[chosen_rnase]['stop'] = rnase_start + rnase_offset
+
+        genome_tracker_new[chosen_rnase]['previous_strength'] = genome_tracker_new[chosen_rnase]['current_strength']
+        genome_tracker_new[chosen_rnase]['current_strength'] = min_rnase_strength
 
     if chosen_rnase_modification == 'remove':
         genome_tracker_new[chosen_rnase]['start'] = 0
         genome_tracker_new[chosen_rnase]['stop'] = 0
+        genome_tracker_new[chosen_rnase]['previous_strength'] = genome_tracker_new[chosen_rnase]['current_strength']
+        genome_tracker_new[chosen_rnase]['current_strength'] = 0
+
+    if chosen_rnase_modification == 'modify':
+        rnase_possibilities = []
+        if genome_tracker_new['rnase1']['current_strength'] > 0:
+            rnase_possibilities.append('rnase1')
+        if genome_tracker_new['rnase2']['current_strength'] > 0:
+            rnase_possibilities.append('rnase2')
+        if genome_tracker_new['rnase3']['current_strength'] > 0:
+            rnase_possibilities.append('rnase3')
+        if rnase_possibilities != []:
+            chosen_rnase = random.choice(rnase_possibilities)
+            genome_tracker_new[chosen_rnase]['previous_strength'] = genome_tracker_new[chosen_rnase]['current_strength']
+            genome_tracker_new[chosen_rnase]['current_strength'] = genome_tracker_new[chosen_rnase]['current_strength'] * np.random.normal(1, 0.1)
+            while genome_tracker_new[chosen_rnase]['current_strength'] <= min_rnase_strength or genome_tracker_new[chosen_rnase]['current_strength'] >= max_rnase_strength:
+                genome_tracker_new[chosen_rnase]['current_strength'] = genome_tracker_new[chosen_rnase]['previous_strength'] * np.random.normal(1, 0.1)
 
     with open(output_dir, 'w') as rnase_yaml:
         yaml.dump(genome_tracker_new, rnase_yaml, default_flow_style=False)
@@ -158,7 +186,7 @@ def modify_rnase(genome_tracker_new, output_dir):
 
 def modify_terminator(genome_tracker_new, output_dir):
     """
-    Terminators are either added with randomized terminator efficiencies or removed all together.
+    Terminators are either added with a starting polymerase strength, removed from the genome all together, or has its terminator efficiency value modified.
     """
 
     terminator_modification = ['remove', 'add', 'modify']
@@ -190,7 +218,7 @@ def modify_terminator(genome_tracker_new, output_dir):
         if chosen_terminator == "terminator3":
             #Adds terminator after third gene
             genome_tracker_new[chosen_terminator]['start'] = genome_tracker_new['geneZ']['stop']
-            genome_tracker_new[chosen_terminator]['stop'] = genome_tracker_new['geneZ']['stop'] + 1
+            genome_tracker_new[chosen_terminator]['stop'] = genome_tracker_new['geneZ']['stop'] + terminator_offset
         else:
             items = [promoter, rnase]
             for item in items:
@@ -216,10 +244,10 @@ def modify_terminator(genome_tracker_new, output_dir):
                     region = regionC
                     region_end = region_endC
                 term_start = genome_tracker_new[chosen_terminator]['start'] = random.randint(genome_tracker_new[region]['start'], region_end)
-                term_stop = genome_tracker_new[chosen_terminator]['stop'] = term_start + 1
+                term_stop = genome_tracker_new[chosen_terminator]['stop'] = term_start + terminator_offset
 
         genome_tracker_new[chosen_terminator]['previous_strength'] = genome_tracker_new[chosen_terminator]['current_strength']
-        genome_tracker_new[chosen_terminator]['current_strength'] = 0.85
+        genome_tracker_new[chosen_terminator]['current_strength'] = terminator_starting_strength
 
     #Altering the terminator efficiency rate
     if chosen_term_modification == 'modify':
@@ -234,7 +262,7 @@ def modify_terminator(genome_tracker_new, output_dir):
             chosen_terminator = random.choice(terminator_possibilities)
             genome_tracker_new[chosen_terminator]['previous_strength'] = genome_tracker_new[chosen_terminator]['current_strength']
             genome_tracker_new[chosen_terminator]['current_strength'] = genome_tracker_new[chosen_terminator]['current_strength'] * np.random.normal(1, 0.1)
-            while genome_tracker_new[chosen_terminator]['current_strength'] <= 0.0 or genome_tracker_new[chosen_terminator]['current_strength'] >= 1.0:
+            while genome_tracker_new[chosen_terminator]['current_strength'] <= min_terminator_strength or genome_tracker_new[chosen_terminator]['current_strength'] >= max_terminator_strength:
                 genome_tracker_new[chosen_terminator]['current_strength'] = genome_tracker_new[chosen_terminator]['previous_strength'] * np.random.normal(1, 0.1)
 
     if chosen_term_modification == 'remove':

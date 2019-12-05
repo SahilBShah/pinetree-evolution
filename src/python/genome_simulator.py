@@ -17,6 +17,7 @@ def pt_call(output_dir):
                         transcript_degradation_rate_ext=1e-2,
                         rnase_speed=20,
                         rnase_footprint=10)
+    #Promoters
     plasmid.add_promoter(name="p1", start=1, stop=10,
                          interactions={"rnapol": genome_tracker_new['promoter1']['current_strength']})
     if genome_tracker_new['promoter2']['start'] > 0:
@@ -25,12 +26,20 @@ def pt_call(output_dir):
     if genome_tracker_new['promoter3']['start'] > 0:
         plasmid.add_promoter(name="p3", start=genome_tracker_new['promoter3']['start'], stop=genome_tracker_new['promoter3']['stop'],
                              interactions={"rnapol": genome_tracker_new['promoter3']['current_strength']})
-    if genome_tracker_new['rnase1']['start'] > 0:
-        plasmid.add_rnase_site(start=genome_tracker_new['rnase1']['start'], stop=genome_tracker_new['rnase1']['stop'])
-    if genome_tracker_new['rnase2']['start'] > 0:
-        plasmid.add_rnase_site(start=genome_tracker_new['rnase2']['start'], stop=genome_tracker_new['rnase2']['stop'])
-    if genome_tracker_new['rnase3']['start'] > 0:
-        plasmid.add_rnase_site(start=genome_tracker_new['rnase3']['start'], stop=genome_tracker_new['rnase3']['stop'])
+    #RNases
+    if genome_tracker_new['rnase1']['current_strength'] > 0 and genome_tracker_new['rnase1']['start'] > 0:
+        plasmid.add_rnase_site(name='r1', start=genome_tracker_new['rnase1']['start'], stop=genome_tracker_new['rnase1']['stop'], transcript_degradation_rate=genome_tracker_new['rnase1']['current_strength'])
+    elif genome_tracker_new['rnase1']['start'] > 0:
+        plasmid.add_rnase_site(name='r1', start=genome_tracker_new['rnase1']['start'], stop=genome_tracker_new['rnase1']['stop'])
+    if genome_tracker_new['rnase2']['current_strength'] > 0 and genome_tracker_new['rnase2']['start'] > 0:
+        plasmid.add_rnase_site(name='r2', start=genome_tracker_new['rnase2']['start'], stop=genome_tracker_new['rnase2']['stop'], transcript_degradation_rate=genome_tracker_new['rnase2']['current_strength'])
+    elif genome_tracker_new['rnase2']['start'] > 0:
+        plasmid.add_rnase_site(name='r2', start=genome_tracker_new['rnase2']['start'], stop=genome_tracker_new['rnase2']['stop'])
+    if genome_tracker_new['rnase3']['current_strength'] > 0 and genome_tracker_new['rnase3']['start'] > 0:
+        plasmid.add_rnase_site(name='r3', start=genome_tracker_new['rnase3']['start'], stop=genome_tracker_new['rnase3']['stop'], transcript_degradation_rate=genome_tracker_new['rnase3']['current_strength'])
+    elif genome_tracker_new['rnase3']['start'] > 0:
+        plasmid.add_rnase_site(name='r3', start=genome_tracker_new['rnase3']['start'], stop=genome_tracker_new['rnase3']['stop'])
+    #Terminators
     if genome_tracker_new['terminator1']['start'] > 0:
         plasmid.add_terminator(name="t1", start=genome_tracker_new['terminator1']['start'], stop=genome_tracker_new['terminator1']['stop'],
                                efficiency={"rnapol": genome_tracker_new['terminator1']['current_strength']})
