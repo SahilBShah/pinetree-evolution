@@ -15,7 +15,9 @@ import yaml
 #Command line arguments
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='Input target tsv file name with transcript information.')
-parser.add_argument('replicate_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
+parser.add_argument('gene_file', help='Input target gene parameters file name.')
+parser.add_argument('dynamic_deg_rate', default='no', help='Input yes or no if rnase site degredation rate should be an option to be modified.')
+parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
 parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
 parser.add_argument('initial_sum_of_squares', type=int, default=1000000, nargs='?', help='Input the desired initial sum of squares value')
@@ -28,7 +30,6 @@ ss_old = args.initial_sum_of_squares
 all_sos_list = [ss_old]
 sos_iter_list = []
 is_accepted = []
-accepted = 0
 i = 1
 
 #Output file directory structure
@@ -37,40 +38,40 @@ month = datetime.date.today().month
 day = datetime.date.today().day
 output_dir = '../../results/{}_{}_{}/'.format(year, month, day)
 
-output_dir = output_dir + '{}_nf{}_rep{}_nmut{}/'.format(args.filename.strip('.tsv'), args.N, args.replicate_number, args.replicate_mutation_number)
+output_dir = output_dir + '{}_nf{}_rep{}_nmut{}/'.format(args.filename.strip('.tsv'), args.N, args.run_number, args.replicate_mutation_number)
 if not os.path.exists(output_dir):
     os.makedirs(output_dir)
 
+#Opens yaml files containing genome coordinates
+starting_file = output_dir + 'config.yml'
+with open('../../data/gene_parameters/'+args.gene_file, 'r') as gene_parameters:
+    gene_file = yaml.safe_load(gene_parameters)
+initialize_yaml.create_yaml(starting_file, gene_file)
+with open(starting_file, 'r') as gene_elements:
+    genome_tracker_new = yaml.safe_load(gene_elements)
+genome_tracker_old = genome_tracker_new
+
 #Target file inputted as dataframe
 df = pd.read_csv('../../data/'+args.filename, header=0, sep='\t')
-df = file_setup.rearrange_file(df)
-
-#Opens yaml files containing genome coordinates
-starting_file = output_dir + 'new_gene.yml'
-initialize_yaml.create_yaml(starting_file)
-with open(starting_file, 'r') as gene_parameters:
-    genome_tracker_new = yaml.safe_load(gene_parameters)
-    genome_tracker_old = yaml.safe_load(gene_parameters)
+df = file_setup.rearrange_file(df, genome_tracker_new)
 
 #Start of evolution program
 while i <= args.generation_number:
 
     #Mutation is chosen and performed on best genome
-    possibilities = [mutation_choices.modify_promoter, mutation_choices.modify_rnase, mutation_choices.modify_terminator]
-    random.choice(possibilities)(genome_tracker_new, starting_file)
-    with open(starting_file, 'r') as current:
-        genome_tracker_new = yaml.safe_load(current)
+    possibilities = [mutation_choices.add_element, mutation_choices.remove_element, mutation_choices.modify_element]
+    genome_tracker_new = random.choice(possibilities)(genome_tracker_new, starting_file, genome_tracker_new['num_genes'], args.dynamic_deg_rate)
 
     #Sum of squares is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
     #PineTree called in test_mutation
-    ss_new = mutation_test.test_mutation(df, output_dir, args.replicate_mutation_number)
+    ss_new = mutation_test.test_mutation(df, genome_tracker_new, output_dir, args.replicate_mutation_number, args.dynamic_deg_rate)
 
     accept_prob = fitness_score.calc_fitness(ss_new, ss_old, args.N, args.beta)
     all_sos_list.append(ss_new)
     sos_iter_list.append(i)
     if accept_prob > random.random():
-        #If accepted the old genome is replace by the new genome
+        #If accepted the old genome is replace by the new genome and files for the new genome are saved
         genome_tracker_old = genome_tracker_new
         with open(output_dir+'gene_{}.yml'.format(i), 'w') as save_yaml:
             yaml.dump(genome_tracker_old, save_yaml)

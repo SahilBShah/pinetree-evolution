@@ -8,13 +8,13 @@ proteinY_list = []
 proteinZ_list = []
 
 for i in range(1, 251):
-    transcript_list.append([i, "proteinX", (0.16 * i)])
+    transcript_list.append([i, "protein1", (0.16 * i)])
     if i == 150:
         proteinX_list = transcript_list[-1]
-    transcript_list.append([i, "proteinY", (0.12 * i)])
+    transcript_list.append([i, "protein2", (0.12 * i)])
     if i == 150:
         proteinY_list = transcript_list[-1]
-    transcript_list.append([i, "proteinZ", (0.08 * i)])
+    transcript_list.append([i, "protein3", (0.08 * i)])
     if i == 150:
         proteinZ_list = transcript_list[-1]
 # for i in range(151, 251):
@@ -24,7 +24,7 @@ for i in range(1, 251):
 
 
 
-file = open("../../data/grant_data/grant_data1.tsv", "w")
+file = open("../../data/grant_data/grant_data100.tsv", "w")
 writer = csv.writer(file, delimiter='\t')
 writer.writerow(["time", "species", "transcript"])
 for item in transcript_list:

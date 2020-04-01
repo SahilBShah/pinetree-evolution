@@ -32,15 +32,15 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 
-setwd("/home/sahil/pinetree-toys/data/grant_data/")
+setwd("/home/sahil/pinetree-toys/data/")
 
 plots_list <- list()
 
-best_files <- list.files("/home/sahil/pinetree-toys/data/grant_data/", pattern="three_genes_replicated_")
+best_files <- list.files("/home/sahil/pinetree-toys/data/", pattern="three_genes_replicated_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
-target_data <- read.table("/home/sahil/pinetree-toys/data/grant_data/grant_data10.tsv", header=TRUE)
-target_data <- filter(target_data, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+  target_data <- read.table("/home/sahil/pinetree-toys/data/three_genes_replicated_1439.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
@@ -50,7 +50,7 @@ for(i in 1:length(best_files)){
   evolution_title <- "Genome Evolution "
   plot_title <- paste(evolution_title, i, sep="")
   file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
-  file_name <- filter(file_name, species == "proteinX" | species == "proteinY" | species == "proteinZ")
+  file_name <- filter(file_name, species == "protein1" | species == "protein2" | species == "protein3")
   plot_name <- assign(paste(best_plot, i, sep=""), ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title))
   plot <- ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title)
   plots_list[[i]] <- plot
@@ -58,8 +58,8 @@ for(i in 1:length(best_files)){
 }
 
 #evo_plot <- grid.arrange(plots_list, nrow=ceiling(length(best_files) / 2), ncol=ceiling(length(best_files) / 2), top="Evolutionary Pattern of Gene Transcripts") 
-evo_plot <- grid.arrange(target_line_plot, nrow=3, ncol=3, top="Evolutionary Pattern of Gene Transcripts")
-ggsave("/home/sahil/pinetree-toys/data/grant_data/grant_data10.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+evo_plot <- grid.arrange(target_line_plot, nrow=1, ncol=1, top="Evolutionary Pattern of Gene Transcripts")
+ggsave("/home/sahil/pinetree-toys/data/figures/three_genes_replicated_1439.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
 
