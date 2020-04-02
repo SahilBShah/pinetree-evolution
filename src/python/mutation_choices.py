@@ -7,7 +7,7 @@ starting_promoter_strength = 1e10
 max_promoter_strength = 3e15
 min_promoter_strength = 1e9
 promoter_offset = 9
-promoter_min_space = 18
+promoter_min_space = 12
 max_rnase_strength = 10e17
 min_rnase_strength = 1e-2
 rnase_offset = 9
@@ -57,21 +57,21 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
     gene_offsetted = 'gene{}'.format(int(region_choice[-1:])+1)
     if int(region_choice[-1:]) != num_genes:
         if genome_tracker_new[promoter]['start'] > 0:
-            if int(region_choice[-1:]) != 0:
+            if region_choice != 'region0':
                 genome_elements.append(genome_tracker_new[promoter]['start'])
             genome_elements.append(genome_tracker_new[promoter]['stop'])
         if genome_tracker_new[rnase]['start'] > 0:
             genome_elements.append(genome_tracker_new[rnase]['start'])
             genome_elements.append(genome_tracker_new[rnase]['stop'])
         genome_elements.append(genome_tracker_new[gene_offsetted]['start'])
-    elif int(region_choice[-1:]) == num_genes and genome_tracker_new[terminator]['stop'] != genome_tracker_new['length_of_genome']:
-        genome_elements.append(genome_tracker_new['length_of_genome'])
     if region_choice != 'region0':
         genome_elements.append(genome_tracker_new[gene]['stop'])
-        if genome_tracker_new[terminator]['start'] > 0 and genome_tracker_new[terminator]['start'] != genome_tracker_new[gene]['stop']:
+        if genome_tracker_new[terminator]['start'] > 0:
             genome_elements.append(genome_tracker_new[terminator]['start'])
-            if int(region_choice[-1:]) != num_genes or genome_tracker_new[terminator]['stop'] != genome_tracker_new['length_of_genome']:
+            if genome_tracker_new[terminator]['stop'] != genome_tracker_new['length_of_genome']:
                 genome_elements.append(genome_tracker_new[terminator]['stop'])
+    if int(region_choice[-1]) == num_genes and genome_tracker_new[terminator]['stop'] != genome_tracker_new['length_of_genome']:
+        genome_elements.append(genome_tracker_new['length_of_genome'])
     #Determines areas within the intergenic regions that are available
     space_index = 0
     highest_position = max(genome_elements)
@@ -99,7 +99,7 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
             #If promoter is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
             genome_shift = 10
             if ending_position - starting_position >= promoter_min_space:
-                prom_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position-17)
+                prom_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position-9)
                 prom_stop = genome_tracker_new[element_choice]['stop'] = prom_start + promoter_offset
                 genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
                 genome_tracker_new[element_choice]['current_strength'] = starting_promoter_strength
@@ -125,7 +125,7 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
             #If RNase is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
             genome_shift = 10
             if ending_position - starting_position >= rnase_min_space:
-                rnase_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position-8)
+                rnase_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position-9)
                 rnase_stop = genome_tracker_new[element_choice]['stop'] = rnase_start + rnase_offset
                 if deg_rate == 'yes':
                     genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
