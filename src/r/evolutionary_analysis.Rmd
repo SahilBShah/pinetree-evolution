@@ -39,7 +39,7 @@ plots_list <- list()
 best_files <- list.files("/home/sahil/pinetree-toys/data/", pattern="three_genes_replicated_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
-  target_data <- read.table("/home/sahil/pinetree-toys/data/three_genes_replicated_1439.tsv", header=TRUE)
+  target_data <- read.table("/home/sahil/pinetree-toys/data/three_genes_replicated_2431.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
@@ -59,7 +59,7 @@ for(i in 1:length(best_files)){
 
 #evo_plot <- grid.arrange(plots_list, nrow=ceiling(length(best_files) / 2), ncol=ceiling(length(best_files) / 2), top="Evolutionary Pattern of Gene Transcripts") 
 evo_plot <- grid.arrange(target_line_plot, nrow=1, ncol=1, top="Evolutionary Pattern of Gene Transcripts")
-ggsave("/home/sahil/pinetree-toys/data/figures/three_genes_replicated_1439.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+ggsave("/home/sahil/pinetree-toys/data/figures/three_genes_replicated_2431.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
 

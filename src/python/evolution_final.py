@@ -16,7 +16,7 @@ import yaml
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='Input target tsv file name with transcript information.')
 parser.add_argument('gene_file', help='Input target gene parameters file name.')
-parser.add_argument('dynamic_deg_rate', default='no', help='Input yes or no if rnase site degredation rate should be an option to be modified.')
+parser.add_argument('dynamic_deg_rate', type=bool, default='no', help='Input True or False if rnase site degredation rate should be an option to be modified.')
 parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
 parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')

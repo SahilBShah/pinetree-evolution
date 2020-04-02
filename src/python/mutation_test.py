@@ -10,12 +10,12 @@ def test_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate)
 
     #Creates test files from pinetree to find average number of transcripts at each time
     for i in range(1, mutation_number+1):
-        if deg_rate =='no':
-            #If each individual RNase site's binding strength is NOT being altered
-            genome_simulator.pt_call(output_dir, genome_tracker_new)
-        else:
+        if deg_rate:
             #If each individual RNase site's binding strength IS being altered
             genome_simulator.pt_call_alt(output_dir, genome_tracker_new)
+        else:
+            #If each individual RNase site's binding strength is NOT being altered
+            genome_simulator.pt_call(output_dir, genome_tracker_new)
         save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
