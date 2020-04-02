@@ -24,8 +24,8 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
     elements_list = []
     genome_elements = []
     spaces_dict = {}
-    possible_spaces = {}
     is_added = False
+    genome_tracker_saved = genome_tracker_new
     #Possible elements that can be added to the genome
     for num_prom in range(1, num_genes):
         elements_list.append('promoter{}'.format(num_prom))
@@ -36,7 +36,6 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
 
     element_choice = random.choice(elements_list)
     region_choice = 'region{}'.format(element_choice[-1:])
-    genome_tracker_saved = genome_tracker_new
     #If the element choice is already present on genome then remove it from the genome and shrink the genome
     if genome_tracker_new[element_choice]['start'] > 0:
         genome_tracker_new = remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice)
@@ -80,21 +79,16 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
         genome_elements.remove(starting_position)
         ending_position = min(genome_elements)
         genome_elements.remove(ending_position)
-        spaces_dict.update({'space{}'.format(space_index): dict(start=starting_position, stop=ending_position)})
+        if ending_position - starting_position >= required_spaces:
+            spaces_dict.update({'space{}'.format(space_index): dict(start=starting_position, stop=ending_position)})
         if ending_position == highest_position or genome_elements == []:
             break
         space_index+=1
-    space_index = 0
-    #Determines if there is a sufficient amount of space needed for the chosen element
-    for item in spaces_dict:
-        if spaces_dict[item]['stop'] - spaces_dict[item]['start'] >= required_spaces:
-            possible_spaces.update({'space{}'.format(space_index): dict(start=spaces_dict[item]['start'], stop=spaces_dict[item]['stop'])})
-            space_index+=1
     #Determines the position of the chosen element
-    if possible_spaces != {}:
-        key = random.choice(list(possible_spaces.keys()))
-        starting_position = possible_spaces[key]['start']
-        ending_position = possible_spaces[key]['stop']
+    if spaces_dict != {}:
+        key = random.choice(list(spaces_dict.keys()))
+        starting_position = spaces_dict[key]['start']
+        ending_position = spaces_dict[key]['stop']
         if 'promoter' in element_choice:
             #If promoter is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
             genome_shift = 10
@@ -138,8 +132,6 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
         #If there are no possible spaces to add an element then revert back to previous accepted genome before adjustments were made
         return genome_tracker_saved
 
-    with open(output_dir+'config.yml', 'w') as outfile:
-        yaml.dump(genome_tracker_new, outfile, default_flow_style=False)
     return genome_tracker_new
 
 def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, specific_element=None):
