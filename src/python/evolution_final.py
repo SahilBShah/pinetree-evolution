@@ -1,4 +1,5 @@
 import argparse
+import copy
 import datetime
 import file_setup
 import fitness_score
@@ -16,13 +17,13 @@ import yaml
 parser = argparse.ArgumentParser()
 parser.add_argument('filename', help='Input target tsv file name with transcript information.')
 parser.add_argument('gene_file', help='Input target gene parameters file name.')
-parser.add_argument('dynamic_deg_rate', type=bool, default='no', help='Input True or False if rnase site degredation rate should be an option to be modified.')
 parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
 parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
 parser.add_argument('initial_sum_of_squares', type=int, default=1000000, nargs='?', help='Input the desired initial sum of squares value')
 parser.add_argument('N', type=int, default=10, nargs='?', help='Input desired effective population size value.')
 parser.add_argument('beta', type=float, default=0.001, nargs='?', help='Input desired beta value based on starting sum of squares value for fitness calculation.')
+parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
 args = parser.parse_args()
 
 #General setup
@@ -49,7 +50,7 @@ with open('../../data/gene_parameters/'+args.gene_file, 'r') as gene_parameters:
 initialize_yaml.create_yaml(starting_file, gene_file)
 with open(starting_file, 'r') as gene_elements:
     genome_tracker_new = yaml.safe_load(gene_elements)
-genome_tracker_old = genome_tracker_new
+genome_tracker_old = copy.deepcopy(genome_tracker_new)
 
 #Target file inputted as dataframe
 df = pd.read_csv('../../data/'+args.filename, header=0, sep='\t')
@@ -72,7 +73,7 @@ while i <= args.generation_number:
     sos_iter_list.append(i)
     if accept_prob > random.random():
         #If accepted the old genome is replace by the new genome and files for the new genome are saved
-        genome_tracker_old = genome_tracker_new
+        genome_tracker_old = copy.deepcopy(genome_tracker_new)
         with open(output_dir+'gene_{}.yml'.format(i), 'w') as save_yaml:
             yaml.dump(genome_tracker_old, save_yaml)
         save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
@@ -81,7 +82,7 @@ while i <= args.generation_number:
         is_accepted.append("yes")
     else:
         #If mutation is rejected then the new genome becomes the last accepted genome
-        genome_tracker_new = genome_tracker_old
+        genome_tracker_new = copy.deepcopy(genome_tracker_old)
         is_accepted.append("no")
 
     i+=1
