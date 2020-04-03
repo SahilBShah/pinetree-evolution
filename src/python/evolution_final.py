@@ -21,7 +21,7 @@ parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input th
 parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
 parser.add_argument('initial_sum_of_squares', type=int, default=1000000, nargs='?', help='Input the desired initial sum of squares value')
-parser.add_argument('N', type=int, default=10, nargs='?', help='Input desired effective population size value.')
+parser.add_argument('N', type=float, default=10.0, nargs='?', help='Input desired effective population size value.')
 parser.add_argument('beta', type=float, default=0.001, nargs='?', help='Input desired beta value based on starting sum of squares value for fitness calculation.')
 parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
 args = parser.parse_args()

@@ -13,8 +13,8 @@ library(cowplot)
 library(dplyr)
 library(gridExtra)
 library(ggplot2)
-
-setwd("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/")
+#Set working directory to the directory in which the results are contained in
+setwd("../../results/2020_4_3/grant_data4_nf0.5_rep1_nmut3/")
 
 all_sos_data <- read.table("sos_data.tsv", header=TRUE)
 sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
@@ -22,7 +22,8 @@ sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
 sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sos_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
 sos_plots <- grid.arrange(sos_line_plot, nrow=1, top="Sum of Squares Data")
-ggsave("/home/sahil/pinetree-toys/results/2019_10_14/random_data5_nf10_rep1/sos_graphs.pdf", sos_plots, width=20, height=10)
+#Change name of sos_graphs to a unique identifier
+ggsave("../../../data/figures/sos_graphs_grant_data4_nf05.pdf", sos_plots, width=20, height=10)
 ```
 
 Evolutionary Analysis of Mutations
@@ -31,20 +32,28 @@ Evolutionary Analysis of Mutations
 library(reshape2)
 library(gridExtra)
 library(gtools)
-
-setwd("/home/sahil/pinetree-toys/data/")
+#Set working directory to the directory in which the results are contained in
+setwd("../../results/2020_4_3/grant_data4_nf0.5_rep1_nmut3/")
 
 plots_list <- list()
-
-best_files <- list.files("/home/sahil/pinetree-toys/data/", pattern="three_genes_replicated_")
+best_files <- list.files(pattern="three_genes_replicated_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
-    target_data <- read.table("/home/sahil/pinetree-toys/data/three_genes_replicated_1232.tsv", header=TRUE)
+#Change grant_data name to the target file used
+target_data <- read.table("../../../data/grant_data4.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
-
-for(i in 1:length(best_files)){
+plots_list[[1]] <- target_line_plot
+#Determines if there are too many accepted mutations and, if so, only display the last 20 that were accepted
+starting_point <- 1
+if (length(best_files) > 20){
+  starting_point <- length(best_files) - 20
+}
+plots_start <- 1
+#Creates plots for each accepted mutation
+for(i in starting_point:length(best_files)){
+  plots_start <- plots_start + 1
   best <- "best"
   best_plot <- "best_plot"
   evolution_title <- "Genome Evolution "
@@ -53,13 +62,12 @@ for(i in 1:length(best_files)){
   file_name <- filter(file_name, species == "protein1" | species == "protein2" | species == "protein3")
   plot_name <- assign(paste(best_plot, i, sep=""), ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title))
   plot <- ggplot(file_name, aes(fill=species, color=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black")) + geom_line(stat="identity") + ggtitle(plot_title)
-  plots_list[[i]] <- plot
-
+  plots_list[[plots_start]] <- plot
 }
-
-#evo_plot <- grid.arrange(plots_list, nrow=ceiling(length(best_files) / 2), ncol=ceiling(length(best_files) / 2), top="Evolutionary Pattern of Gene Transcripts") 
-evo_plot <- grid.arrange(target_line_plot, nrow=1, ncol=1, top="Evolutionary Pattern of Gene Transcripts")
-ggsave("/home/sahil/pinetree-toys/data/figures/three_genes_replicated_1232.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+#Outputs file with the generated plots  
+evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 2), ncol=3, top="Evolutionary Pattern of Gene Transcripts") 
+#Change name of saved graphs file to a unique identifier
+ggsave("../../../data/figures/grant_data4_nf05.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
 
