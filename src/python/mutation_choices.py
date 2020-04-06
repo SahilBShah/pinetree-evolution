@@ -10,8 +10,8 @@ min_promoter_strength = 10e5
 promoter_offset = 9
 promoter_min_space = 11
 rnase_starting_strength = 1e-2
-max_rnase_strength = 10e17
-min_rnase_strength = 1e-2
+max_rnase_strength = 1.0
+min_rnase_strength = 0.0
 rnase_offset = 9
 rnase_min_space = 11
 max_terminator_strength = 1.0
@@ -21,24 +21,12 @@ terminator_offset = 1
 terminator_min_space = 2
 
 
-def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
+def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
 
-    elements_list = []
     genome_elements = []
     spaces_dict = {}
-    #Possible elements that can be added to the genome
-    for num_prom in range(1, num_genes):
-        elements_list.append('promoter{}'.format(num_prom))
-    for num_term in range(1, num_genes+1):
-        elements_list.append('terminator{}'.format(num_term))
-    for num_rnase in range(num_genes):
-        elements_list.append('rnase{}'.format(num_rnase))
 
-    element_choice = random.choice(elements_list)
     region_choice = 'region{}'.format(element_choice[-1:])
-    #If the element choice is already present on genome then remove it from the genome and shrink the genome
-    if genome_tracker_new[element_choice]['start'] > 0:
-        genome_tracker_new = remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice)
     #If promoter is chosen then the required amount of space to place a promoter is set
     if 'promoter' in element_choice:
         required_spaces = promoter_min_space
@@ -138,70 +126,27 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate):
 
     return genome_tracker_new
 
-def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, specific_element=None):
+def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
 
-    if specific_element == None:
-        possibilities = []
-        #Determining possible elements on the genome that can be removed
-        for num_prom in range(1, num_genes):
-            if genome_tracker_new['promoter{}'.format(num_prom)]['start'] > 0:
-                possibilities.append('promoter{}'.format(num_prom))
-        for num_term in range(1, num_genes+1):
-            if genome_tracker_new['terminator{}'.format(num_term)]['start'] > 0:
-                possibilities.append('terminator{}'.format(num_term))
-        for num_rnase in range(num_genes):
-            if genome_tracker_new['rnase{}'.format(num_rnase)]['start'] > 0:
-                possibilities.append('rnase{}'.format(num_rnase))
-        #Removes the selected element from the genome
-        if possibilities != []:
-            element_choice = random.choice(possibilities)
-            region_choice = 'region{}'.format(element_choice[-1:])
-            if 'promoter' in element_choice or 'rnase' in element_choice:
-                genome_shift = 10
-            elif 'terminator' in element_choice:
-                genome_shift = 2
-            genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(region_choice[-1:]), genome_shift, element_choice)
-            genome_tracker_new[element_choice]['start'] = 0
-            genome_tracker_new[element_choice]['stop'] = 0
-            #If modifying each individual RNase site, then the strength is set to 0
-            if (deg_rate) or (deg_rate == False and 'rnase' not in element_choice):
-                genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-                genome_tracker_new[element_choice]['current_strength'] = 0
-        else:
-            #If there are no elements to remove, then that means there are no elements to add
-            genome_tracker_new = add_element(genome_tracker_new, output_dir, num_genes, deg_rate)
-    else:
-        region_choice = 'region{}'.format(specific_element[-1:])
-        if 'promoter' in specific_element or 'rnase' in specific_element:
-            genome_shift = 10
-        elif 'terminator' in specific_element:
-            genome_shift = 2
-        genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(region_choice[-1:]), genome_shift, specific_element)
-        genome_tracker_new[specific_element]['start'] = 0
-        genome_tracker_new[specific_element]['stop'] = 0
-        #If modifying each individual RNase site, then the strength is set to 0
-        if (deg_rate) or (deg_rate == False and 'rnase' not in specific_element):
-            genome_tracker_new[specific_element]['previous_strength'] = genome_tracker_new[specific_element]['current_strength']
-            genome_tracker_new[specific_element]['current_strength'] = 0
+    #Removes the selected element from the genome
+    region_choice = 'region{}'.format(element_choice[-1:])
+    if 'promoter' in element_choice or 'rnase' in element_choice:
+        genome_shift = 10
+    elif 'terminator' in element_choice:
+        genome_shift = 2
+    genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(region_choice[-1:]), genome_shift, element_choice)
+    genome_tracker_new[element_choice]['start'] = 0
+    genome_tracker_new[element_choice]['stop'] = 0
+    #If modifying each individual RNase site, then the strength is set to 0
+    if (deg_rate) or (deg_rate == False and 'rnase' not in element_choice):
+        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
+        genome_tracker_new[element_choice]['current_strength'] = 0
 
     return genome_tracker_new
 
-def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate):
+def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
 
-    possibilities = []
-    #Determining which elements are present on the genome so that they can potentially be modified
-    for num_prom in range(num_genes):
-        if genome_tracker_new['promoter{}'.format(num_prom)]['start'] > 0:
-            possibilities.append('promoter{}'.format(num_prom))
-    for num_term in range(1, num_genes+1):
-        if genome_tracker_new['terminator{}'.format(num_term)]['start'] > 0:
-            possibilities.append('terminator{}'.format(num_term))
-    if deg_rate:
-        for num_rnase in range(num_genes):
-            if genome_tracker_new['rnase{}'.format(num_rnase)]['start'] > 0:
-                possibilities.append('rnase{}'.format(num_rnase))
     #Strengths of current elements on genome are modified
-    element_choice = random.choice(possibilities)
     if 'promoter' in element_choice:
         genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
         genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.1)

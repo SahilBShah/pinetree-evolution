@@ -31,6 +31,7 @@ ss_old = args.initial_sum_of_squares
 all_sos_list = [ss_old]
 sos_iter_list = []
 is_accepted = []
+possibilities = {}
 i = 1
 
 #Output file directory structure
@@ -59,9 +60,39 @@ df = file_setup.rearrange_file(df, genome_tracker_new)
 #Start of evolution program
 while i <= args.generation_number:
 
+    #Possible mutation choices are enumerated
+    for gene in range(genome_tracker_new['num_genes']+1):
+        promoter = 'promoter{}'.format(gene)
+        terminator = 'terminator{}'.format(gene)
+        rnase = 'rnase{}'.format(gene)
+        if gene != 0 and gene != genome_tracker_new['num_genes']:
+            if genome_tracker_new[promoter]['start'] == 0:
+                possibilities.update({promoter+'.add': 'add'})
+            elif genome_tracker_new[promoter]['start'] > 0:
+                possibilities.update({promoter+'.remove': 'remove'})
+                possibilities.update({promoter+'.modify': 'modify'})
+        if gene != 0:
+            if genome_tracker_new[terminator]['start'] == 0:
+                possibilities.update({terminator+'.add': 'add'})
+            elif genome_tracker_new[terminator]['start'] > 0:
+                possibilities.update({terminator+'.remove': 'remove'})
+                possibilities.update({terminator+'.modify': 'modify'})
+        if gene != genome_tracker_new['num_genes']:
+            if genome_tracker_new[rnase]['start'] == 0:
+                possibilities.update({rnase+'.add': 'add'})
+            elif genome_tracker_new[rnase]['start'] > 0:
+                possibilities.update({rnase+'.remove': 'remove'})
+                if args.dynamic_deg_rate:
+                    possibilities.update({rnase+'.modify': 'modify'})
+
     #Mutation is chosen and performed on best genome
-    possibilities = [mutation_choices.add_element, mutation_choices.remove_element, mutation_choices.modify_element]
-    genome_tracker_new = random.choice(possibilities)(genome_tracker_new, starting_file, genome_tracker_new['num_genes'], args.dynamic_deg_rate)
+    item = random.choice(list(possibilities.keys()))
+    if possibilities[item] == 'add':
+        genome_tracker_new = mutation_choices.add_element(genome_tracker_new, starting_file, genome_tracker_new['num_genes'], args.dynamic_deg_rate, item.split('.')[0])
+    elif possibilities[item] == 'remove':
+        genome_tracker_new = mutation_choices.remove_element(genome_tracker_new, starting_file, genome_tracker_new['num_genes'], args.dynamic_deg_rate, item.split('.')[0])
+    else:
+        genome_tracker_new = mutation_choices.modify_element(genome_tracker_new, starting_file, genome_tracker_new['num_genes'], args.dynamic_deg_rate, item.split('.')[0])
 
     #Sum of squares is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
