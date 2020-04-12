@@ -16,28 +16,28 @@ def pt_call(output_dir, genome_tracker_new):
                         rnase_footprint=10)
     #Promoters
     plasmid.add_promoter(name="p0", start=1, stop=10,
-                         interactions={"rnapol": genome_tracker_new['promoter0']['current_strength']})
+                         interactions={"rnapol": genome_tracker_new['promoter_0']['current_strength']})
     for i in range(1, genome_tracker_new['num_genes']):
-        if genome_tracker_new['promoter{}'.format(i)]['start'] > 0:
-            plasmid.add_promoter(name="p{}".format(i), start=genome_tracker_new['promoter{}'.format(i)]['start'], stop=genome_tracker_new['promoter{}'.format(i)]['stop'],
-                                 interactions={"rnapol": genome_tracker_new['promoter{}'.format(i)]['current_strength']})
+        if genome_tracker_new['promoter_{}'.format(i)]['start'] > 0:
+            plasmid.add_promoter(name="p{}".format(i), start=genome_tracker_new['promoter_{}'.format(i)]['start'], stop=genome_tracker_new['promoter_{}'.format(i)]['stop'],
+                                 interactions={"rnapol": genome_tracker_new['promoter_{}'.format(i)]['current_strength']})
 
     #RNases
     for i in range(genome_tracker_new['num_genes']):
-        if genome_tracker_new['rnase{}'.format(i)]['start'] > 0:
-            plasmid.add_rnase_site(start=genome_tracker_new['rnase{}'.format(i)]['start'], stop=genome_tracker_new['rnase{}'.format(i)]['stop'])
+        if genome_tracker_new['rnase_{}'.format(i)]['start'] > 0:
+            plasmid.add_rnase_site(start=genome_tracker_new['rnase_{}'.format(i)]['start'], stop=genome_tracker_new['rnase_{}'.format(i)]['stop'])
 
     #Terminators
     for i in range(1, genome_tracker_new['num_genes']+1):
-        if genome_tracker_new['terminator{}'.format(i)]['start'] > 0:
-            plasmid.add_terminator(name="t{}".format(i), start=genome_tracker_new['terminator{}'.format(i)]['start'], stop=genome_tracker_new['terminator{}'.format(i)]['stop'],
-                                   efficiency={"rnapol": genome_tracker_new['terminator{}'.format(i)]['current_strength']})
+        if genome_tracker_new['terminator_{}'.format(i)]['start'] > 0:
+            plasmid.add_terminator(name="t{}".format(i), start=genome_tracker_new['terminator_{}'.format(i)]['start'], stop=genome_tracker_new['terminator_{}'.format(i)]['stop'],
+                                   efficiency={"rnapol": genome_tracker_new['terminator_{}'.format(i)]['current_strength']})
 
     #Genes
     for i in range(1, genome_tracker_new['num_genes']+1):
-        if genome_tracker_new['gene1']['start'] > 0:
-            plasmid.add_gene(name="protein{}".format(i), start=genome_tracker_new['gene{}'.format(i)]['start'], stop=genome_tracker_new['gene{}'.format(i)]['stop'],
-                             rbs_start=(genome_tracker_new['gene{}'.format(i)]['start']-15), rbs_stop=genome_tracker_new['gene{}'.format(i)]['start'], rbs_strength=1e7)
+        if genome_tracker_new['gene_{}'.format(i)]['start'] > 0:
+            plasmid.add_gene(name="protein{}".format(i), start=genome_tracker_new['gene_{}'.format(i)]['start'], stop=genome_tracker_new['gene_{}'.format(i)]['stop'],
+                             rbs_start=(genome_tracker_new['gene_{}'.format(i)]['start']-15), rbs_stop=genome_tracker_new['gene_{}'.format(i)]['start'], rbs_strength=1e7)
 
     sim.register_genome(plasmid)
     sim.simulate(time_limit=240, time_step=1, output=output_dir+'three_genes_replicated.tsv')
@@ -55,28 +55,28 @@ def pt_call_alt(output_dir, genome_tracker_new):
                         rnase_footprint=10)
     #Promoters
     plasmid.add_promoter(name="p0", start=1, stop=10,
-                         interactions={"rnapol": genome_tracker_new['promoter0']['current_strength']})
+                         interactions={"rnapol": genome_tracker_new['promoter_0']['current_strength']})
     for i in range(1, genome_tracker_new['num_genes']):
-        if genome_tracker_new['promoter{}'.format(i)]['start'] > 0:
-            plasmid.add_promoter(name="p{}".format(i), start=genome_tracker_new['promoter{}'.format(i)]['start'], stop=genome_tracker_new['promoter{}'.format(i)]['stop'],
-                                 interactions={"rnapol": genome_tracker_new['promoter{}'.format(i)]['current_strength']})
+        if genome_tracker_new['promoter_{}'.format(i)]['start'] > 0:
+            plasmid.add_promoter(name="p{}".format(i), start=genome_tracker_new['promoter_{}'.format(i)]['start'], stop=genome_tracker_new['promoter_{}'.format(i)]['stop'],
+                                 interactions={"rnapol": genome_tracker_new['promoter_{}'.format(i)]['current_strength']})
 
     #RNases
     for i in range(genome_tracker_new['num_genes']):
-        if genome_tracker_new['rnase{}'.format(i)]['start'] > 0:
-            plasmid.add_rnase_site(name='r{}'.format(i), start=genome_tracker_new['rnase{}'.format(i)]['start'], stop=genome_tracker_new['rnase{}'.format(i)]['stop'], rate=genome_tracker_new['rnase{}'.format(i)]['current_strength'])
+        if genome_tracker_new['rnase_{}'.format(i)]['start'] > 0:
+            plasmid.add_rnase_site(name='r{}'.format(i), start=genome_tracker_new['rnase_{}'.format(i)]['start'], stop=genome_tracker_new['rnase_{}'.format(i)]['stop'], rate=genome_tracker_new['rnase_{}'.format(i)]['current_strength'])
 
     #Terminators
     for i in range(1, genome_tracker_new['num_genes']+1):
-        if genome_tracker_new['terminator{}'.format(i)]['start'] > 0:
-            plasmid.add_terminator(name="t{}".format(i), start=genome_tracker_new['terminator{}'.format(i)]['start'], stop=genome_tracker_new['terminator{}'.format(i)]['stop'],
-                                   efficiency={"rnapol": genome_tracker_new['terminator{}'.format(i)]['current_strength']})
+        if genome_tracker_new['terminator_{}'.format(i)]['start'] > 0:
+            plasmid.add_terminator(name="t{}".format(i), start=genome_tracker_new['terminator_{}'.format(i)]['start'], stop=genome_tracker_new['terminator_{}'.format(i)]['stop'],
+                                   efficiency={"rnapol": genome_tracker_new['terminator_{}'.format(i)]['current_strength']})
 
     #Genes
     for i in range(1, genome_tracker_new['num_genes']+1):
-        if genome_tracker_new['gene1']['start'] > 0:
-            plasmid.add_gene(name="protein{}".format(i), start=genome_tracker_new['gene{}'.format(i)]['start'], stop=genome_tracker_new['gene{}'.format(i)]['stop'],
-                             rbs_start=(genome_tracker_new['gene{}'.format(i)]['start']-15), rbs_stop=genome_tracker_new['gene{}'.format(i)]['start'], rbs_strength=1e7)
+        if genome_tracker_new['gene_{}'.format(i)]['start'] > 0:
+            plasmid.add_gene(name="protein{}".format(i), start=genome_tracker_new['gene_{}'.format(i)]['start'], stop=genome_tracker_new['gene_{}'.format(i)]['stop'],
+                             rbs_start=(genome_tracker_new['gene_{}'.format(i)]['start']-15), rbs_stop=genome_tracker_new['gene_{}'.format(i)]['start'], rbs_strength=1e7)
 
     sim.register_genome(plasmid)
     sim.simulate(time_limit=240, time_step=1, output=output_dir+'three_genes_replicated.tsv')

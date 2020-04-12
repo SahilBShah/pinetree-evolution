@@ -14,16 +14,17 @@ library(dplyr)
 library(gridExtra)
 library(ggplot2)
 #Set working directory to the directory in which the results are contained in
-setwd("../../results/2020_4_3/grant_data100_nf10_rep2_nmut3/")
+setwd("../../results/2020_4_12/grant_data18_nf0.8_rep5_nmut3/")
 
 all_sos_data <- read.table("sos_data.tsv", header=TRUE)
 sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
 
-sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sos_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
-panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
+#sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sos_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
+sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='black')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
 sos_plots <- grid.arrange(sos_line_plot, nrow=1, top="Sum of Squares Data")
 #Change name of sos_graphs to a unique identifier
-ggsave("../../../data/figures/sos_graphs_grant_data100_rep2_nf10.pdf", sos_plots, width=20, height=10)
+ggsave("../../../data/figures/sos_graphs_grant_data18_rep5_nf0.8.pdf", sos_plots, width=20, height=10)
 ```
 
 Evolutionary Analysis of Mutations
@@ -33,14 +34,14 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 #Set working directory to the directory in which the results are contained in
-setwd("../../results/2020_4_3/grant_data100_nf10_rep2_nmut3/")
+setwd("../../results/2020_4_12/grant_data18_nf0.8_rep5_nmut3/")
 
 plots_list <- list()
 best_files <- list.files(pattern="three_genes_replicated_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
 #Change grant_data name to the target file used
-target_data <- read.table("../../../data/grant_data100.tsv", header=TRUE)
+target_data <- read.table("../../../data/grant_data18.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 panel.background = element_blank(), axis.line = element_line(colour = "black"))
@@ -67,7 +68,7 @@ for(i in starting_point:length(best_files)){
 #Outputs file with the generated plots  
 evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 2), ncol=3, top="Evolutionary Pattern of Gene Transcripts") 
 #Change name of saved graphs file to a unique identifier
-ggsave("../../../data/figures/grant_data100_rep2_nf10.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+ggsave("../../../data/figures/grant_data18_rep5_nf0.8.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
 

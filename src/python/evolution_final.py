@@ -31,7 +31,6 @@ ss_old = args.initial_sum_of_squares
 all_sos_list = [ss_old]
 sos_iter_list = []
 is_accepted = []
-possibilities = {}
 i = 1
 
 #Output file directory structure
@@ -56,34 +55,51 @@ genome_tracker_old = copy.deepcopy(genome_tracker_new)
 #Target file inputted as dataframe
 df = pd.read_csv('../../data/'+args.filename, header=0, sep='\t')
 df = file_setup.rearrange_file(df, genome_tracker_new)
-
+print('generation =', i)
 #Start of evolution program
 while i <= args.generation_number:
 
-    #Possible mutation choices are enumerated
+    possibilities = {}
+    modify_possibilities = {}
+
+    #Possible addition and removal mutation choices are enumerated
     for gene in range(genome_tracker_new['num_genes']+1):
-        promoter = 'promoter{}'.format(gene)
-        terminator = 'terminator{}'.format(gene)
-        rnase = 'rnase{}'.format(gene)
+        promoter = 'promoter_{}'.format(gene)
+        terminator = 'terminator_{}'.format(gene)
+        rnase = 'rnase_{}'.format(gene)
         if gene != 0 and gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[promoter]['start'] == 0:
                 possibilities.update({promoter+'.add': 'add'})
             elif genome_tracker_new[promoter]['start'] > 0:
                 possibilities.update({promoter+'.remove': 'remove'})
-                possibilities.update({promoter+'.modify': 'modify'})
         if gene != 0:
             if genome_tracker_new[terminator]['start'] == 0:
                 possibilities.update({terminator+'.add': 'add'})
             elif genome_tracker_new[terminator]['start'] > 0:
                 possibilities.update({terminator+'.remove': 'remove'})
-                possibilities.update({terminator+'.modify': 'modify'})
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[rnase]['start'] == 0:
                 possibilities.update({rnase+'.add': 'add'})
             elif genome_tracker_new[rnase]['start'] > 0:
                 possibilities.update({rnase+'.remove': 'remove'})
-                if args.dynamic_deg_rate:
-                    possibilities.update({rnase+'.modify': 'modify'})
+    #Enumerate modification possibilities
+    for gene in range(genome_tracker_new['num_genes']+1):
+        promoter = 'promoter_{}'.format(gene)
+        terminator = 'terminator_{}'.format(gene)
+        rnase = 'rnase_{}'.format(gene)
+        if gene != 0:
+            if genome_tracker_new[terminator]['start'] > 0:
+                for term in range(int(len(possibilities)*1.5)+1):
+                    modify_possibilities.update({terminator+'.modify{}'.format(term): 'modify'})
+        if gene != genome_tracker_new['num_genes']:
+            if genome_tracker_new[promoter]['start'] > 0:
+                for prom in range(int(len(possibilities)*1.5)+1):
+                    modify_possibilities.update({promoter+'.modify{}'.format(prom): 'modify'})
+            if genome_tracker_new[rnase]['start'] > 0:
+                for rna in range(int(len(possibilities)*1.5)+1):
+                    if args.dynamic_deg_rate:
+                        modify_possibilities.update({rnase+'.modify{}'.format(rna): 'modify'})
+    possibilities.update(modify_possibilities)
 
     #Mutation is chosen and performed on best genome
     item = random.choice(list(possibilities.keys()))
@@ -117,6 +133,7 @@ while i <= args.generation_number:
         is_accepted.append("no")
 
     i+=1
+    print('generation =', i)
 
 
 all_sos_list = all_sos_list[1:]
