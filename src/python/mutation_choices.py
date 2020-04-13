@@ -81,9 +81,9 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
             #If promoter is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
             while complete == False and spaces_dict != {}:
                 genome_shift = promoter_offset + 1
-                if genome_tracker_new[gene]['stop'] - ending_position < promoter_offset:
-                    ending_position = ending_position - (promoter_offset - (genome_tracker_new[gene]['stop'] - ending_position))
-                if ending_position - starting_position >= promoter_min_space and genome_tracker_new[gene]['stop'] - ending_position >= promoter_offset:
+                if genome_tracker_new[gene_offsetted]['start'] - ending_position < promoter_offset:
+                    ending_position = ending_position - (promoter_offset - (genome_tracker_new[gene_offsetted]['start'] - ending_position))
+                if ending_position - starting_position >= promoter_min_space:
                     prom_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position-promoter_offset)
                     prom_stop = genome_tracker_new[element_choice]['stop'] = prom_start + promoter_offset
                     genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
@@ -149,18 +149,18 @@ def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     if 'promoter' in element_choice:
         genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
         genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.1)
-        if genome_tracker_new[element_choice]['current_strength'] < min_promoter_strength or genome_tracker_new[element_choice]['current_strength'] > max_promoter_strength:
-            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength']
+        while genome_tracker_new[element_choice]['current_strength'] < min_promoter_strength or genome_tracker_new[element_choice]['current_strength'] > max_promoter_strength:
+            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.1)
     elif 'terminator' in element_choice:
         genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
         genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.1)
-        if genome_tracker_new[element_choice]['current_strength'] <= min_terminator_strength or genome_tracker_new[element_choice]['current_strength'] >= max_terminator_strength:
-            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength']
+        while genome_tracker_new[element_choice]['current_strength'] < min_terminator_strength or genome_tracker_new[element_choice]['current_strength'] > max_terminator_strength:
+            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.1)
     elif 'rnase' in element_choice and deg_rate:
         genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
         genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.1)
-        if genome_tracker_new[element_choice]['current_strength'] <= min_rnase_strength or genome_tracker_new[element_choice]['current_strength'] >= max_rnase_strength:
-            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength']
+        while genome_tracker_new[element_choice]['current_strength'] < min_rnase_strength or genome_tracker_new[element_choice]['current_strength'] > max_rnase_strength:
+            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.1)
 
     return genome_tracker_new
 
