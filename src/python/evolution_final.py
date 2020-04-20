@@ -3,6 +3,7 @@ import copy
 import datetime
 import file_setup
 import fitness_score
+import genome_simulator
 import initialize_yaml
 import math
 import mutation_choices
@@ -22,7 +23,7 @@ parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input th
 parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
 parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
 parser.add_argument('initial_sum_of_squares', type=int, default=1000000, nargs='?', help='Input the desired initial sum of squares value')
-parser.add_argument('N', type=float, default=10.0, nargs='?', help='Input desired effective population size value.')
+parser.add_argument('N', type=float, default=1.0, nargs='?', help='Input desired effective population size value.')
 parser.add_argument('beta', type=float, default=0.001, nargs='?', help='Input desired beta value based on starting sum of squares value for fitness calculation.')
 parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
 args = parser.parse_args()
@@ -56,13 +57,22 @@ genome_tracker_old = copy.deepcopy(genome_tracker_new)
 #Target file inputted as dataframe
 df = pd.read_csv('../../data/'+args.filename, header=0, sep='\t')
 df = file_setup.rearrange_file(df, genome_tracker_new)
+
+if args.dynamic_deg_rate:
+    genome_simulator.pt_call_alt(output_dir, genome_tracker_new)
+else:
+    genome_simulator.pt_call(output_dir, genome_tracker_new)
+with open(output_dir+'gene_0.yml', 'w') as save_yaml:
+    yaml.dump(genome_tracker_old, save_yaml)
+save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
+save_df.to_csv(output_dir+"three_genes_replicated_0.tsv", sep='\t', index=False)
+
 print('generation =', i)
 #Start of evolution program
 while i <= args.generation_number:
 
     possibilities = {}
     modify_possibilities = {}
-    num_modify_elements = 0
 
     #Possible addition and removal mutation choices are enumerated
     for gene in range(genome_tracker_new['num_genes']+1):
@@ -74,37 +84,31 @@ while i <= args.generation_number:
                 possibilities.update({promoter+'.add': 'add'})
             elif genome_tracker_new[promoter]['start'] > 0:
                 possibilities.update({promoter+'.remove': 'remove'})
-        if gene == 0 and promoter == 'promoter_0':
-            num_modify_elements+=1
         if gene != 0:
             if genome_tracker_new[terminator]['start'] == 0:
                 possibilities.update({terminator+'.add': 'add'})
             elif genome_tracker_new[terminator]['start'] > 0:
                 possibilities.update({terminator+'.remove': 'remove'})
-                num_modify_elements+=1
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[rnase]['start'] == 0:
                 possibilities.update({rnase+'.add': 'add'})
             elif genome_tracker_new[rnase]['start'] > 0:
                 possibilities.update({rnase+'.remove': 'remove'})
-                if args.dynamic_deg_rate:
-                    num_modify_elements+=1
     #Enumerate modification possibilities
-    perc_modify = math.ceil(len(possibilities) / num_modify_elements)
     for gene in range(genome_tracker_new['num_genes']+1):
         promoter = 'promoter_{}'.format(gene)
         terminator = 'terminator_{}'.format(gene)
         rnase = 'rnase_{}'.format(gene)
         if gene != 0:
             if genome_tracker_new[terminator]['start'] > 0:
-                for term in range(perc_modify):
+                for term in range(100):
                     modify_possibilities.update({terminator+'.modify{}'.format(term): 'modify'})
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[promoter]['start'] > 0:
-                for prom in range(perc_modify):
+                for prom in range(100):
                     modify_possibilities.update({promoter+'.modify{}'.format(prom): 'modify'})
             if genome_tracker_new[rnase]['start'] > 0:
-                for rna in range(perc_modify):
+                for rna in range(100):
                     if args.dynamic_deg_rate:
                         modify_possibilities.update({rnase+'.modify{}'.format(rna): 'modify'})
     possibilities.update(modify_possibilities)
