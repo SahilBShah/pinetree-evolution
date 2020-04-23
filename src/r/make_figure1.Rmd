@@ -1,0 +1,102 @@
+---
+title: "Figure 1"
+author: "Sahil Shah"
+date: "4/22/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(cowplot)
+library(dplyr)
+library(gridExtra)
+library(ggplot2)
+library(grid)
+library(reshape2)
+library(gtools)
+library(yaml)
+```
+
+Produce target data plot
+
+```{r, echo=FALSE}
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../../data/")
+
+#Change grant_data name to the target file used
+target_data <- read.table("grant_data7.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot and save it
+target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+
+ggsave("./figures/figure1/figure1_target.png", target_line_plot)
+```
+
+Produce generation 0 plot
+
+```{r, echo=FALSE}
+
+#Set working directory to the directory in which the template genome data is contained in 
+setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+
+#List all transcript output files
+best_files <- list.files(pattern="three_genes_replicated_")
+plot_data <- read.table(best_files[1], header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot and save it
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+
+ggsave("../../../data/figures/figure1/figure1_gen0.png", line_plot)
+```
+
+Produce generation 1 plot
+```{r, echo=FALSE}
+
+#Set working directory to the directory in which the first output data is contained in 
+setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+
+#List all transcript output files
+best_files <- list.files(pattern="three_genes_replicated_")
+plot_data <- read.table(best_files[2], header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot and save it
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+
+ggsave("../../../data/figures/figure1/figure1_gen1.png", line_plot)
+```
+Produce final generation plot
+```{r, echo=FALSE}
+
+#Set working directory to the directory in which the first output data is contained in 
+setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+
+#List all transcript output files
+best_files <- list.files(pattern="three_genes_replicated_")
+plot_data <- read.table(best_files[length(best_files)], header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot and save it
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+
+ggsave("../../../data/figures/figure1/figure1_genfinal.png", line_plot)
+```
+Produce fitness over time plot
+```{r, echo=FALSE}
+
+#Set working directory to the directory in which the results are contained in
+setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+
+#Filter sum of squares data
+all_sos_data <- read.table("sos_data.tsv", header=TRUE)
+sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
+
+#Create sum of squares plot and save it
+sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat='identity', color='#D55E00') + geom_line(size=1, stat='identity', color='#D55E00') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Generation") + ylab("Sum of Squares") + ggtitle("Fitness over Time") + panel_border()
+
+ggsave("../../../data/figures/figure1/figure1_sos.png", sos_line_plot)
+```
