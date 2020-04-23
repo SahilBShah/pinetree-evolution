@@ -54,8 +54,8 @@ def main():
     #Opens yaml files containing genome coordinates
     starting_file = output_dir + 'config.yml'
     with open('../../data/gene_parameters/'+args.gene_file, 'r') as gene_parameters:
-        args.gene_file = yaml.safe_load(gene_parameters)
-    initialize_yaml.create_yaml(starting_file, args.gene_file)
+        gene_file = yaml.safe_load(gene_parameters)
+    initialize_yaml.create_yaml(starting_file, gene_file)
     with open(starting_file, 'r') as gene_elements:
         genome_tracker_new = yaml.safe_load(gene_elements)
     genome_tracker_old = copy.deepcopy(genome_tracker_new)
