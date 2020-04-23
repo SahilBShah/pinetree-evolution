@@ -44,7 +44,7 @@ plots_list <- list()
 #Change grant_data name to the target file used
 target_data <- read.table("../../../data/grant_data7.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
-target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity") + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2")) +  scale_size_manual(values=c(2, 2, 2))
+target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2")) + panel_border()
 plots_list[[1]] <- target_line_plot
 #Determines if there are too many accepted mutations and, if so, only display the last 20 that were accepted
 starting_point <- 1
@@ -56,18 +56,17 @@ plots_start <- 1
 for(i in starting_point:length(best_files)){
   plots_start <- plots_start + 1
   best <- "best"
-  best_plot <- "best_plot"
   evolution_title <- "Genome Evolution "
   plot_title <- paste(evolution_title, i, sep="")
   file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
   file_name <- filter(file_name, species == "protein1" | species == "protein2" | species == "protein3")
-  plot <- ggplot(file_name, aes(fill=species, color=species, size=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + geom_line(stat="identity") + ggtitle(plot_title) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2")) +  scale_size_manual(values=c(2, 2, 2))
+  plot <- ggplot(file_name, aes(fill=species, color=species, size=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + geom_line(stat="identity", size=2) + ggtitle(plot_title) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2"))
   plots_list[[plots_start]] <- plot
 }
 #Outputs file with the generated plots  
-evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 3), ncol=3, top=textGrob("Evolutionary Pattern of Gene Transcripts", gp=gpar(fontsize=30, fontface="bold"))) 
+evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 3), ncol=5, top=textGrob("Evolution of Gene Expression Pattern", gp=gpar(fontsize=30, fontface="bold"))) 
 #Change name of saved graphs file to a unique identifier
-ggsave("../../../data/figures/grant_data7_rep0_nf0.5.pdf", evo_plot, width=30, height=30, limitsize=FALSE)
+ggsave("../../../data/figures/grant_data7_rep0_nf0.5.png", evo_plot, width=30, height=30, limitsize=FALSE)
 
 ```
 
