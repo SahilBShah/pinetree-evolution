@@ -22,6 +22,10 @@ terminator_min_space = 2
 
 
 def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
+    """
+    Proposes a muttion that adds an element on to the genome.
+    """
+
     genome_elements = []
     spaces_dict = {}
 
@@ -126,6 +130,9 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
     return genome_tracker_new
 
 def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
+    """
+    Proposes a mutation that removes an element from the genome.
+    """
 
     #Removes the selected element from the genome
     region_choice = 'region_{}'.format(element_choice.split('_')[1])
@@ -144,6 +151,9 @@ def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     return genome_tracker_new
 
 def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
+    """
+    Modify an element's (that is present on the genome) strength.
+    """
 
     #Strengths of current elements on genome are modified
     if 'promoter' in element_choice:
@@ -165,6 +175,9 @@ def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     return genome_tracker_new
 
 def expand_genome(genome_tracker_new, num_genes, region_choice, genome_shift, element_choice):
+    """
+    When an element is added, the genome length increases.
+    """
 
     #Increases the genome size if an element is added
     for beg_point in range(region_choice, num_genes+1):
@@ -200,6 +213,9 @@ def expand_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
     return genome_tracker_new
 
 def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, element_choice):
+    """
+    When an element is removed, the genome length decreases.
+    """
 
     #Decreases the genome size if an element is added
     for beg_point in range(region_choice, num_genes+1):

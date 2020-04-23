@@ -1,5 +1,4 @@
 import genome_simulator
-import glob
 import file_setup
 import numpy as np
 import pandas as pd
@@ -10,7 +9,7 @@ def test_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate)
     Calls the pinetree script to simulate the genome x number of times and calculate the average of transcript abundances.
     Returns the sum of squares value to compare the fitness of the new and previously accepted genome.
     """
-    
+
     dfs = []
 
     #Creates test files from pinetree to find average number of transcripts at each time
