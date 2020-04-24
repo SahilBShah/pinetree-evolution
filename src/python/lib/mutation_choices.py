@@ -71,7 +71,7 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
         ending_position = min(genome_elements)
         genome_elements.remove(ending_position)
         if ending_position - starting_position >= required_spaces:
-            spaces_dict.update({'space{}'.format(space_index): dict(start=starting_position, stop=ending_position)})
+            spaces_dict['space{}'.format(space_index)] = dict(start=starting_position, stop=ending_position)
         if ending_position == highest_position or genome_elements == []:
             break
         space_index+=1

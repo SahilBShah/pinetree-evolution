@@ -17,6 +17,7 @@ gene3_x_left = 1350
 gene3_x_right = 1850
 gene3_y_bottom = 275
 gene3_y_top = 225
+genome_end = 1949
 
 element_y_top = 205
 element_y_bottom = 295
@@ -49,7 +50,7 @@ def create_template_genome():
     draw.line(((103, y_mid_area), (gene1_x_left-1, y_mid_area)), fill=(220, 220, 220), width=2)
     draw.line(((gene1_x_right+1, y_mid_area), (gene2_x_left-1, y_mid_area)), fill=(220, 220, 220), width=2)
     draw.line(((gene2_x_right+1, y_mid_area), (gene3_x_left-1, y_mid_area)), fill=(220, 220, 220), width=2)
-    draw.line(((gene3_x_right+1, y_mid_area), (1949, y_mid_area)), fill=(220, 220, 220), width=2)
+    draw.line(((gene3_x_right+1, y_mid_area), (genome_end, y_mid_area)), fill=(220, 220, 220), width=2)
 
     #Insert text
     font = ImageFont.truetype("./fonts/arial-italic.ttf", 20)
@@ -80,6 +81,7 @@ def create_genome_architecture(gene_file):
     gene3_x_right = 1850
     gene3_y_bottom = 275
     gene3_y_top = 225
+    genome_end = 1949
 
     element_y_top = 205
     element_y_bottom = 295
@@ -89,10 +91,10 @@ def create_genome_architecture(gene_file):
     im = Image.new('RGB', (3000, 500), "WHITE")
     draw = ImageDraw.Draw(im)
 
-    region_zero = []
-    region_one = []
-    region_two = []
-    region_three = []
+    region_zero = {}
+    region_one = {}
+    region_two = {}
+    region_three = {}
 
     #Enumerate elements on genome
     for gene in range(gene_file['num_genes']+1):
@@ -102,35 +104,45 @@ def create_genome_architecture(gene_file):
         if gene != gene_file['num_genes'] and gene != 0:
             if gene_file[promoter]['start'] > 0:
                 if '1' in promoter:
-                    region_one.append(promoter)
+                    region_one[promoter] = gene_file[promoter]['start']
                 elif '2' in promoter:
-                    region_two.append(promoter)
+                    region_two[promoter] = gene_file[promoter]['start']
         if gene != 0:
             if gene_file[terminator]['start'] > 0:
                 if '1' in terminator:
-                    region_one.append(terminator)
+                    region_one[terminator] = gene_file[terminator]['start']
                 elif '2' in terminator:
-                    region2.append(terminator)
+                    region_two[terminator] = gene_file[terminator]['start']
                 elif '3' in terminator:
-                    region3.append(terminator)
+                    region_three[terminator] = gene_file[terminator]['start']
         if gene != gene_file['num_genes']:
             if gene_file[rnase]['start'] > 0:
                 if '0' in rnase:
-                    region_zero.append(rnase)
+                    region_zero[rnase] = gene_file[rnase]['start']
                 elif '1' in rnase:
-                    region_one.append(rnase)
+                    region_one[rnase] = gene_file[rnase]['start']
                 elif '2' in rnase:
-                    region_two.append(rnase)
+                    rregion_two[rnase] = gene_file[rnase]['start']
     #Draw elements depending on their location
-    if region_zero != []:
+    if region_zero != {}:
+        #Draw rnase
         draw.line(((155, element_y_top), (gene1_x_left+49, gene1_y_bottom+20)), fill=(0, 0, 0), width=6)
         draw.line(((gene1_x_left+49, element_y_top), (155, gene1_y_bottom+20)), fill=(0, 0, 0), width=6)
-        gene1_x_left = 150 + offset
-        gene1_x_right = 650 + offset
-        ene2_x_left = 750 + offset
-        gene2_x_right = 1250 + offset
-        gene3_x_left = 1350 + offset
-        gene3_x_right = 1850 + offset
+        #Offset all the elements to the right of it to make space for drawing
+        gene1_x_left += offset
+        gene1_x_right += offset
+        gene2_x_left += offset
+        gene2_x_right += offset
+        gene3_x_left += offset
+        gene3_x_right += offset
+        genome_end += offset
+    if region_one != {}:
+        pass
+    if region_two != {}:
+        pass
+    if region_three != {}:
+        draw.line(((gene3_x_right+103, element_y_bottom), (gene3_x_right+103, element_y_top)), fill=(0, 0, 0), width=6)
+        draw.line(((gene3_x_right+70, element_y_top), (gene3_x_right+133, element_y_top)), fill=(0, 0, 0), width=6)
 
     #Draw genes
 
@@ -150,7 +162,7 @@ def create_genome_architecture(gene_file):
     draw.line(((103, y_mid_area), (gene1_x_left-1, y_mid_area)), fill=(220, 220, 220), width=2)
     draw.line(((gene1_x_right+1, y_mid_area), (gene2_x_left-1, y_mid_area)), fill=(220, 220, 220), width=2)
     draw.line(((gene2_x_right+1, y_mid_area), (gene3_x_left-1, y_mid_area)), fill=(220, 220, 220), width=2)
-    draw.line(((gene3_x_right+1, y_mid_area), (1949, y_mid_area)), fill=(220, 220, 220), width=2)
+    draw.line(((gene3_x_right+1, y_mid_area), (genome_end, y_mid_area)), fill=(220, 220, 220), width=2)
 
     #Insert text
     font = ImageFont.truetype("./fonts/arial-italic.ttf", 20)

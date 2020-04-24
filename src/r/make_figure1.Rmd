@@ -30,9 +30,26 @@ target_data <- read.table("grant_data7.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot and save it
-target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=1.5) + 
+  ggtitle("Target gene expression pattern") + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5), 
+        legend.position = "none") + 
+  xlab("Time") + ylab("Transcript abundances") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border()
 
-ggsave("./figures/figure1/figure1_target.png", target_line_plot)
+ggsave("./figures/figure1/figure1_target.png", target_line_plot, height=5, width=5)
 ```
 
 Produce generation 0 plot
@@ -48,9 +65,27 @@ plot_data <- read.table(best_files[1], header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot and save it
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=1.5) + 
+  ggtitle("Beginning expression pattern at generation 0") + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5), 
+        legend.position = "none") + 
+  xlab("Time") + 
+  ylab("Transcript abundances") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border()
 
-ggsave("../../../data/figures/figure1/figure1_gen0.png", line_plot)
+ggsave("../../../data/figures/figure1/figure1_gen0.png", line_plot, height=5, width=5)
 ```
 
 Produce generation 1 plot
@@ -65,9 +100,27 @@ plot_data <- read.table(best_files[2], header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot and save it
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=1.5) + 
+  ggtitle("Generation 1 expression pattern") + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5), 
+        legend.position = "none") + 
+  xlab("Time") + 
+  ylab("Transcript abundances") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border()
 
-ggsave("../../../data/figures/figure1/figure1_gen1.png", line_plot)
+ggsave("../../../data/figures/figure1/figure1_gen1.png", line_plot, height=5, width=5)
 ```
 Produce final generation plot
 ```{r, echo=FALSE}
@@ -81,9 +134,27 @@ plot_data <- read.table(best_files[length(best_files)], header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot and save it
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=1.5) + ggtitle("Target Gene Expression Pattern") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Time") + ylab("Transcript Abundances") + scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + panel_border()
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=1.5) + 
+  ggtitle("Final expression pattern") + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5), 
+        legend.position = "none") + 
+  xlab("Time") + 
+  ylab("Transcript abundances") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border()
 
-ggsave("../../../data/figures/figure1/figure1_genfinal.png", line_plot)
+ggsave("../../../data/figures/figure1/figure1_genfinal.png", line_plot, height=5, width=5)
 ```
 Produce fitness over time plot
 ```{r, echo=FALSE}
@@ -96,7 +167,24 @@ all_sos_data <- read.table("sos_data.tsv", header=TRUE)
 sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
 
 #Create sum of squares plot and save it
-sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat='identity', color='#D55E00') + geom_line(size=1, stat='identity', color='#D55E00') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Generation") + ylab("Sum of Squares") + ggtitle("Fitness over Time") + panel_border()
+sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + 
+  geom_point(stat='identity', color='#D55E00') + 
+  geom_line(size=1, stat='identity', color='#D55E00') + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5)) + 
+  xlab("Generation") + 
+  ylab("Sum of squared error") + 
+  ggtitle("Fitness over time") + 
+  panel_border()
 
-ggsave("../../../data/figures/figure1/figure1_sos.png", sos_line_plot)
+ggsave("../../../data/figures/figure1/figure1_sos.png", sos_line_plot, height=5, width=5)
 ```

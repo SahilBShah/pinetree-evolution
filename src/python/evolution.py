@@ -133,19 +133,19 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
         rnase = 'rnase_{}'.format(gene)
         if gene != 0 and gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[promoter]['start'] == 0:
-                possibilities.update({promoter+'.add': 'add'})
+                possibilities[promoter+'.add'] = 'add'
             elif genome_tracker_new[promoter]['start'] > 0:
-                possibilities.update({promoter+'.remove': 'remove'})
+                possibilities[promoter+'.remove'] = 'remove'
         if gene != 0:
             if genome_tracker_new[terminator]['start'] == 0:
-                possibilities.update({terminator+'.add': 'add'})
+                possibilities[terminator+'.add'] = 'add'
             elif genome_tracker_new[terminator]['start'] > 0:
-                possibilities.update({terminator+'.remove': 'remove'})
+                possibilities[terminator+'.remove'] = 'remove'
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[rnase]['start'] == 0:
-                possibilities.update({rnase+'.add': 'add'})
+                possibilities[rnase+'.add'] = 'add'
             elif genome_tracker_new[rnase]['start'] > 0:
-                possibilities.update({rnase+'.remove': 'remove'})
+                possibilities[rnase+'.remove'] = 'remove'
     #Enumerate modification possibilities
     for gene in range(genome_tracker_new['num_genes']+1):
         promoter = 'promoter_{}'.format(gene)
@@ -154,15 +154,15 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
         if gene != 0:
             if genome_tracker_new[terminator]['start'] > 0:
                 for term in range(100):
-                    modify_possibilities.update({terminator+'.modify{}'.format(term): 'modify'})
+                    modify_possibilities[terminator+'.modify{}'.format(term)] = 'modify'
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[promoter]['start'] > 0:
                 for prom in range(100):
-                    modify_possibilities.update({promoter+'.modify{}'.format(prom): 'modify'})
+                    modify_possibilities[promoter+'.modify{}'.format(prom)] = 'modify'
             if genome_tracker_new[rnase]['start'] > 0:
                 for rna in range(100):
                     if dynamic_deg_rate:
-                        modify_possibilities.update({rnase+'.modify{}'.format(rna): 'modify'})
+                        modify_possibilities[rnase+'.modify{}'.format(rna)] = 'modify'
     possibilities.update(modify_possibilities)
 
     return possibilities
