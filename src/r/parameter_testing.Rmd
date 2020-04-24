@@ -18,21 +18,21 @@ library(gtools)
 ```
 Plot promoter parameters
 ```{r}
-
-setwd('../../data/parameter_testing/')
+setwd('../../data/parameter_testing/promoter/')
 
 #List promoter files
-prom_files <- list.files(pattern="prom_test_")
+prom_files <- list.files(pattern="promoter_average_test_")
 prom_files <- mixedsort(sort(prom_files))
 
 #Set x-axis scale
-x_data <- c(log(10e5), log(10e6), log(10e7), log(10e8), log(10e9), log(10e10), log(10e11), log(10e12), log(10e13), log(10e14), log(10e15), log(10e16), log(10e17), log(10e18), log(10e19), log(10e20))
+x_data <- c(10e5, 10e6, 10e7, 10e8, 10e9, 10e10, 10e11, 10e12, 10e13, 10e14, 10e15, 10e16, 10e17, 10e18, 10e19, 10e20, 10e21, 10e22, 10e23, 10e24, 10e25)
 y_data <- c()
 
 #Get transcript abundace at time point 239 seconds
 for (i in 1:length(prom_files)){
   p1_data <- read.table(prom_files[i], header=TRUE) %>% filter(time==239, species=='protein1') %>% select('transcript')
-  y_data[i] <- p1_data$transcript
+  p2_data <- read.table(prom_files[i], header=TRUE) %>% filter(time==239, species=='protein2') %>% select('transcript')
+  y_data[i] <- p2_data$transcript/p1_data$transcript
 }
 
 #Create dataframe for ggplot
@@ -40,23 +40,51 @@ data <- data.frame(cbind(x_data, y_data))
 colnames(data) <- c('strengths','values')
 
 #Create and save plot
-prom_line_plot <- ggplot(data, aes(x=strengths, y=values)) + geom_point(stat='identity', color='#56B4E9') + geom_line(size=1, stat='identity', color='#56B4E9') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Promoter Strength (Log Scale)") + ylab("Protein1 Transcript Abundances") + ggtitle("Abundance of Protein Transcripts in relation to Promoter Strengths") + panel_border()
+prom_line_plot <- ggplot(data, aes(x=strengths, y=values)) + 
+  geom_point(stat='identity', color='#009E73') + 
+  geom_line(size=1, stat='identity', color='#009E73') + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5)) + 
+  xlab("Promoter strength (log scale)") + 
+  ylab("Protein2 transcript abundance/Protein1 transcript abundance") + 
+  ggtitle("Abundance of protein transcripts in relation to promoter strengths") + 
+  panel_border() + 
+  scale_x_log10()
 
-ggsave("../../data/parameter_testing/figures/promoter_abundance_parameters.png", prom_line_plot)
+ggsave("../../../data/parameter_testing/figures/promoter_abundance_parameters.png", prom_line_plot, height=6, width=6)
 
 ```
 Plot terminator parameters
 
 ```{r, echo=FALSE}
 
-setwd('../../data/parameter_testing/')
+setwd('../../data/parameter_testing/terminator/')
 
 #List terminator files
-term_files <- list.files(pattern="term_test_")
+term_files <- list.files(pattern="terminator_average_test_")
 term_files <- mixedsort(sort(term_files))
 
 #Set x-axis scale
-x_data <- c(0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0)
+x_data <- c(0.0, 0.05, 0.1,
+            0.15, 0.2,
+            0.25, 0.3,
+            0.35, 0.4,
+            0.45, 0.5,
+            0.55, 0.6,
+            0.65, 0.7,
+            0.75, 0.8,
+            0.85, 0.9,
+            0.95, 1.0)
+            
 y_data <- c()
 
 #Get transcript abundaces at time point 239 seconds and calculate ratio between protein2 and protein1 abundances
@@ -75,21 +103,47 @@ data <- data.frame(cbind(x_data, y_data))
 colnames(data) <- c('strengths','values')
 
 #Create and save plot
-term_line_plot <- ggplot(data, aes(x=strengths, y=values)) + geom_point(stat='identity', color='#56B4E9') + geom_line(size=1, stat='identity', color='#56B4E9') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("Terminator Strength") + ylab("Protein2 transcript abundance/Protein1 transcript abundance") + ggtitle("Ratio of Protein Transcripts in relation to Terminator Strengths") + panel_border()
+term_line_plot <- ggplot(data, aes(x=strengths, y=values)) + 
+  geom_point(stat='identity', color='#009E73') + 
+  geom_line(size=1, stat='identity', color='#009E73') + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line=element_line(size=0.5), 
+        axis.ticks=element_line(), 
+        axis.text=element_text(size=10), 
+        axis.title=element_text(size=15), 
+        plot.title=element_text(color="black", hjust=0.5)) + 
+  xlab("Terminator ttrength") + 
+  ylab("Protein2 transcript abundance/Protein1 transcript abundance") + 
+  ggtitle("Ratio of protein transcripts in relation to terminator ttrengths") + 
+  panel_border()
 
-ggsave("../../data/parameter_testing/figures/terminators_ratio_parameters.png", term_line_plot)
+ggsave("../../../data/parameter_testing/figures/terminators_ratio_parameters.png", term_line_plot, height=6, width=6)
 ```
 Plot RNAse parameters
 ```{r, echo=FALSE}
 
-setwd('../../data/parameter_testing/')
+setwd('../../data/parameter_testing/rnase/')
 
 #List all rnase files
-rnase_files <- list.files(pattern="rnase_test_")
+rnase_files <- list.files(pattern="rnase_average_test_")
 rnase_files <- mixedsort(sort(rnase_files))
 
 #Set x-axis scale
-x_data <- c(0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5)
+x_data <- c(0.0, 0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1,
+            0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2,
+            0.21, 0.22, 0.23, 0.24, 0.25, 0.26, 0.27, 0.28, 0.29, 0.3,
+            0.31, 0.32, 0.33, 0.34, 0.35, 0.36, 0.37, 0.38, 0.39, 0.4,
+            0.41, 0.42, 0.43, 0.44, 0.45, 0.46, 0.47, 0.48, 0.49, 0.5,
+            0.51, 0.52, 0.53, 0.54, 0.55, 0.56, 0.57, 0.58, 0.59, 0.6,
+            0.61, 0.62, 0.63, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 0.7,
+            0.71, 0.72, 0.73, 0.74, 0.75, 0.76, 0.77, 0.78, 0.79, 0.8,
+            0.81, 0.82, 0.83, 0.84, 0.85, 0.86, 0.87, 0.88, 0.89, 0.9,
+            0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99, 1.0)
 y_data <- c()
 
 #Get transcript abundaces at time point 239 seconds and calculate ratio between protein2 and protein1 abundances
@@ -104,39 +158,23 @@ data <- data.frame(cbind(x_data, y_data))
 colnames(data) <- c('strengths','values')
 
 #Create and save plot
-rnase_line_plot <- ggplot(data, aes(x=strengths, y=values)) + geom_point(stat='identity', color='#56B4E9') + geom_line(size=1, stat='identity', color='#56B4E9') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("RNAse Site Strength") + ylab("Protein2 transcript abundance/Protein1 transcript abundance") + ggtitle("Ratio of Protein Transcripts in relation to RNAse Strengths") + panel_border()
+rnase_line_plot <- ggplot(data, aes(x=strengths, y=values)) + 
+  geom_point(stat='identity', color='#009E73') + 
+  geom_line(size=1, stat='identity', color='#009E73') + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
+        axis.text.x = element_text(size=15), 
+        axis.text.y = element_text(size=15), 
+        axis.line = element_line(size=0.5), 
+        axis.ticks = element_line(), 
+        axis.text = element_text(size=10), 
+        axis.title = element_text(size=15), 
+        plot.title = element_text(color="black", hjust=0.5)) + 
+  xlab("RNAse Strength") + ylab("Protein2 transcript abundance/Protein1 transcript abundance") + 
+  ggtitle("Ratio of protein transcripts in relation to RNAse strengths") + 
+  panel_border()
 
-ggsave("../../data/parameter_testing/figures/rnase_ratio_parameters.png", rnase_line_plot)
-```
-```{r, echo=FALSE}
-
-setwd('../../data/parameter_testing/')
-
-#List all rnase files
-rnase_files <- list.files(pattern="rnase_test_")
-rnase_files <- mixedsort(sort(rnase_files))
-
-#Set x-axis scale
-x_data <- c(0.0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25, 1.3, 1.35, 1.4, 1.45, 1.5)
-protein1 <- c()
-protein2 <- c()
-
-#Get transcript abundaces at time point 239 seconds and calculate ratio between protein2 and protein1 abundances
-for (i in 1:length(rnase_files)){
-  p1_data <- read.table(rnase_files[i], header=TRUE) %>% filter(time==239, species=='protein1') %>% select('transcript')
-  p2_data <- read.table(rnase_files[i], header=TRUE) %>% filter(time==239, species=='protein2') %>% select('transcript')
-  protein1[i] <- p1_data$transcript
-  protein2[i] <- p2_data$transcript
-}
-
-#Create dataframe needed for ggplot
-data1 <- data.frame(cbind(x_data, protein1))
-colnames(data1) <- c('strengths','values')
-data2 <- data.frame(cbind(x_data, protein2))
-colnames(data2) <- c('strengths','values')
-
-#Create and save plot
-rnase_line_plot <- ggplot() + geom_point(aes(x=data1$strengths, y=data1$values), stat='identity', color='#56B4E9') + geom_point(aes(x=data2$strengths, y=data2$values), stat='identity', color='#E69F00') + geom_line(aes(x=data1$strengths, y=data1$values), size=1, stat='identity', color='#56B4E9') + geom_line(aes(x=data2$strengths, y=data2$values), size=1, stat='identity', color='#E69F00') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line=element_line(size=0.5), axis.ticks=element_line(), axis.text=element_text(size=10), axis.title=element_text(size=10), plot.title=element_text(color="black", hjust=0.5)) + xlab("RNAse Site Strength") + ylab("Protein Transcript Abundances") + ggtitle("Protein Transcript Abundances in relation to RNAse Strengths") + panel_border()
-
-ggsave("../../data/parameter_testing/figures/rnase_abundance_parameters.png", rnase_line_plot)
+ggsave("../../../data/parameter_testing/figures/rnase_ratio_parameters.png", rnase_line_plot, height=6, width=6)
 ```
