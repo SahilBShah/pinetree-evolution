@@ -38,8 +38,9 @@ def main():
     ss_old = args.initial_sum_of_squares
     all_sos_list = [ss_old]
     sos_iter_list = []
+    dfs = []
     is_accepted = []
-    i = 1
+    i = 0
 
     #Output file directory structure
     year = datetime.date.today().year
@@ -50,6 +51,9 @@ def main():
     output_dir = output_dir + '{}_nf{}_rep{}_nmut{}/'.format(args.filename.strip('.tsv'), args.N, args.run_number, args.replicate_mutation_number)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
+    final_data_dir = output_dir+'/final'
+    if not os.path.exists(final_data_dir):
+        os.makedirs(final_data_dir)
 
     #Opens yaml files containing genome coordinates
     starting_file = output_dir + 'config.yml'
@@ -59,19 +63,30 @@ def main():
     with open(starting_file, 'r') as gene_elements:
         genome_tracker_new = yaml.safe_load(gene_elements)
     genome_tracker_old = copy.deepcopy(genome_tracker_new)
-
-    #Target file inputted as dataframe
-    df = pd.read_csv('../../data/'+args.filename, header=0, sep='\t')
-    df = file_setup.rearrange_file(df, genome_tracker_new)
-
-    if args.dynamic_deg_rate:
-        genome_simulator.pt_call_alt(output_dir, genome_tracker_new)
-    else:
-        genome_simulator.pt_call(output_dir, genome_tracker_new)
     with open(output_dir+'gene_0.yml', 'w') as save_yaml:
         yaml.dump(genome_tracker_old, save_yaml)
-    save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
-    save_df.to_csv(output_dir+"three_genes_replicated_0.tsv", sep='\t', index=False)
+
+    #Target file inputted as dataframe
+    target_file = pd.read_csv('../../data/'+args.filename, header=0, sep='\t')
+    target_file = file_setup.rearrange_file(target_file, genome_tracker_new)
+
+    #Creates test files from pinetree to find average number of transcripts at generation 0
+    print('generation =', i)
+    for x in range(1, args.replicate_mutation_number+1):
+        if args.dynamic_deg_rate:
+            genome_simulator.pt_call_alt(output_dir, genome_tracker_new)
+        else:
+            genome_simulator.pt_call(output_dir, genome_tracker_new)
+        save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
+        save_df['time'] = save_df['time'].round().astype(int)
+        dfs.append(save_df)
+    #Averages all the values in each file and creates a new file with those averages
+    df_concat = pd.concat(dfs)
+    df_gb = df_concat.groupby(['time', 'species'], as_index=False)
+    df_mean = df_gb.sum()
+    df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / args.replicate_mutation_number
+    df_mean.to_csv(output_dir+'expression_pattern_0.tsv', sep='\t', index=False)
+    i+=1
 
     print('generation =', i)
     #Start of evolution program
@@ -91,7 +106,7 @@ def main():
         #Sum of squares is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
         #PineTree called in test_mutation
-        ss_new = mutation_test.test_mutation(df, genome_tracker_new, output_dir, args.replicate_mutation_number, args.dynamic_deg_rate)
+        ss_new = mutation_test.test_mutation(target_file, genome_tracker_new, output_dir, args.replicate_mutation_number, args.dynamic_deg_rate)
 
         accept_prob = fitness_score.calc_fitness(ss_new, ss_old, args.N, args.beta)
         all_sos_list.append(ss_new)
@@ -101,8 +116,8 @@ def main():
             genome_tracker_old = copy.deepcopy(genome_tracker_new)
             with open(output_dir+'gene_{}.yml'.format(i), 'w') as save_yaml:
                 yaml.dump(genome_tracker_old, save_yaml)
-            save_df = pd.read_csv(output_dir+"three_genes_replicated.tsv", header=0, sep='\t')
-            save_df.to_csv(output_dir+"three_genes_replicated_{}.tsv".format(i), sep='\t', index=False)
+            save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
+            save_df.to_csv(output_dir+"expression_pattern_{}.tsv".format(i), sep='\t', index=False)
             ss_old = ss_new
             is_accepted.append("yes")
         else:
@@ -111,12 +126,14 @@ def main():
             is_accepted.append("no")
 
         i+=1
-        print('generation =', i)
-
+        if i <= args.generation_number:
+            print('generation =', i)
 
     all_sos_list = all_sos_list[1:]
-    sos_dataframe = pd.DataFrame(data=zip(sos_iter_list, all_sos_list, is_accepted), columns=["Iteration", "Sum_of_Squares", "Accepted"])
-    export_csv = sos_dataframe.to_csv(output_dir + 'sos_data.tsv', index=False, sep='\t')
+    sos_dataframe = pd.DataFrame(data=zip(sos_iter_list, all_sos_list, is_accepted), columns=["Iteration", "SSE", "Accepted"])
+    export_csv = sos_dataframe.to_csv(output_dir + 'final/sos_data.tsv', index=False, sep='\t')
+    print('Cleaning up genome architecture...')
+    mutation_choices.cleanup_genome(target_file, sos_dataframe, output_dir, genome_tracker_new['num_genes'], args.dynamic_deg_rate)
 
 def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
     """

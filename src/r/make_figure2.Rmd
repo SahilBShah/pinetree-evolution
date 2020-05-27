@@ -1,0 +1,354 @@
+---
+title: "Figure 2"
+author: "Sahil Shah"
+date: "4/28/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(cowplot)
+library(dplyr)
+library(gridExtra)
+library(ggplot2)
+library(grid)
+library(reshape2)
+library(gtools)
+```
+Produce the first set of plots
+```{r cars}
+
+#Target
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../../data/")
+
+#Change grant_data name to the target file used
+target_data <- read.table("paper_data1.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+target_line_plot_1 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
+        axis.line.x = element_blank(), 
+        axis.line.y = element_line(size=1.8), 
+        axis.ticks.x = element_blank(), 
+        axis.ticks.y = element_line(size=1.8), 
+        axis.text.x = element_blank(), 
+        axis.text.y = element_text(size=65), 
+        axis.ticks.length.y = unit(0.5, "cm"),
+        axis.title.x = element_blank(), 
+        axis.title.y = element_text(size=60),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  ylab("Target transcript \nabundance")
+
+target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit(0, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+
+#Final
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../results/2020_4_30/paper_data1_nf1.0_rep0_nmut5/final/")
+
+#List all transcript output files
+plot_data <- read.table('expression_pattern_best', header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+# best_files <- list.files(pattern="expression_pattern_")
+# plot_data <- read.table(best_files[length(best_files)], header=TRUE)
+# plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+final_line_plot_1 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,1.6,0.5,1), "cm"), 
+        axis.line = element_line(size=1.8), 
+        axis.ticks = element_line(size=1.8), 
+        axis.text = element_text(size=65), 
+        axis.ticks.length = unit(0.5, "cm"),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size=60),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  ylab("Evolved transcript \nabundance")
+
+final_line_plot_1 <- arrangeGrob(final_line_plot_1, top=textGrob("A", x = unit(-1, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+
+```
+Produce the second set of plots
+```{r pressure, echo=FALSE}
+
+#Target
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../../data/")
+
+#Change grant_data name to the target file used
+target_data <- read.table("paper_data3.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+target_line_plot_2 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+
+#Final
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../results/2020_5_1/paper_data3_nf1.0_rep2_nmut5/")
+
+#List all transcript output files
+plot_data <- read.table('expression_pattern_best', header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+# best_files <- list.files(pattern="expression_pattern_")
+# plot_data <- read.table(best_files[length(best_files)], header=TRUE)
+# plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+final_line_plot_2 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,1.6,0.5,1), "cm"), 
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.line.x = element_line(size=1.8),
+        axis.ticks.x = element_line(size=1.8), 
+        axis.text.x = element_text(size=65), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+final_line_plot_2 <- arrangeGrob(final_line_plot_2, top=textGrob("B", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+
+```
+Produce the third set of plots
+```{r}
+
+#Target
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../../data/")
+
+#Change grant_data name to the target file used
+target_data <- read.table("paper_data8.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+target_line_plot_3 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2.5) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+
+#Final
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../results/2020_5_1/paper_data8_nf1.0_rep2_nmut5/")
+
+#List all transcript output files
+plot_data <- read.table('expression_pattern_best', header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+final_line_plot_3 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2.5) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,1.6,0.5,1), "cm"), 
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.line.x = element_line(size=1.8),
+        axis.ticks.x = element_line(size=1.8), 
+        axis.text.x = element_text(size=65), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+final_line_plot_3 <- arrangeGrob(final_line_plot_3, top=textGrob("C", x = unit(-0.0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+
+```
+Produce the fourth set of plots
+```{r}
+
+#Target
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../../data/")
+
+#Change grant_data name to the target file used
+target_data <- read.table("paper_data11.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+target_line_plot_4 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2.5) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+
+#Final
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../results/2020_4_30/paper_data11_nf1.0_rep0_nmut5/")
+
+#List all transcript output files
+plot_data <- read.table('expression_pattern_best', header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+final_line_plot_4 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2.5) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,1.6,0.5,1), "cm"), 
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.line.x = element_line(size=1.8),
+        axis.ticks.x = element_line(size=1.8), 
+        axis.text.x = element_text(size=65), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+final_line_plot_4 <- arrangeGrob(final_line_plot_4, top=textGrob("D", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+
+```
+Produce the fifth set of plots
+```{r}
+
+#Target
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../../data/")
+
+#Change grant_data name to the target file used
+target_data <- read.table("paper_data13.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+target_line_plot_5 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2.5) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+
+#Final
+
+#Set working directory to the directory in which the target data is contained in 
+setwd("../results/2020_5_1/paper_data13_nf1.0_rep1_nmut5/")
+
+#List all transcript output files
+plot_data <- read.table('expression_pattern_best', header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+final_line_plot_5 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2.5) + 
+  theme(panel.grid.major = element_blank(), 
+        panel.grid.minor = element_blank(), 
+        panel.background = element_blank(), 
+        plot.margin = unit(c(0.5,1.6,0.5,1), "cm"), 
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.line.x = element_line(size=1.8),
+        axis.ticks.x = element_line(size=1.8), 
+        axis.text.x = element_text(size=65), 
+        axis.ticks.length.x = unit(0.5, "cm"),
+        axis.title = element_blank(),
+        legend.position = "none") + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+
+final_line_plot_5 <- arrangeGrob(final_line_plot_5, top=textGrob("E", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+
+```
+Produce firgure 2
+```{r}
+
+setwd("../../data/figures/figure2/")
+
+figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10)), widths=c(2.4,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=65, fontfamily="Arial")))
+
+ggsave("figure2.png", figure2, height=25, width=65, limitsize=FALSE)
+```
