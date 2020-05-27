@@ -9,9 +9,12 @@ def calc_average_run(mutation_number, element, beg, end, increment):
     """
     Averages across pinetree simulations and saves file.
     """
+
+    label = 0
     for strength in np.arange(beg, end, increment):
 
         dfs = []
+        label+=1
 
         #Creates test files from pinetree to find average number of transcripts at each time
         for i in range(1, mutation_number+1):
@@ -19,11 +22,11 @@ def calc_average_run(mutation_number, element, beg, end, increment):
             save_df = pd.read_csv("three_genes_replicated.tsv", header=0, sep='\t')
             save_df['time'] = save_df['time'].round().astype(int)
             if 'promoter' in element:
-                save_df.to_csv('../../data/parameter_testing/promoter/{}_test_{}_{}.tsv'.format(element, strength, i), sep='\t', index=False)
+                save_df.to_csv('../../data/parameter_testing/promoter/{}_test_10e{}_{}.tsv'.format(element, '%.2f'%strength, i), sep='\t', index=False)
             elif 'terminator' in element:
-                save_df.to_csv('../../data/parameter_testing/terminator/{}_test_{}_{}.tsv'.format(element, strength, i), sep='\t', index=False)
+                save_df.to_csv('../../data/parameter_testing/terminator/{}_test_{}_{}.tsv'.format(element, '%.2f'%strength, i), sep='\t', index=False)
             elif 'rnase' in element:
-                save_df.to_csv('../../data/parameter_testing/rnase/{}_test_{}_{}.tsv'.format(element, strength, i), sep='\t', index=False)
+                save_df.to_csv('../../data/parameter_testing/rnase/{}_test_{}_{}.tsv'.format(element, '%.2f'%strength, i), sep='\t', index=False)
             dfs.append(save_df)
 
         #Averages all the values in each file and creates a new file with those averages
@@ -32,11 +35,11 @@ def calc_average_run(mutation_number, element, beg, end, increment):
         df_mean = df_gb.sum()
         df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / mutation_number
         if 'promoter' in element:
-            df_mean.to_csv('../../data/parameter_testing/promoter/{}_average_test_{}.tsv'.format(element, strength), sep='\t', index=False)
+            df_mean.to_csv('../../data/parameter_testing/promoter/average/{}_average_test_10e{}.tsv'.format(element, '%.2f'%strength), sep='\t', index=False)
         elif 'terminator' in element:
-            df_mean.to_csv('../../data/parameter_testing/terminator/{}_average_test_{}.tsv'.format(element, strength), sep='\t', index=False)
+            df_mean.to_csv('../../data/parameter_testing/terminator/average/{}_average_test_{}.tsv'.format(element, '%.2f'%strength), sep='\t', index=False)
         elif 'rnase' in element:
-            df_mean.to_csv('../../data/parameter_testing/rnase/{}_average_test_{}.tsv'.format(element, strength), sep='\t', index=False)
+            df_mean.to_csv('../../data/parameter_testing/rnase/average/{}_average_test_{}.tsv'.format(element, '%.2f'%strength), sep='\t', index=False)
         os.remove("three_genes_replicated.tsv")
 
 def pt_call(strength, element):
@@ -55,9 +58,8 @@ def pt_call(strength, element):
     plasmid.add_promoter(name="p1", start=1, stop=10,
                          interactions={"rnapol": 10e7})
     if 'promoter' in element:
-        plasmid.add_promoter(name="p2", start=1, stop=10,
+        plasmid.add_promoter(name="p2", start=125, stop=134,
                              interactions={"rnapol": float('10e{}'.format(int(strength)))})
-
     if 'terminator' in element:
         plasmid.add_terminator(name="t1", start=134, stop=135,
                                efficiency={"rnapol": strength})
@@ -76,10 +78,10 @@ def pt_call(strength, element):
                  output = "three_genes_replicated.tsv")
 
 def main():
-    mutation_number = int(input("Please enter the number to average the simulations over: "))
     element = input("Please enter the element you wish to modify: \'promoter\', \'terminator\', or \'rnase\': ")
     while element != 'promoter' and element != 'terminator' and element != 'rnase':
         element = input("Please enter the element you wish to modify: \'promoter\', \'terminator\', or \'rnase\': ")
+    mutation_number = int(input("Please enter the number to average the simulations over: "))
     start = float(input("Please enter the desired strength to start with: "))
     stop = float(input("Please enter the desired strength to end with: "))
     increment = float(input("Please enter the increment in which to increase the strength by: "))

@@ -15,7 +15,7 @@ library(ggplot2)
 library(grid)
 library(reshape2)
 library(gtools)
-library(yaml)
+library(png)
 ```
 
 Produce target data plot
@@ -26,30 +26,31 @@ Produce target data plot
 setwd("../../data/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("grant_data7.tsv", header=TRUE)
+target_data <- read.table("positive_control.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
-#Create plot and save it
+#Create plot
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=1.5) + 
-  ggtitle("Target gene expression pattern") + 
+  geom_line(stat="identity", size=2) + 
+  ggtitle("Target pattern") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
-        axis.line = element_line(size=0.5), 
-        axis.ticks = element_line(), 
-        axis.text = element_text(size=10), 
-        axis.text.x = element_text(size=15), 
-        axis.text.y = element_text(size=15), 
-        axis.title = element_text(size=15), 
-        plot.title = element_text(color="black", hjust=0.5), 
+        plot.margin = unit(c(0.5,1,0.5,1), "cm"), 
+        axis.line = element_line(size=1.3), 
+        axis.ticks = element_line(size=1.3), 
+        axis.text.x = element_text(size=39), 
+        axis.text.y = element_text(size=39), 
+        axis.ticks.length = unit(0.4, "cm"),
+        axis.title = element_text(size=39), 
+        plot.title = element_text(color="black", hjust=0.5, size=39), 
         legend.position = "none") + 
-  xlab("Time") + ylab("Transcript abundances") + 
+  xlab("Time (s)") + 
+  ylab("Transcript abundance") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
-  panel_border()
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
 
-ggsave("./figures/figure1/figure1_target.png", target_line_plot, height=5, width=5)
 ```
 
 Produce generation 0 plot
@@ -57,134 +58,156 @@ Produce generation 0 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the template genome data is contained in 
-setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/")
 
 #List all transcript output files
-best_files <- list.files(pattern="three_genes_replicated_")
+best_files <- list.files(pattern="expression_pattern_")
 plot_data <- read.table(best_files[1], header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
-#Create plot and save it
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=1.5) + 
-  ggtitle("Beginning expression pattern at generation 0") + 
+#Create plot
+line_plot_zero <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  ggtitle("Generation 0") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        plot.margin=unit(c(0.5,0.5,0.5,0.5), "cm"), 
-        axis.text.x = element_text(size=15), 
-        axis.text.y = element_text(size=15), 
-        axis.line = element_line(size=0.5), 
-        axis.ticks = element_line(), 
-        axis.text = element_text(size=10), 
-        axis.title = element_text(size=15), 
-        plot.title = element_text(color="black", hjust=0.5), 
+        plot.margin=unit(c(0.5,1,0.5,1), "cm"), 
+        axis.text.x = element_text(size=39), 
+        axis.text.y = element_blank(), 
+        axis.line.x = element_line(size=1.3), 
+        axis.line.y = element_blank(), 
+        axis.ticks.x = element_line(size=1.3),
+        axis.ticks.y = element_blank(), 
+        axis.ticks.length.x = unit(0.4, "cm"),
+        axis.title.x = element_text(size=39), 
+        axis.title.y = element_blank(),
+        plot.title = element_text(color="black", hjust=0.5, size=39), 
         legend.position = "none") + 
-  xlab("Time") + 
-  ylab("Transcript abundances") + 
+  xlab("Time (s)") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
-  panel_border()
+  panel_border() +
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
 
-ggsave("../../../data/figures/figure1/figure1_gen0.png", line_plot, height=5, width=5)
 ```
 
 Produce generation 1 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/")
 
 #List all transcript output files
-best_files <- list.files(pattern="three_genes_replicated_")
-plot_data <- read.table(best_files[2], header=TRUE)
+best_files <- list.files(pattern="expression_pattern_")
+plot_data <- read.table(best_files[20], header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
-#Create plot and save it
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=1.5) + 
-  ggtitle("Generation 1 expression pattern") + 
+#Create plot
+line_plot_int <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  ggtitle("Generation 701") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
-        axis.text.x = element_text(size=15), 
-        axis.text.y = element_text(size=15), 
-        axis.line = element_line(size=0.5), 
-        axis.ticks = element_line(), 
-        axis.text = element_text(size=10), 
-        axis.title = element_text(size=15), 
-        plot.title = element_text(color="black", hjust=0.5), 
+        plot.margin = unit(c(0.5,1,0.5,1), "cm"), 
+        axis.text.x = element_text(size=39), 
+        axis.text.y = element_blank(), 
+        axis.line.x = element_line(size=1.3), 
+        axis.line.y = element_blank(), 
+        axis.ticks.x = element_line(size=1.3),
+        axis.ticks.y = element_blank(), 
+        axis.ticks.length.x = unit(0.4, "cm"),
+        axis.title.x = element_text(size=39), 
+        axis.title.y = element_blank(),
+        plot.title = element_text(color="black", hjust=0.5, size=39), 
         legend.position = "none") + 
-  xlab("Time") + 
-  ylab("Transcript abundances") + 
+  xlab("Time (s)") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
-  panel_border()
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
 
-ggsave("../../../data/figures/figure1/figure1_gen1.png", line_plot, height=5, width=5)
 ```
 Produce final generation plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/final/")
 
 #List all transcript output files
-best_files <- list.files(pattern="three_genes_replicated_")
-plot_data <- read.table(best_files[length(best_files)], header=TRUE)
+plot_data <- read.table('expression_pattern_best', header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
-#Create plot and save it
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=1.5) + 
-  ggtitle("Final expression pattern") + 
+#Create plot
+line_plot_final <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+  geom_line(stat="identity", size=2) + 
+  ggtitle("Final pattern") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
-        axis.text.x = element_text(size=15), 
-        axis.text.y = element_text(size=15), 
-        axis.line = element_line(size=0.5), 
-        axis.ticks = element_line(), 
-        axis.text = element_text(size=10), 
-        axis.title = element_text(size=15), 
-        plot.title = element_text(color="black", hjust=0.5), 
+        plot.margin = unit(c(0.5,1,0.5,1), "cm"), 
+        axis.text.x = element_text(size=39), 
+        axis.text.y = element_blank(),
+        axis.line.x = element_line(size=1.3), 
+        axis.line.y = element_blank(), 
+        axis.ticks.x = element_line(size=1.3),
+        axis.ticks.y = element_blank(), 
+        axis.ticks.length.x = unit(0.4, "cm"),
+        axis.title.x = element_text(size=39), 
+        axis.title.y = element_blank(),
+        plot.title = element_text(color="black", hjust=0.5, size=39), 
         legend.position = "none") + 
-  xlab("Time") + 
-  ylab("Transcript abundances") + 
+  xlab("Time (s)") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
-  panel_border()
-
-ggsave("../../../data/figures/figure1/figure1_genfinal.png", line_plot, height=5, width=5)
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
 ```
 Produce fitness over time plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the results are contained in
-setwd("../../results/2020_4_16/grant_data7_nf0.5_rep0_nmut3/")
+setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/final/")
 
 #Filter sum of squares data
 all_sos_data <- read.table("sos_data.tsv", header=TRUE)
 sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
 
-#Create sum of squares plot and save it
-sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + 
-  geom_point(stat='identity', color='#D55E00') + 
-  geom_line(size=1, stat='identity', color='#D55E00') + 
+#Create sum of squares plot
+sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=SSE)) + 
+  geom_point(stat='identity', color='#D55E00', size=3) + 
+  geom_line(size=2, stat='identity', color='#D55E00') + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        plot.margin = unit(c(0.5,0.5,0.5,0.5), "cm"), 
-        axis.text.x = element_text(size=15), 
-        axis.text.y = element_text(size=15), 
-        axis.line = element_line(size=0.5), 
-        axis.ticks = element_line(), 
-        axis.text = element_text(size=10), 
-        axis.title = element_text(size=15), 
-        plot.title = element_text(color="black", hjust=0.5)) + 
+        plot.margin = unit(c(0.5,1,1,1), "cm"), 
+        axis.text.x = element_text(size=39), 
+        axis.text.y = element_text(size=39), 
+        axis.line = element_line(size=1.3), 
+        axis.ticks = element_line(size=1.3), 
+        axis.ticks.length = unit(0.3, "cm"),
+        axis.title = element_text(size=39),
+        legend.position = "none") +
   xlab("Generation") + 
   ylab("Sum of squared error") + 
-  ggtitle("Fitness over time") + 
   panel_border()
 
-ggsave("../../../data/figures/figure1/figure1_sos.png", sos_line_plot, height=5, width=5)
+sos_line_plot <- arrangeGrob(sos_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+
+```
+Make figure 1
+```{r}
+
+setwd("../../data/figures/figure1/")
+
+#Read in genome architectures
+img1 <- readPNG("figure1_beg_genome_arch.png")
+img1 <- arrangeGrob(rasterGrob(img1, vjust=3.18, width=0.95, hjust=0.45), top=textGrob("A", x = unit(0, "npc"), y=unit(-8.5, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+img2 <- readPNG("figure1_gen0_genome_arch.png")
+img3 <- readPNG("figure1_intermed_genome_arch.png")
+img4 <- readPNG("figure1_final_genome_arch.png")
+
+#Create and save Figure 1
+figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.71, width=0.98), rasterGrob(img4, vjust=3.74, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, sos_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
+
+ggsave("figure1.png", figure1, height=25, width=40)
+
 ```
