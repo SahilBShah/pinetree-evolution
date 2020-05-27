@@ -80,7 +80,6 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
         genome_elements.append(genome_tracker_new['length_of_genome'])
 
     #Determines areas within the intergenic regions that are available
-    print(genome_elements)
     space_index = 0
     highest_position = max(genome_elements)
     while True:
@@ -92,7 +91,6 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
         if ending_position == highest_position or genome_elements == []:
             break
         space_index+=1
-    print(spaces_dict)
     #Determines the position of the chosen element
     key = random.choice(list(spaces_dict.keys()))
     starting_position = spaces_dict[key]['start']
@@ -370,7 +368,6 @@ def cleanup_genome(target_file, sos_df, output_dir, num_genes, deg_rate):
 
     #Remove all elements that did not significantly alter the gene expression pattern produced
     remove_elements.sort(key=lambda x: (-x[1],x[0]))
-    print(remove_elements)
     for element in remove_elements:
         genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, element[0])
         ss_comp = mutation_test.test_mutation(target_file, genome_tracker_saved, output_dir, 20, deg_rate, True)
