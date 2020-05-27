@@ -24,7 +24,7 @@ def test_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate,
         if sos_range:
             nf = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
             nf = file_setup.rearrange_file(nf, genome_tracker_new)
-            sos_list.append(sum_of_squares.calc_sum_of_squares(df, nf, genome_tracker_new['num_genes']))
+            sos_list.append(sum_of_squares.calc_sse(df, nf, genome_tracker_new['num_genes']))
         save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
@@ -42,4 +42,4 @@ def test_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate,
     nf = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
     nf = file_setup.rearrange_file(nf, genome_tracker_new)
 
-    return sum_of_squares.calc_sum_of_squares(df, nf, genome_tracker_new['num_genes'])
+    return sum_of_squares.calc_sse(df, nf, genome_tracker_new['num_genes'])
