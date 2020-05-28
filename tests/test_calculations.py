@@ -28,9 +28,9 @@ def test_calc_fitness():
 def test_mutation_analysis():
 
     #Testing if range of SSEs is returned from mutation_analysis
-    with open('testing.yml', 'r') as gene_parameters:
+    with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
-    df = pd.read_csv('test_compare.tsv', header=0, sep='\t')
+    df = pd.read_csv('./inputs/test_compare.tsv', header=0, sep='\t')
     mutation_replicate = 5
     sse_range_list = analyze_mutation(df, genome_tracker, './', mutation_replicate, True, True)
     assert len(sse_range_list) == mutation_replicate

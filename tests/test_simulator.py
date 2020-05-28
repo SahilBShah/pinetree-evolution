@@ -11,7 +11,7 @@ import yaml
 
 def test_pt_call():
 
-    with open('testing.yml', 'r') as gene_parameters:
+    with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     pt_call_alt('./', genome_tracker)
     assert path.exists("expression_pattern.tsv")
