@@ -11,7 +11,7 @@ import genome_simulator
 import initialize_yaml
 import math
 import mutation_choices
-import mutation_test
+import mutation_analysis
 import numpy as np
 import os
 import sum_of_squares
@@ -36,8 +36,8 @@ def main():
 
     #General setup
     ss_old = args.initial_sum_of_squares
-    all_sos_list = [ss_old]
-    sos_iter_list = []
+    all_sse_list = [ss_old]
+    sse_iter_list = []
     dfs = []
     is_accepted = []
     i = 0
@@ -103,14 +103,14 @@ def main():
         else:
             genome_tracker_new = mutation_choices.modify_element(genome_tracker_new, starting_file, genome_tracker_new['num_genes'], args.dynamic_deg_rate, item.split('.')[0])
 
-        #Sum of squares is calculated and the mutation is accepted or rejected based off of its calculated fitness value
+        #Sum of squared error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
-        #PineTree called in test_mutation
-        ss_new = mutation_test.test_mutation(target_file, genome_tracker_new, output_dir, args.replicate_mutation_number, args.dynamic_deg_rate)
+        #pinetree called in test_mutation
+        ss_new = mutation_analysis.analyze_mutation(target_file, genome_tracker_new, output_dir, args.replicate_mutation_number, args.dynamic_deg_rate)
 
         accept_prob = fitness_score.calc_fitness(ss_new, ss_old, args.N, args.beta)
-        all_sos_list.append(ss_new)
-        sos_iter_list.append(i)
+        all_sse_list.append(ss_new)
+        sse_iter_list.append(i)
         if accept_prob > random.random():
             #If accepted the old genome is replace by the new genome and files for the new genome are saved
             genome_tracker_old = copy.deepcopy(genome_tracker_new)
@@ -129,11 +129,12 @@ def main():
         if i <= args.generation_number:
             print('generation =', i)
 
-    all_sos_list = all_sos_list[1:]
-    sos_dataframe = pd.DataFrame(data=zip(sos_iter_list, all_sos_list, is_accepted), columns=["Iteration", "SSE", "Accepted"])
-    export_csv = sos_dataframe.to_csv(output_dir + 'final/sos_data.tsv', index=False, sep='\t')
+    all_sse_list = all_sse_list[1:]
+    sse_dataframe = pd.DataFrame(data=zip(sse_iter_list, all_sse_list, is_accepted), columns=["Iteration", "SSE", "Accepted"])
+    export_csv = sse_dataframe.to_csv(output_dir + 'final/sse_data.tsv', index=False, sep='\t')
     print('Cleaning up genome architecture...')
-    mutation_choices.cleanup_genome(target_file, sos_dataframe, output_dir, genome_tracker_new['num_genes'], args.dynamic_deg_rate)
+    mutation_choices.cleanup_genome(target_file, sse_dataframe, output_dir, genome_tracker_new['num_genes'], args.dynamic_deg_rate)
+    os.remove(output_dir+'expression_pattern.tsv')
 
 def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
     """

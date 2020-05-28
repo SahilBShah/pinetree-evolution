@@ -4,14 +4,14 @@ import numpy as np
 import pandas as pd
 import sum_of_squares
 
-def test_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate, sos_range=False):
+def analyze_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate, sse_range=False):
     """
     Calls the pinetree script to simulate the genome x number of times and calculate the average of transcript abundances.
     Returns the sum of squares value to compare the fitness of the new and previously accepted genome.
     """
 
     dfs = []
-    sos_list = []
+    sse_list = []
 
     #Creates test files from pinetree to find average number of transcripts at each time
     for i in range(1, mutation_number+1):
@@ -21,16 +21,16 @@ def test_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate,
         else:
             #If each individual RNase site's binding strength is NOT being altered
             genome_simulator.pt_call(output_dir, genome_tracker_new)
-        if sos_range:
+        if sse_range:
             nf = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
             nf = file_setup.rearrange_file(nf, genome_tracker_new)
-            sos_list.append(sum_of_squares.calc_sse(df, nf, genome_tracker_new['num_genes']))
+            sse_list.append(sum_of_squares.calc_sse(df, nf, genome_tracker_new['num_genes']))
         save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
 
-    if sos_range:
-        return sos_list
+    if sse_range:
+        return sse_list
 
     #Averages all the values in each file and creates a new file with those averages
     df_concat = pd.concat(dfs)

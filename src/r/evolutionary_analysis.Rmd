@@ -38,15 +38,15 @@ library(grid)
 #Set working directory to the directory in which the results are contained in
 setwd("../../results/2020_4_30/paper_data13_nf1.0_rep0_nmut5/")
 
-all_sos_data <- read.table("sos_data.tsv", header=TRUE)
-sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
+all_sse_data <- read.table("sse_data.tsv", header=TRUE)
+sse_data_acc <- all_sse_data %>% filter(Accepted=='yes')
 
-#sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sos_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sse_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 #panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
-sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat="identity") + geom_line(size= 1, stat="identity") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold")) + xlab("Generation") + ylab("Sum of Squares")
-sos_plots <- grid.arrange(sos_line_plot, nrow=1, top=textGrob("Fitness over Time", gp=gpar(fontsize=30, fontface="bold")))
-#Change name of sos_graphs to a unique identifier
-ggsave("../../../data/figures/sos_graphs_paper_data13_rep0_nf1.png", sos_plots, width=20, height=10)
+sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat="identity") + geom_line(size= 1, stat="identity") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold")) + xlab("Generation") + ylab("Sum of Squares")
+sse_plots <- grid.arrange(sse_line_plot, nrow=1, top=textGrob("Fitness over Time", gp=gpar(fontsize=30, fontface="bold")))
+#Change name of sse_graphs to a unique identifier
+ggsave("../../../data/figures/sse_graphs_paper_data13_rep0_nf1.png", sse_plots, width=20, height=10)
 ```
 
 Evolutionary Analysis of Mutations
@@ -89,10 +89,10 @@ evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 3),
 #Change name of saved graphs file to a unique identifier
 ggsave("../../../data/figures/positive_control_rep0_nf1.png", evo_plot, width=30, height=30, limitsize=FALSE)
 
-sos_data <- read.table("./final/sos_data.tsv", header=TRUE)
-sos_data <- sos_data %>% filter(Accepted=='yes')
-min_sos <- sos_data$Iteration[sos_data$SSE == min(sos_data$SSE)]
-best_file <- list.files(pattern=paste0("expression_pattern_", min_sos, ".tsv"))
+sse_data <- read.table("./final/sse_data.tsv", header=TRUE)
+sse_data <- sse_data %>% filter(Accepted=='yes')
+min_sse <- sse_data$Iteration[sse_data$SSE == min(sse_data$SSE)]
+best_file <- list.files(pattern=paste0("expression_pattern_", min_sse, ".tsv"))
 plot_data <- read.table(best_file, header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest SSE Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2")) + panel_border()
@@ -100,11 +100,11 @@ ggsave("../../../data/figures/positive_control_rep0_nf1_lowest.png", line_plot, 
 
 
 #Filter sum of squares data
-all_sos_data <- read.table("./final/sos_data.tsv", header=TRUE)
-sos_data_acc <- all_sos_data %>% filter(Accepted=='yes')
+all_sse_data <- read.table("./final/sse_data.tsv", header=TRUE)
+sse_data_acc <- all_sse_data %>% filter(Accepted=='yes')
 
 #Create sum of squares plot
-sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=SSE)) + 
+sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) + 
   geom_point(stat='identity', color='#D55E00', size=3) + 
   geom_line(size=2, stat='identity', color='#D55E00') + 
   theme(panel.grid.major = element_blank(), 
@@ -122,8 +122,8 @@ sos_line_plot <- ggplot(sos_data_acc, aes(x=Iteration, y=SSE)) +
   ylab("Sum of squared error") + 
   panel_border()
 
-sos_line_plot <- arrangeGrob(sos_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-ggsave("../../../data/figures/positive_control_rep0_nf1_sos.png", sos_line_plot, width=20, height=10, limitsize=FALSE)
+sse_line_plot <- arrangeGrob(sse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+ggsave("../../../data/figures/positive_control_rep0_nf1_sse.png", sse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 
