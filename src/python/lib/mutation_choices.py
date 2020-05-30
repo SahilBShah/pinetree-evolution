@@ -53,13 +53,13 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
             if genome_tracker_new[region_choice]['stop'] - genome_tracker_new[rnase]['stop'] == 0:
                 genome_elements.append(genome_tracker_new[region_choice]['stop']+2)
             elif genome_tracker_new[region_choice]['stop'] - genome_tracker_new[rnase]['stop'] == 1:
-                genome_elements.append(genome_tracker_new[region_choice]['stop'])
+                genome_elements.append(genome_tracker_new[region_choice]['stop']+1)
             else:
                 genome_elements.append(genome_tracker_new[rnase]['stop'])
         if genome_tracker_new[region_choice]['start'] == genome_tracker_new[region_choice]['stop']:
             genome_elements.append(genome_tracker_new[region_choice]['stop']+2)
         else:
-            genome_elements.append(genome_tracker_new[region_choice]['stop'])
+            genome_elements.append(genome_tracker_new[region_choice]['stop']+1)
     if region_choice != 'region_0':
         genome_elements.append(genome_tracker_new[gene]['stop'])
         if genome_tracker_new[terminator]['start'] > 0:
@@ -279,22 +279,25 @@ def check_overlap(genome_tracker_new, element_choice, region_choice, genome_shif
         genome_tracker_new[element_choice]['stop'] <= genome_tracker_new[elements_list[0]]['stop']:
             overlap_diff = genome_tracker_new[element_choice]['stop'] - genome_tracker_new[elements_list[0]]['start']
             genome_shift_new = overlap_diff + 1
-        if genome_tracker_new[element_choice]['stop'] >= genome_tracker_new[elements_list[1]]['start'] and \
-        genome_tracker_new[element_choice]['stop'] <= genome_tracker_new[elements_list[1]]['stop'] and len(elements_list) == 2:
-            overlap_diff = genome_tracker_new[element_choice]['stop'] - genome_tracker_new[elements_list[1]]['start']
-            genome_shift_new = overlap_diff + 1
+        if len(elements_list) == 2:
+            if genome_tracker_new[element_choice]['stop'] >= genome_tracker_new[elements_list[1]]['start'] and \
+            genome_tracker_new[element_choice]['stop'] <= genome_tracker_new[elements_list[1]]['stop']:
+                overlap_diff = genome_tracker_new[element_choice]['stop'] - genome_tracker_new[elements_list[1]]['start']
+                genome_shift_new = overlap_diff + 1
         if genome_tracker_new[elements_list[0]]['start'] >= genome_tracker_new[element_choice]['start'] and \
         genome_tracker_new[elements_list[0]]['start'] <= genome_tracker_new[element_choice]['stop']:
             overlap_diff = genome_tracker_new[element_choice]['stop'] - genome_tracker_new[elements_list[0]]['start']
             genome_shift_new = overlap_diff + 1
-        if genome_tracker_new[elements_list[1]]['start'] >= genome_tracker_new[element_choice]['start'] and \
-        genome_tracker_new[elements_list[1]]['start'] <= genome_tracker_new[element_choice]['stop'] and len(elements_list) == 2:
-            overlap_diff = genome_tracker_new[element_choice]['stop'] - genome_tracker_new[elements_list[1]]['start']
-            genome_shift_new = overlap_diff + 1
+        if len(elements_list) == 2:
+            if genome_tracker_new[elements_list[1]]['start'] >= genome_tracker_new[element_choice]['start'] and \
+            genome_tracker_new[elements_list[1]]['start'] <= genome_tracker_new[element_choice]['stop']:
+                overlap_diff = genome_tracker_new[element_choice]['stop'] - genome_tracker_new[elements_list[1]]['start']
+                genome_shift_new = overlap_diff + 1
     #Determines how many base pairs to extend the genome based on if there is overlap between the element being places and the rnase footprint
     if int(region_choice.split('_')[1]) != genome_tracker_new['num_genes']:
         if genome_tracker_new[element_choice]['stop'] >= genome_tracker_new[region_choice]['stop']:
             genome_shift_new+=(genome_tracker_new[element_choice]['stop'] - genome_tracker_new[region_choice]['stop']) + 1
+            genome_shift+=(genome_tracker_new[element_choice]['stop'] - genome_tracker_new[region_choice]['stop']) + 1
 
     #If the amount of base pairs to shift the genome based on overlapping elements in less than the amount of base pairs the element occupies, then the lesser of the two is applied
     if genome_shift_new < genome_shift and genome_shift_new != 0:

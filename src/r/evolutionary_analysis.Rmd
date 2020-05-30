@@ -56,14 +56,14 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 #Set working directory to the directory in which the results are contained in 
-setwd("../../results/2020_5_26/positive_control_nf1.0_rep0_nmut5/")
+setwd("../../results/2020_5_29/paper_data13_nf1.0_rep1_nmut5/")
 
 plots_list <- list()
 best_files <- list.files(pattern="expression_pattern_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
 #Change grant_data name to the target file used
-target_data <- read.table("../../../data/positive_control.tsv", header=TRUE)
+target_data <- read.table("../../../data/paper_data13.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2")) + panel_border()
 plots_list[[1]] <- target_line_plot
@@ -87,7 +87,7 @@ for(i in starting_point:length(best_files)){
 #Outputs file with the generated plots  
 evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 3), ncol=5, top=textGrob("Evolution of Gene Expression Pattern", gp=gpar(fontsize=30, fontface="bold"))) 
 #Change name of saved graphs file to a unique identifier
-ggsave("../../../data/figures/positive_control_rep0_nf1.png", evo_plot, width=30, height=30, limitsize=FALSE)
+ggsave("../../../data/figures/paper_data13_rep1_nf1.png", evo_plot, width=30, height=30, limitsize=FALSE)
 
 sse_data <- read.table("./final/sse_data.tsv", header=TRUE)
 sse_data <- sse_data %>% filter(Accepted=='yes')
@@ -96,7 +96,7 @@ best_file <- list.files(pattern=paste0("expression_pattern_", min_sse, ".tsv"))
 plot_data <- read.table(best_file, header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest SSE Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#CC79A7", "#F0E442", "#0072B2")) + panel_border()
-ggsave("../../../data/figures/positive_control_rep0_nf1_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
+ggsave("../../../data/figures/paper_data13_rep1_nf1_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
 
 
 #Filter sum of squares data
@@ -123,7 +123,7 @@ sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) +
   panel_border()
 
 sse_line_plot <- arrangeGrob(sse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-ggsave("../../../data/figures/positive_control_rep0_nf1_sse.png", sse_line_plot, width=20, height=10, limitsize=FALSE)
+ggsave("../../../data/figures/paper_data13_rep1_nf1_sse.png", sse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 
