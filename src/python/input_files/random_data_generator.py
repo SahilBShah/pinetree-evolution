@@ -7,18 +7,18 @@ protein1_list = []
 protein2_list = []
 protein3_list = []
 
-for i in range(1, 151):
-    transcript_list.append([i, "protein1", (0.04 * i)])
-    transcript_list.append([i, "protein2", (0.11 * i)])
-    transcript_list.append([i, "protein3", (0.16 * i)])
-    if i == 150:
+for i in range(1, 101):
+    transcript_list.append([i, "protein1", (0.1 * i)])
+    transcript_list.append([i, "protein2", (0.2 * i)])
+    transcript_list.append([i, "protein3", (0.05 * i)])
+    if i == 100:
         protein1_list.append(0.04 * i)
-        protein2_list.append(0.11 * i)
-        protein3_list.append(0.16 * i)
-for i in range(151, 251):
-    transcript_list.append([i, "protein1", 0.04 * i])
+        protein2_list.append(0.2 * i)
+        protein3_list.append(0.05 * i)
+for i in range(101, 251):
+    transcript_list.append([i, "protein1", 0.1 * i])
     transcript_list.append([i, "protein2", protein2_list[-1]])
-    transcript_list.append([i, "protein3", 0.16 * i])
+    transcript_list.append([i, "protein3", protein3_list[-1]])
 # for i in range(126, 201):
 #     transcript_list.append([i, "protein1", (0.12 * i)])
 #     transcript_list.append([i, "protein2", protein2_list[-1]])
@@ -47,7 +47,7 @@ for i in range(151, 251):
 
 
 
-file = open("../../../data/paper_data12.tsv", "w")
+file = open("../../../data/paper_data13.tsv", "w")
 writer = csv.writer(file, delimiter='\t')
 writer.writerow(["time", "species", "transcript"])
 for item in transcript_list:

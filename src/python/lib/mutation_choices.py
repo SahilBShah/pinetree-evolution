@@ -38,42 +38,24 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
     terminator = 'terminator_{}'.format(region_choice.split('_')[1])
     rnase = 'rnase_{}'.format(region_choice.split('_')[1])
     gene = 'gene_{}'.format(region_choice.split('_')[1])
+
     if int(region_choice.split('_')[1]) != num_genes:
         if genome_tracker_new[promoter]['start'] > 0:
             if region_choice != 'region_0':
                 genome_elements.append(genome_tracker_new[promoter]['start'])
-            if genome_tracker_new[region_choice]['stop'] - genome_tracker_new[promoter]['stop'] == 0:
-                genome_elements.append(genome_tracker_new[region_choice]['stop']+2)
-            elif genome_tracker_new[region_choice]['stop'] - genome_tracker_new[promoter]['stop'] == 1:
-                genome_elements.append(genome_tracker_new[region_choice]['stop'])
-            else:
-                genome_elements.append(genome_tracker_new[promoter]['stop'])
+            genome_elements.append(genome_tracker_new[promoter]['stop'])
         if genome_tracker_new[rnase]['start'] > 0:
             genome_elements.append(genome_tracker_new[rnase]['start'])
-            if genome_tracker_new[region_choice]['stop'] - genome_tracker_new[rnase]['stop'] == 0:
-                genome_elements.append(genome_tracker_new[region_choice]['stop']+2)
-            elif genome_tracker_new[region_choice]['stop'] - genome_tracker_new[rnase]['stop'] == 1:
-                genome_elements.append(genome_tracker_new[region_choice]['stop']+1)
-            else:
-                genome_elements.append(genome_tracker_new[rnase]['stop'])
-        if genome_tracker_new[region_choice]['start'] == genome_tracker_new[region_choice]['stop']:
-            genome_elements.append(genome_tracker_new[region_choice]['stop']+2)
-        else:
-            genome_elements.append(genome_tracker_new[region_choice]['stop']+1)
+            genome_elements.append(genome_tracker_new[rnase]['stop'])
     if region_choice != 'region_0':
-        genome_elements.append(genome_tracker_new[gene]['stop'])
+        genome_elements.append(genome_tracker_new[region_choice]['start'])
         if genome_tracker_new[terminator]['start'] > 0:
-            if genome_tracker_new[region_choice]['stop'] - genome_tracker_new[terminator]['stop'] == 0:
-                genome_elements.append(genome_tracker_new[region_choice]['stop']+2)
-                genome_shift+=1
-            elif genome_tracker_new[region_choice]['stop'] - genome_tracker_new[terminator]['stop'] == 1:
-                genome_elements.append(genome_tracker_new[region_choice]['stop'])
-            else:
-                genome_elements.append(genome_tracker_new[terminator]['stop'])
+            genome_elements.append(genome_tracker_new[terminator]['start'])
             if genome_tracker_new[terminator]['stop'] != genome_tracker_new['length_of_genome']:
                 genome_elements.append(genome_tracker_new[terminator]['stop'])
     if int(region_choice.split('_')[1]) == num_genes and genome_tracker_new[terminator]['stop'] != genome_tracker_new['length_of_genome']:
         genome_elements.append(genome_tracker_new['length_of_genome'])
+    genome_elements.append(genome_tracker_new[region_choice]['stop'])
 
     #Determines areas within the intergenic regions that are available
     space_index = 0
@@ -100,8 +82,10 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
         prom_stop = genome_tracker_new[element_choice]['stop'] = prom_start + promoter_offset
         genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
         genome_tracker_new[element_choice]['current_strength'] = promoter_starting_strength
-        genome_shift = check_overlap(genome_tracker_new, element_choice, region_choice, genome_shift)
         genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
+        genome_shift = check_overlap(genome_tracker_new, element_choice, region_choice)
+        if genome_shift != 0:
+            genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
     elif 'terminator' in element_choice:
         #If terminator is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
         genome_shift = terminator_offset + 1
@@ -111,8 +95,10 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
         term_stop = genome_tracker_new[element_choice]['stop'] = term_start + terminator_offset
         genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
         genome_tracker_new[element_choice]['current_strength'] = terminator_starting_strength
-        genome_shift = check_overlap(genome_tracker_new, element_choice, region_choice, genome_shift)
         genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
+        genome_shift = check_overlap(genome_tracker_new, element_choice, region_choice)
+        if genome_shift != 0:
+            genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
     else:
         #If RNase is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
         genome_shift = rnase_offset + 1
@@ -120,11 +106,12 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
             ending_position+=1
         rnase_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position)
         rnase_stop = genome_tracker_new[element_choice]['stop'] = rnase_start + rnase_offset
-        if deg_rate:
-            genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-            genome_tracker_new[element_choice]['current_strength'] = rnase_starting_strength
-        genome_shift = check_overlap(genome_tracker_new, element_choice, region_choice, genome_shift)
+        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
+        genome_tracker_new[element_choice]['current_strength'] = rnase_starting_strength
         genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
+        genome_shift = check_overlap(genome_tracker_new, element_choice, region_choice)
+        if genome_shift != 0:
+            genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
 
     return genome_tracker_new
 
@@ -144,10 +131,8 @@ def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
     genome_tracker_new[element_choice]['start'] = 0
     genome_tracker_new[element_choice]['stop'] = 0
-    #If modifying each individual RNase site, then the strength is set to 0
-    if (deg_rate) or (deg_rate == False and 'rnase' not in element_choice):
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = 0
+    genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
+    genome_tracker_new[element_choice]['current_strength'] = 0
 
     return genome_tracker_new
 
@@ -251,7 +236,7 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
 
     return genome_tracker_new
 
-def check_overlap(genome_tracker_new, element_choice, region_choice, genome_shift):
+def check_overlap(genome_tracker_new, element_choice, region_choice):
     """
     Determines if there are any overlapping regions and if so, increases the amount of base pairs the genome should be offestted by.
     """
@@ -297,13 +282,12 @@ def check_overlap(genome_tracker_new, element_choice, region_choice, genome_shif
     if int(region_choice.split('_')[1]) != genome_tracker_new['num_genes']:
         if genome_tracker_new[element_choice]['stop'] >= genome_tracker_new[region_choice]['stop']:
             genome_shift_new+=(genome_tracker_new[element_choice]['stop'] - genome_tracker_new[region_choice]['stop']) + 1
-            genome_shift+=(genome_tracker_new[element_choice]['stop'] - genome_tracker_new[region_choice]['stop']) + 1
 
     #If the amount of base pairs to shift the genome based on overlapping elements in less than the amount of base pairs the element occupies, then the lesser of the two is applied
-    if genome_shift_new < genome_shift and genome_shift_new != 0:
+    if genome_shift_new != 0:
         return genome_shift_new
     else:
-        return genome_shift
+        return 0
 
 
 def cleanup_genome(target_file, sse_df, output_dir, num_genes, deg_rate):
