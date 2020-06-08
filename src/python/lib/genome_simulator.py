@@ -35,7 +35,7 @@ def pt_call(output_dir, genome_tracker_new):
     for i in range(1, genome_tracker_new['num_genes']+1):
         if genome_tracker_new['gene_{}'.format(i)]['start'] > 0:
             plasmid.add_gene(name="protein{}".format(i), start=genome_tracker_new['gene_{}'.format(i)]['start'], stop=genome_tracker_new['gene_{}'.format(i)]['stop'],
-                             rbs_start=(genome_tracker_new['gene_{}'.format(i)]['start']-30), rbs_stop=genome_tracker_new['gene_{}'.format(i)]['start'], rbs_strength=1e7)
+                             rbs_start=(genome_tracker_new['gene_{}'.format(i)]['start']-30), rbs_stop=genome_tracker_new['gene_{}'.format(i)]['start']-1, rbs_strength=1e7)
 
     sim.register_genome(plasmid)
     sim.simulate(time_limit=250, time_step=1, output=output_dir+'expression_pattern.tsv')
@@ -72,7 +72,7 @@ def pt_call_alt(output_dir, genome_tracker_new):
     for i in range(1, genome_tracker_new['num_genes']+1):
         if genome_tracker_new['gene_{}'.format(i)]['start'] > 0:
             plasmid.add_gene(name="protein{}".format(i), start=genome_tracker_new['gene_{}'.format(i)]['start'], stop=genome_tracker_new['gene_{}'.format(i)]['stop'],
-                             rbs_start=(genome_tracker_new['gene_{}'.format(i)]['start']-30), rbs_stop=genome_tracker_new['gene_{}'.format(i)]['start'], rbs_strength=1e7)
+                             rbs_start=(genome_tracker_new['gene_{}'.format(i)]['start']-30), rbs_stop=genome_tracker_new['gene_{}'.format(i)]['start']-1, rbs_strength=1e7)
 
     sim.register_genome(plasmid)
     sim.simulate(time_limit=250, time_step=1, output=output_dir+'expression_pattern.tsv')

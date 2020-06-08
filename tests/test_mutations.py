@@ -40,58 +40,6 @@ def test_shrink_genome():
     assert not (genome_tracker_new['length_of_genome'] > genome_tracker_old['length_of_genome'])
     assert genome_tracker_new['rnase_2']['start'] < genome_tracker_old['rnase_2']['start']
 
-def test_check_overlap():
-
-    with open('./inputs/testing.yml', 'r') as gene_parameters:
-        genome_tracker = yaml.safe_load(gene_parameters)
-    genome_tracker['rnase_1']['start'] = 366
-    genome_tracker['rnase_1']['stop'] = 375
-    element_choice = 'rnase_1'
-    region_choice = 'region_1'
-    genome_shift = 10
-    genome_shift = mutation_choices.check_overlap(genome_tracker, element_choice, region_choice, genome_shift)
-    assert genome_shift == 6
-
-    genome_tracker['terminator_2']['start'] = 617
-    genome_tracker['terminator_2']['stop'] = 646
-    element_choice = 'terminator_2'
-    region_choice = 'region_2'
-    genome_shift = 30
-    genome_shift = mutation_choices.check_overlap(genome_tracker, element_choice, region_choice, genome_shift)
-    assert genome_shift == 27
-
-    genome_tracker['terminator_2']['start'] = 551
-    genome_tracker['terminator_2']['stop'] = 580
-    element_choice = 'terminator_2'
-    region_choice = 'region_2'
-    genome_shift = 30
-    genome_shift = mutation_choices.check_overlap(genome_tracker, element_choice, region_choice, genome_shift)
-    assert genome_shift == 1
-
-    genome_tracker['terminator_2']['start'] = 570
-    genome_tracker['terminator_2']['stop'] = 599
-    element_choice = 'terminator_2'
-    region_choice = 'region_2'
-    genome_shift = 30
-    genome_shift = mutation_choices.check_overlap(genome_tracker, element_choice, region_choice, genome_shift)
-    assert genome_shift == 20
-
-    genome_tracker['terminator_2']['start'] = 580
-    genome_tracker['terminator_2']['stop'] = 609
-    element_choice = 'terminator_2'
-    region_choice = 'region_2'
-    genome_shift = 30
-    genome_shift = mutation_choices.check_overlap(genome_tracker, element_choice, region_choice, genome_shift)
-    assert genome_shift == 30
-
-    genome_tracker['terminator_2']['start'] = 640
-    genome_tracker['terminator_2']['stop'] = 669
-    element_choice = 'terminator_2'
-    region_choice = 'region_2'
-    genome_shift = 30
-    genome_shift = mutation_choices.check_overlap(genome_tracker, element_choice, region_choice, genome_shift)
-    assert genome_shift == 30
-
 def test_cleanup_genome():
 
     target_file = pd.read_csv('./inputs/test_compare.tsv', header=0, sep='\t')
