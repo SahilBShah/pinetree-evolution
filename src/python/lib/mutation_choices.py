@@ -1,26 +1,34 @@
+#Common imports
 import copy
-import mutation_analysis
 import numpy as np
 import pandas as pd
 import random
 from scipy import stats
 import yaml
 
-promoter_starting_strength = 10e6
-max_promoter_strength = 10e13
-min_promoter_strength = 10e5
-promoter_offset = 34
-promoter_min_space = 35
-rnase_starting_strength = 5e-3
-max_rnase_strength = 1.0
-min_rnase_strength = 0.0
-rnase_offset = 9
-rnase_min_space = 10
-max_terminator_strength = 1.0
-min_terminator_strength = 0.0
-terminator_starting_strength = 0.3
-terminator_offset = 29
-terminator_min_space = 30
+#lib imports
+import mutation_analysis
+
+#promoter_starting_strength = 10e6
+# max_promoter_strength = 10e13
+# min_promoter_strength = 10e5
+#promoter_offset = 34
+#promoter_min_space = 35
+#rnase_starting_strength = 5e-3
+# max_rnase_strength = 1.0
+# min_rnase_strength = 0.0
+#rnase_offset = 9
+#rnase_min_space = 10
+# max_terminator_strength = 1.0
+# min_terminator_strength = 0.0
+#terminator_starting_strength = 0.3
+#terminator_offset = 29
+#terminator_min_space = 30
+
+#dict[genome_shift, starting_strengths]
+element_dict = {'promoter': [34, 10e6], 'rnase': [9, 5e-3], 'terminator': [29, 0.3]}
+#dict[min_strength, max_strength]
+element_strengths_range = {'promoter': [10e5, 10e13], 'rnase': [0.0, 1.0], 'terminator': [0.0, 1.0]}
 
 
 def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
@@ -73,36 +81,15 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
     key = random.choice(list(spaces_dict.keys()))
     starting_position = spaces_dict[key]['start']
     ending_position = spaces_dict[key]['stop']
-    if 'promoter' in element_choice:
-        #If promoter is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
-        genome_shift = promoter_offset + 1
-        if starting_position + 1 == ending_position:
-            ending_position+=1
-        prom_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position)
-        prom_stop = genome_tracker_new[element_choice]['stop'] = prom_start + promoter_offset
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = promoter_starting_strength
-        genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
-    elif 'terminator' in element_choice:
-        #If terminator is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
-        genome_shift = terminator_offset + 1
-        if starting_position + 1 == ending_position:
-            ending_position+=1
-        term_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position)
-        term_stop = genome_tracker_new[element_choice]['stop'] = term_start + terminator_offset
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = terminator_starting_strength
-        genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
-    else:
-        #If RNase is chosen then the binding strength, and starting and endging positions are determined and the genome length is changed appropriately
-        genome_shift = rnase_offset + 1
-        if starting_position + 1 == ending_position:
-            ending_position+=1
-        rnase_start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position)
-        rnase_stop = genome_tracker_new[element_choice]['stop'] = rnase_start + rnase_offset
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = rnase_starting_strength
-        genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
+
+    genome_shift = element_dict[element_choice.split('_')[0]][0] + 1
+    if starting_position + 1 == ending_position:
+        ending_position+=1
+    start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position)
+    stop = genome_tracker_new[element_choice]['stop'] = start + element_dict[element_choice.split('_')[0]][0]
+    genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
+    genome_tracker_new[element_choice]['current_strength'] = element_dict[element_choice.split('_')[0]][1]
+    genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
 
     return genome_tracker_new
 
@@ -112,14 +99,7 @@ def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     """
 
     #Removes the selected element from the genome
-    region_choice = 'region_{}'.format(element_choice.split('_')[1])
-    if 'promoter' in element_choice:
-        genome_shift = 35
-    elif 'rnase' in element_choice:
-        genome_shift = 10
-    elif 'terminator' in element_choice:
-        genome_shift = 30
-    genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
+    genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(element_choice.split('_')[1]), element_dict[element_choice.split('_')[0]][0]+1, element_choice)
     genome_tracker_new[element_choice]['start'] = 0
     genome_tracker_new[element_choice]['stop'] = 0
     genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
@@ -133,21 +113,10 @@ def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     """
 
     #Strengths of current elements on genome are modified
-    if 'promoter' in element_choice:
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.2)
-        while genome_tracker_new[element_choice]['current_strength'] < min_promoter_strength or genome_tracker_new[element_choice]['current_strength'] > max_promoter_strength:
-            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.2)
-    elif 'terminator' in element_choice:
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.2)
-        while genome_tracker_new[element_choice]['current_strength'] < min_terminator_strength or genome_tracker_new[element_choice]['current_strength'] > max_terminator_strength:
-            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.2)
-    elif 'rnase' in element_choice and deg_rate:
-        genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-        genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.2)
-        while genome_tracker_new[element_choice]['current_strength'] < min_rnase_strength or genome_tracker_new[element_choice]['current_strength'] > max_rnase_strength:
-            genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.2)
+    genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
+    genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.2)
+    while genome_tracker_new[element_choice]['current_strength'] < element_strengths_range[element_choice.split('_')[0]][0] or genome_tracker_new[element_choice]['current_strength'] > element_strengths_range[element_choice.split('_')[0]][1]:
+        genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.2)
 
     return genome_tracker_new
 
@@ -227,7 +196,7 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
 
     return genome_tracker_new
 
-def cleanup_genome(target_file, sse_df, output_dir, num_genes, deg_rate):
+def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
     """
     Removes elements that have low strengths that are statistically insignificant to the overal gene expression pattern produced from the best found architecture.
     """

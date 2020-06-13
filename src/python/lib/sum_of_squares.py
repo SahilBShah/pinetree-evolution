@@ -17,3 +17,12 @@ def calc_sse(target_file, new_file, num_genes):
     for index in range(num_genes):
         sse+=sum_df_squared[index]
     return sse
+
+def calc_accepted_sse_range(target_file, genome_tracker_new):
+    """
+    Calculates the highest SSE value allowed before the program has found the a suitable architecture to reproduce the target data.
+    """
+
+    altered_file = target_file[['protein1', 'protein2', 'protein3']] * 0.9
+    max_sse = calc_sse(target_file, altered_file, genome_tracker_new['num_genes'])
+    return max_sse

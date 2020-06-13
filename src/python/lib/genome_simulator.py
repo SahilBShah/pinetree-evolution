@@ -2,6 +2,7 @@ import pinetree as pt
 import random
 import yaml
 
+
 def pt_call(output_dir, genome_tracker_new):
 
     sim = pt.Model(cell_volume=8e-16)
@@ -76,3 +77,5 @@ def pt_call_alt(output_dir, genome_tracker_new):
 
     sim.register_genome(plasmid)
     sim.simulate(time_limit=250, time_step=1, output=output_dir+'expression_pattern.tsv')
+
+    return
