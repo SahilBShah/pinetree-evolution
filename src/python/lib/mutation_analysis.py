@@ -1,10 +1,13 @@
-import genome_simulator
-import file_setup
+#Common imports
 import numpy as np
 import pandas as pd
+
+#lib imports
+import genome_simulator
+import file_setup
 import sum_of_squares
 
-def analyze_mutation(df, genome_tracker_new, output_dir, mutation_number, deg_rate, sse_range=False):
+def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_rate, sse_range=False):
     """
     Calls the pinetree script to simulate the genome x number of times and calculate the average of transcript abundances.
     Returns the sum of squares value to compare the fitness of the new and previously accepted genome.

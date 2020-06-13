@@ -87,4 +87,5 @@ def main():
     increment = float(input("Please enter the increment in which to increase the strength by: "))
     calc_average_run(mutation_number, element, start, stop, increment)
 
-main()
+if __name__ == '__main__':
+    main()
