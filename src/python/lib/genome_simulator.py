@@ -13,6 +13,8 @@ class SupressOutput(object):
     """
     Class used to grab standard output or another stream.
     Adapted from Devan Williams and original code can be found at https://stackoverflow.com/questions/24277488/in-python-how-to-capture-the-stdout-from-a-c-shared-library-to-a-variable.
+    Output(s):
+    None.
     """
 
     escape_char = "\b"
@@ -76,6 +78,14 @@ class SupressOutput(object):
 
 
 def pt_call(output_dir, genome_tracker_new):
+    """
+    pinetree python interface containing all the information needed to conduct a simulation.
+    Input(s):
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    Output(s):
+    Saves file containing transcript abundances data over time.
+    """
 
     sim = pt.Model(cell_volume=8e-16)
     sim.seed(random.randint(0, 10e6))
@@ -122,8 +132,10 @@ def pt_call_alt(output_dir, genome_tracker_new):
     """
     pinetree python interface containing all the information needed to conduct a simulation.
     Input(s):
-    output_dir is the path to the directory in which all the saved files are stored by the program.
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    Output(s):
+    Saves file containing transcript abundances data over time.
     """
 
     sim = pt.Model(cell_volume=8e-16)

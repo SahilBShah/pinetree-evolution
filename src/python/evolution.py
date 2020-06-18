@@ -28,6 +28,8 @@ class Command_line_args(object):
     This class contains all the arguments the user inputs for the class to run.
     Input(s):
     No other inputs needed.
+    Output(s):
+    None.
     """
 
     def __init__(self):
@@ -50,6 +52,8 @@ def organize_output_dir(arguments):
     Set up output directories for where the genome files can be stored.
     Input(s):
     The only argument passes is the class containing the command line arguments the user previously inputted when running the program.
+    Output(s):
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
     """
 
     #Output file directory structure
@@ -71,8 +75,11 @@ def setup_configuration_files(output_dir, arguments):
     """
     Sets up all the files the program needs to run, such as the yaml file containing all the genome's information.
     Input(s):
-    output_dir is the path to the directory in which all the saved files are stored by the program.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
     aruments is the class containing all the command line arguments the user previously inputted when running the program.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    genome_tracker_old is the dataframe containing the previously edited genomic data.
     """
 
     #Opens yaml files containing genome coordinates
@@ -92,10 +99,12 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments):
     """
     Simulates the template genome containng only one promoter upstream of the first gene and all the user specified genes.
     Input(s):
-    output_dir is the path to the directory in which all the saved files are stored by the program.
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     target_file is the user-inputted tsv file containing transcript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
+    Output(s):
+    ss_old is the float that refers to the sum of squared error value related to genome_tracker_old.
     """
 
     dfs = []
@@ -125,8 +134,10 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
     """
     All the mutation possibilities are added to a dictionary.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     dynamic_deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
+    Output(s):
+    possibilities is a dictionary containing all the information regarding which mutations are possible to occur.
     """
 
     possibilities = {}
@@ -183,10 +194,12 @@ def progress_bar(count, total, replicates, status=''):
     Displays progress bar within terminal.
     Adapted from Vladimir Ignatev and given permission to use through a free software license.
     Input(s):
-    count is the generation that the simulation is on.
-    total is the total number of generation dictated by the user.
-    replicates is the number of times each architecture is simulated.
+    count is the integer that refers to the generation that the simulation is on.
+    total is the integer that refers to the total number of generation dictated by the user.
+    replicates is the integer that refers to the number of times each architecture is simulated.
     status is the string displayed next to the progress bar.
+    Output(s):
+    Prints out a progress bar in the terminal.
     """
 
     #Setting progress bar length
@@ -209,13 +222,19 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     """
     The main part of the evolution program where the genome is modified with each generation and determine if the mutation should be acccepted.
     Input(s):
-    output_dir is the path to the directory in which all the saved files are stored by the program.
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     genome_tracker_old is the dataframe containing the previously edited genomic data.
     target_file is the user-inputted tsv file containing thranscript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     all_sse_list is a list containing each sum of squared error value calculated.
-    max_sse is the highest sum of squared error value the program deems as a successfully found genomic architecture.
+    max_sse is a float that refers to the highest sum of squared error value the program deems as a successfully found genomic architecture.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    all_sse_list is a list containing each sum of squared error value calculated.
+    sse_iter_list is a list containing the number of each generation that corresponds to each sum of squared value.
+    is_accepted is a list containing information regarding if a mutation was accepted or not.
+    found_arch is a boolean that that flags when a suitable genome architecture has been found.
     """
 
     #General setup
@@ -287,13 +306,15 @@ def save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_
     """
     Saves the sum of squared error data, final/best genomic architecture it found, and removes any unnecessary files unrelated to the output.
     Input(s):
-    output_dir is the path to the directory in which all the saved files are stored by the program.
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     target_file is the user-inputted tsv file containing thranscript abundances for each gene.
     all_sse_list is a list containing each sum of squared error value calculated.
     sse_iter_list is a list containing the number of each generation that corresponds to each sum of squared value.
     is_accepted is a list containing information regarding if a mutation was accepted or not.
+    Output(s):
+    Saves all the relevant files to the output directory.
     """
 
     #Sum of squared error data is saved to output directory
@@ -312,6 +333,8 @@ def main():
     Main function that contains all other functions in order so that the program can run.
     Input(s):
     No inputs necessary, however command line arguments are needed for the program to run.
+    Output(s):
+    Prints out if the simulation was successful or not.
     """
 
     print ("\r\x1b[8;25;90t\r")

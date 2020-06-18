@@ -7,6 +7,8 @@ def create_yaml(starting_file, gene_file):
     Input(s):
     starting_file is the file name of the initial taml file containing the termplate genome's architectural information.
     gene_file is the user-inputted file containing the desired gene locations, number of genes, and initial genome length.
+    Output(s):
+    Outputs the intial yaml file containing the genome's information to the output directory.
     """
 
     data = dict(

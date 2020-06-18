@@ -12,12 +12,14 @@ def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_ra
     Calls the pinetree script to simulate the genome x number of times and calculate the average of transcript abundances.
     Returns the sum of squares value to compare the fitness of the new and previously accepted genome.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
-    output_dir is the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
     df is the dataframe containing information regarding the target transcript abundances.
     mutation_number refers to the number of times to run a simulation on the same architecture to reduce noise.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     sse_range is a list that contains the sum of squared error values for each simulation ran when compared to the target.
+    Output(s):
+    Returns a floating point number that refers to the sum of squared error for the recently simulated genome.
     """
 
     dfs = []
