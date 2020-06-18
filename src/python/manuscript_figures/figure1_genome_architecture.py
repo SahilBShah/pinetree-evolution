@@ -229,10 +229,10 @@ def create_genome_architecture(gene_file, output_dir):
                 elif 'terminator' in min_element:
                     draw.line(((gene1_x_right+166, y_mid_area), (gene1_x_right+166, element_y_top)), fill=(0, 0, 0), width=6)
                     draw.line(((gene1_x_right+131, element_y_top), (gene1_x_right+197, element_y_top)), fill=(0, 0, 0), width=6)
-                    gene2_x_left += term_offset
-                    gene2_x_right += term_offset
-                    gene3_x_left += term_offset
-                    gene3_x_right += term_offset
+                    gene2_x_left += term_offset+5
+                    gene2_x_right += term_offset+5
+                    gene3_x_left += term_offset+5
+                    gene3_x_right += term_offset+5
                     genome_end += term_offset+40
                 elif 'rnase' in min_element:
                     draw.line(((gene1_x_right+150, gene1_y_top-7), (gene1_x_right+198, gene1_y_bottom+7)), fill=(0, 0, 0), width=6)

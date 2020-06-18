@@ -4,6 +4,9 @@ import yaml
 def create_yaml(starting_file, gene_file):
     """
     Creates a YAML file with the same starting point each time that can be edited as simulations occur.
+    Input(s):
+    starting_file is the file name of the initial taml file containing the termplate genome's architectural information.
+    gene_file is the user-inputted file containing the desired gene locations, number of genes, and initial genome length.
     """
 
     data = dict(
