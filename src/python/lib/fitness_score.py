@@ -11,6 +11,8 @@ def calc_fitness(variant_fit, orig_fit, N, beta_val):
     orig_fit is the old fitness value previously calculated.
     N is the effective population size that determines how strict selection should be.
     beta is the value determined in relationship to the scale of the sum of squares values.
+    Output(s):
+    Returns the comparison between fitness values.
     """
 
     Ne = N
@@ -32,12 +34,14 @@ def calc_fitness(variant_fit, orig_fit, N, beta_val):
 
 def calc_x(data, beta, threshold):
     """
-    Calculates the fitness values based on the sum of squared value.
+    Calculates the fitness values based on the sum of squared error value.
     Code adapted from Ashley Teufel and Claus Wilke.
     Input(s):
     data is the sum of squared value.
     beta is the value determined in relationship to the scale of the sum of squares values.
     threshold is the ...
+    Output(s):
+    Returns the calculated fitness value for comparison.
     """
 
     total = 0
@@ -52,6 +56,8 @@ def safe_calc(exponent):
     Code adapted from Ashley Teufel and Claus Wilke.
     Input(s):
     exponent is the value pertaining to the exponent needed to convert a sum of squared value to a fitness.
+    Output(s):
+    Returns an exponent that is within a "safe" range that is not too big to handle.
     """
 
     if exponent > 700:

@@ -8,7 +8,9 @@ def calc_sse(target_file, new_file, num_genes):
     Input(s):
     target_file is the user-inputted tsv file containing transcript abundances for each gene.
     new_file is the simulator-generated tsv file containng transcript abundances for each gene.
-    num_genes refers to the number of genes in the genome.
+    num_genes is an integer that refers to the number of genes in the genome.
+    Output(s):
+    SSE is a floating point number that refers to the sum of squared error calculated.
     """
 
     sse = 0
@@ -32,7 +34,9 @@ def calc_accepted_sse_range(target_file, genome_tracker_new):
     Calculates the highest SSE value allowed before the program has found the a suitable architecture to reproduce the target data.
     Input(s):
     target_file is the user-inputted tsv file containing transcript abundances for each gene.
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    Output(s):
+    max_sse is a floating point number that refers to the highest sum of squared error value that is considered a success.
     """
 
     #Decreases the transcript abundances of the target file by 10%

@@ -35,11 +35,13 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
     """
     Proposes a muttion that adds an element on to the genome.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     output_dir is the path to the directory in which all the saved files are stored by the program.
     num_genes refers to the number of genes in the genome.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     element_choice is the element selected to be added.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     """
 
     genome_elements = []
@@ -115,11 +117,13 @@ def remove_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     """
     Proposes a mutation that removes an element from the genome.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     output_dir is the path to the directory in which all the saved files are stored by the program.
     num_genes refers to the number of genes in the genome.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     element_choice is the element selected to be removed.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     """
 
     #Decrease the length of the genome by the genome_shift value
@@ -136,11 +140,13 @@ def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
     """
     Modify an element's (that is present on the genome) strength.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     output_dir is the path to the directory in which all the saved files are stored by the program.
     num_genes refers to the number of genes in the genome.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     element_choice is the element selected to be modified.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     """
 
     #Modify the strength of the selected element present on the genome
@@ -156,11 +162,13 @@ def expand_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
     """
     When an element is added, the genome length increases.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     num_genes refers to the number of genes in the genome.
     region_choice is the region the selected element resides in.
     genome_shift is the amount of base pairs to add to the genome when an element is added in.
     element_choice is the element selected to be added.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     """
 
     #Increases the genome size if an element is added
@@ -213,11 +221,13 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
     """
     When an element is removed, the genome length decreases.
     Input(s):
-    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     num_genes refers to the number of genes in the genome.
     region_choice is the region the selected element resides in.
     genome_shift is the amount of base pairs to remove from the genome when an element is removed.
     element_choice is the element selected to be removed.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
     """
 
     #Decreases the genome size if an element is added
@@ -270,11 +280,13 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
     """
     Removes elements that have low strengths that are statistically insignificant to the overal gene expression pattern produced from the best found architecture.
     Input(s):
-    output_dir is the path to the directory in which all the saved files are stored by the program.
+    output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
     target_file is the user-inputted tsv file containing transcript abundances for each gene.
     sse_df is the dataframe containing all the sum of squared error data at each generation.
     num_genes refers to the number of genes in the genome.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
+    Output(s):
+    Saves the best found genomic architecture to the output directory.
     """
 
     remove_elements = []
