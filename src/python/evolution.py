@@ -24,6 +24,11 @@ import yaml
 
 
 class Command_line_args(object):
+    """
+    This class contains all the arguments the user inputs for the class to run.
+    Input(s):
+    No other inputs needed.
+    """
 
     def __init__(self):
 
@@ -41,6 +46,11 @@ class Command_line_args(object):
 
 
 def organize_output_dir(arguments):
+    """
+    Set up output directories for where the genome files can be stored.
+    Input(s):
+    The only argument passes is the class containing the command line arguments the user previously inputted when running the program.
+    """
 
     #Output file directory structure
     year = datetime.date.today().year
@@ -58,6 +68,12 @@ def organize_output_dir(arguments):
     return output_dir
 
 def setup_configuration_files(output_dir, arguments):
+    """
+    Sets up all the files the program needs to run, such as the yaml file containing all the genome's information.
+    Input(s):
+    output_dir is the path to the directory in which all the saved files are stored by the program.
+    aruments is the class containing all the command line arguments the user previously inputted when running the program.
+    """
 
     #Opens yaml files containing genome coordinates
     starting_genome = output_dir + 'config.yml'
@@ -73,9 +89,18 @@ def setup_configuration_files(output_dir, arguments):
     return (genome_tracker_new, genome_tracker_old)
 
 def sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments):
+    """
+    Simulates the template genome containng only one promoter upstream of the first gene and all the user specified genes.
+    Input(s):
+    output_dir is the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    target_file is the user-inputted tsv file containing transcript abundances for each gene.
+    arguments is the class containing all the command line arguments the user previously inputted when running the program.
+    """
 
     dfs = []
 
+    #Template genome is simulated and its gene expression pattern is compared to the target
     for x in range(1, arguments.args.replicate_mutation_number+1):
         if arguments.args.dynamic_deg_rate:
             genome_simulator.pt_call_alt(output_dir, genome_tracker_new)
@@ -99,6 +124,9 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments):
 def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
     """
     All the mutation possibilities are added to a dictionary.
+    Input(s):
+    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    dynamic_deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     """
 
     possibilities = {}
@@ -109,16 +137,19 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
         promoter = 'promoter_{}'.format(gene)
         terminator = 'terminator_{}'.format(gene)
         rnase = 'rnase_{}'.format(gene)
+        #If the region upstream of the first gene and region downstream of the last gene are not selected
         if gene != 0 and gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[promoter]['start'] == 0:
                 possibilities[promoter+'.add'] = 'add'
             elif genome_tracker_new[promoter]['start'] > 0:
                 possibilities[promoter+'.remove'] = 'remove'
+        #If the region upstream of the first gene is not selected
         if gene != 0:
             if genome_tracker_new[terminator]['start'] == 0:
                 possibilities[terminator+'.add'] = 'add'
             elif genome_tracker_new[terminator]['start'] > 0:
                 possibilities[terminator+'.remove'] = 'remove'
+        #If the region downstream of the last gene is not selected
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[rnase]['start'] == 0:
                 possibilities[rnase+'.add'] = 'add'
@@ -129,10 +160,12 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
         promoter = 'promoter_{}'.format(gene)
         terminator = 'terminator_{}'.format(gene)
         rnase = 'rnase_{}'.format(gene)
+        #If the region upstream of the first gene is not selected
         if gene != 0:
             if genome_tracker_new[terminator]['start'] > 0:
                 for term in range(len(possibilities)*13):
                     modify_possibilities[terminator+'.modify{}'.format(term)] = 'modify'
+        #If the region downstream of the last gene is not selected
         if gene != genome_tracker_new['num_genes']:
             if genome_tracker_new[promoter]['start'] > 0:
                 for prom in range(len(possibilities)*13):
@@ -145,8 +178,45 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
 
     return possibilities
 
+def progress_bar(count, total, replicates, status=''):
+    """
+    Displays progress bar within terminal.
+    Adapted from Vladimir Ignatev and given permission to use through a free software license.
+    Input(s):
+    count is the generation that the simulation is on.
+    total is the total number of generation dictated by the user.
+    replicates is the number of times each architecture is simulated.
+    status is the string displayed next to the progress bar.
+    """
+
+    #Setting progress bar length
+    bar_len = int(os.get_terminal_size()[0] * 0.6)
+    filled_len = int(round(bar_len * count / float(total)))
+
+    #percents = round(100.0 * count / float(total), 1)
+    #Bar displays equals sign when progressing
+    bar = '=' * filled_len + '-' * (bar_len - filled_len)
+    #Calculates how much time is left until the simulation is complete
+    time_left = round(((total*replicates*0.47) - (count*replicates*0.47)) / 60, 2)
+
+    #Writes out the progress bar information
+    sys.stdout.write('\r%s: [%s] %.2fmin\r' % (status, bar, time_left))
+    sys.stdout.flush()
+
+    return
 
 def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_sse):
+    """
+    The main part of the evolution program where the genome is modified with each generation and determine if the mutation should be acccepted.
+    Input(s):
+    output_dir is the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    genome_tracker_old is the dataframe containing the previously edited genomic data.
+    target_file is the user-inputted tsv file containing thranscript abundances for each gene.
+    arguments is the class containing all the command line arguments the user previously inputted when running the program.
+    all_sse_list is a list containing each sum of squared error value calculated.
+    max_sse is the highest sum of squared error value the program deems as a successfully found genomic architecture.
+    """
 
     #General setup
     sse_iter_list = []
@@ -155,9 +225,16 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     count = 0
     generation_number = arguments.args.generation_number
     ss_old = all_sse_list[0]
+    found_arch = False
 
     #Start of evolution program
     while i <= generation_number:
+
+        #Progress bar is printed out as each generation progresses
+        if count == 0:
+            progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
+        else:
+            progress_bar(count, 500, arguments.args.replicate_mutation_number, 'Simulation completing')
 
         possibilities = enumerate_mutation_options(genome_tracker_new, arguments.args.dynamic_deg_rate)
 
@@ -192,34 +269,59 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
             genome_tracker_new = copy.deepcopy(genome_tracker_old)
             is_accepted.append("no")
 
+        #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
         if ss_old <= max_sse and count == 0:
             count = 1
             generation_number+=500
+            found_arch = True
         elif count != 0 and count != 500:
             count+=1
         elif count == 500:
             break
 
         i+=1
-        if i <= generation_number:
-            print('generation =', i)
 
-    return (genome_tracker_new, all_sse_list, sse_iter_list, is_accepted)
+    return (genome_tracker_new, all_sse_list, sse_iter_list, is_accepted, found_arch)
 
 def save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_sse_list, sse_iter_list, is_accepted):
+    """
+    Saves the sum of squared error data, final/best genomic architecture it found, and removes any unnecessary files unrelated to the output.
+    Input(s):
+    output_dir is the path to the directory in which all the saved files are stored by the program.
+    genome_tracker_new is the dataframe containing the most recent edited genomic data.
+    arguments is the class containing all the command line arguments the user previously inputted when running the program.
+    target_file is the user-inputted tsv file containing thranscript abundances for each gene.
+    all_sse_list is a list containing each sum of squared error value calculated.
+    sse_iter_list is a list containing the number of each generation that corresponds to each sum of squared value.
+    is_accepted is a list containing information regarding if a mutation was accepted or not.
+    """
 
+    #Sum of squared error data is saved to output directory
     all_sse_list = all_sse_list[1:]
     sse_dataframe = pd.DataFrame(data=zip(sse_iter_list, all_sse_list, is_accepted), columns=["Iteration", "SSE", "Accepted"])
     export_csv = sse_dataframe.to_csv(output_dir + 'final/sse_data.tsv', index=False, sep='\t')
-    print('Cleaning up genome architecture...')
+    #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
+    print('\nCleaning up genome architecture...')
     mutation_choices.cleanup_genome(output_dir, target_file, sse_dataframe, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate)
     os.remove(output_dir+'expression_pattern.tsv')
 
+    return
 
 def main():
+    """
+    Main function that contains all other functions in order so that the program can run.
+    Input(s):
+    No inputs necessary, however command line arguments are needed for the program to run.
+    """
 
+    print ("\r\x1b[8;25;90t\r")
+
+    #Class containing command line arguments are called
     arguments = Command_line_args()
+    print("Configuring simulation...")
+    #Output directory structure is organized
     output_dir = organize_output_dir(arguments)
+    #Yaml files containing genome information are setup
     genome_trackers = setup_configuration_files(output_dir, arguments)
     genome_tracker_new = genome_trackers[0]
     genome_tracker_old = genome_trackers[1]
@@ -231,18 +333,24 @@ def main():
     max_sse = sum_of_squares.calc_accepted_sse_range(target_file, genome_tracker_new)
 
     #Creates test files from pinetree to find average number of transcripts at generation 0
-    print('generation =', 0)
+    #Template genome is simulated and compared against target file
     ss_old = sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments)
     all_sse_list = [ss_old]
 
-    print('generation =', 1)
+    #Evolution program run and mutations are tested
     evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_sse)
     genome_tracker_new = evo_vars[0]
     all_sse_list = evo_vars[1]
     sse_iter_list = evo_vars[2]
     is_accepted = evo_vars[3]
+    found = evo_vars[4]
 
+    #Files containing sum of squared data and genome information are saved in output directory
     save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_sse_list, sse_iter_list, is_accepted)
+    if found:
+        print('Simulation successfully found an architecture!')
+    else:
+        print('Simulation did not find a sound architecture. Try adjusting the effective population size.')
 
 
 if __name__ == '__main__':
