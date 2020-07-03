@@ -26,7 +26,7 @@ Produce target data plot
 setwd("../../data/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("positive_control.tsv", header=TRUE)
+target_data <- read.table("positive_control3.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -35,7 +35,7 @@ target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=s
   ggtitle("Target pattern") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
+        panel.background = element_rect(color='#DCDCDC'), 
         plot.margin = unit(c(0.5,1,0.5,1), "cm"), 
         axis.line = element_line(size=1.3), 
         axis.ticks = element_line(size=1.3), 
@@ -49,7 +49,8 @@ target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=s
   ylab("Transcript abundance") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  theme(plot.title = element_text(vjust=20))
 
 ```
 
@@ -58,7 +59,7 @@ Produce generation 0 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the template genome data is contained in 
-setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/")
+setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/")
 
 #List all transcript output files
 best_files <- list.files(pattern="expression_pattern_")
@@ -87,7 +88,8 @@ line_plot_zero <-  ggplot(plot_data, aes(fill=species, color=species, size=speci
   xlab("Time (s)") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() +
-  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  theme(plot.title = element_text(vjust=20))
 
 ```
 
@@ -95,7 +97,7 @@ Produce generation 1 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/")
+setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/")
 
 #List all transcript output files
 best_files <- list.files(pattern="expression_pattern_")
@@ -105,7 +107,7 @@ plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | s
 #Create plot
 line_plot_int <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
   geom_line(stat="identity", size=2) + 
-  ggtitle("Generation 701") + 
+  ggtitle("Generation 766") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
@@ -124,17 +126,18 @@ line_plot_int <-  ggplot(plot_data, aes(fill=species, color=species, size=specie
   xlab("Time (s)") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  theme(plot.title = element_text(vjust=20))
 
 ```
 Produce final generation plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/final/")
+setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/final/")
 
 #List all transcript output files
-plot_data <- read.table('expression_pattern_best', header=TRUE)
+plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -159,13 +162,14 @@ line_plot_final <-  ggplot(plot_data, aes(fill=species, color=species, size=spec
   xlab("Time (s)") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 50), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 50), expand = c(0, 0)) +
+  theme(plot.title = element_text(vjust=20))
 ```
 Produce fitness over time plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the results are contained in
-setwd("../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/final/")
+setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/final/")
 
 #Filter sum of squares data
 all_sse_data <- read.table("sse_data.tsv", header=TRUE)
@@ -178,17 +182,18 @@ sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) +
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
-        plot.margin = unit(c(0.5,1,1,1), "cm"), 
+        plot.margin = unit(c(1.8,1,1,1), "cm"), 
         axis.text.x = element_text(size=39), 
         axis.text.y = element_text(size=39), 
         axis.line = element_line(size=1.3), 
         axis.ticks = element_line(size=1.3), 
         axis.ticks.length = unit(0.3, "cm"),
-        axis.title = element_text(size=39),
+        axis.title = element_text(size=35),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Sum of squared error") + 
-  panel_border()
+  ylab("Sum of squared error (log scale)") + 
+  panel_border() +
+  scale_y_log10()
 
 sse_line_plot <- arrangeGrob(sse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 
@@ -200,13 +205,13 @@ setwd("../../data/figures/figure1/")
 
 #Read in genome architectures
 img1 <- readPNG("figure1_beg_genome_arch.png")
-img1 <- arrangeGrob(rasterGrob(img1, vjust=3.18, width=0.95, hjust=0.45), top=textGrob("A", x = unit(0, "npc"), y=unit(-8.5, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+img1 <- arrangeGrob(rasterGrob(img1, vjust=3.18, width=0.95, hjust=0.45), top=textGrob("A", x = unit(0, "npc"), y=unit(-7.5, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 img2 <- readPNG("figure1_gen0_genome_arch.png")
 img3 <- readPNG("figure1_intermed_genome_arch.png")
 img4 <- readPNG("figure1_final_genome_arch.png")
 
 #Create and save Figure 1
-figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.71, width=0.98), rasterGrob(img4, vjust=3.74, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, sse_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
+figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.86, width=0.98), rasterGrob(img4, vjust=3.68, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, sse_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
 
 ggsave("figure1.png", figure1, height=25, width=40)
 

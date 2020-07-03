@@ -94,7 +94,7 @@ def pt_call(output_dir, genome_tracker_new):
 
     plasmid = pt.Genome(name="plasmid", length=genome_tracker_new['length_of_genome'],
                         transcript_degradation_rate=1e-2,
-                        transcript_degradation_rate_ext=1e-2,
+                        transcript_degradation_rate_ext=1e-3,
                         rnase_speed=20,
                         rnase_footprint=10)
     #Promoters
@@ -124,7 +124,7 @@ def pt_call(output_dir, genome_tracker_new):
     sim.register_genome(plasmid)
     supress = SupressOutput()
     with supress:
-        sim.simulate(time_limit=250, time_step=1, output=output_dir+'expression_pattern.tsv')
+        sim.simulate(time_limit=300, time_step=1, output=output_dir+'expression_pattern.tsv')
 
     return
 
@@ -144,7 +144,7 @@ def pt_call_alt(output_dir, genome_tracker_new):
     sim.add_ribosome(copy_number=100, speed=30, footprint=30)
 
     plasmid = pt.Genome(name="plasmid", length=genome_tracker_new['length_of_genome'],
-                        transcript_degradation_rate_ext=1e-2,
+                        transcript_degradation_rate_ext=1e-3,
                         rnase_speed=20,
                         rnase_footprint=10)
     #Promoters
@@ -174,6 +174,6 @@ def pt_call_alt(output_dir, genome_tracker_new):
     sim.register_genome(plasmid)
     supress = SupressOutput()
     with supress:
-        sim.simulate(time_limit=250, time_step=1, output=output_dir+'expression_pattern.tsv')
+        sim.simulate(time_limit=300, time_step=1, output=output_dir+'expression_pattern.tsv')
 
     return

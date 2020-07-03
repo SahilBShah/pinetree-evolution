@@ -29,7 +29,7 @@ def calc_sse(target_file, new_file, num_genes):
         sse+=sum_df_squared[index]
     return sse
 
-def calc_accepted_sse_range(target_file, genome_tracker_new):
+def calc_accepted_sse_range(target_file, num_genes):
     """
     Calculates the highest SSE value allowed before the program has found the a suitable architecture to reproduce the target data.
     Input(s):
@@ -42,5 +42,5 @@ def calc_accepted_sse_range(target_file, genome_tracker_new):
     #Decreases the transcript abundances of the target file by 10%
     altered_file = target_file[['protein1', 'protein2', 'protein3']] * 0.9
     #Calculates the sum of squared error between the reduced values and the target values and returns it
-    max_sse = calc_sse(target_file, altered_file, genome_tracker_new['num_genes'])
+    max_sse = calc_sse(target_file, altered_file, num_genes)
     return max_sse

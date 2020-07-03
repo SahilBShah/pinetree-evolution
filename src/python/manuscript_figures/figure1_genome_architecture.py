@@ -300,11 +300,11 @@ def create_genome_architecture(gene_file, output_dir):
                     gene3_x_right += prom_offset+5
                     genome_end += prom_offset+5
                 elif 'terminator' in min_element:
-                    draw.line(((gene2_x_right+166, y_mid_area), (gene2_x_right+166, element_y_top)), fill=(0, 0, 0), width=6)
-                    draw.line(((gene2_x_right+131, element_y_top), (gene2_x_right+197, element_y_top)), fill=(0, 0, 0), width=6)
-                    gene3_x_left += term_offset
-                    gene3_x_right += term_offset
-                    genome_end += term_offset
+                    draw.line(((gene2_x_right+195, y_mid_area), (gene2_x_right+195, element_y_top)), fill=(0, 0, 0), width=6)
+                    draw.line(((gene2_x_right+160, element_y_top), (gene2_x_right+226, element_y_top)), fill=(0, 0, 0), width=6)
+                    gene3_x_left += term_offset+30
+                    gene3_x_right += term_offset+30
+                    genome_end += term_offset+30
                 elif 'rnase' in min_element:
                     draw.line(((gene2_x_right+150, gene1_y_top-7), (gene2_x_right+198, gene1_y_bottom+7)), fill=(0, 0, 0), width=6)
                     draw.line(((gene2_x_right+198, gene1_y_top-7), (gene2_x_right+150, gene1_y_bottom+7)), fill=(0, 0, 0), width=6)
@@ -348,28 +348,56 @@ def create_genome_architecture(gene_file, output_dir):
 
 def main():
 
+    #Figure 1
     #Template genome architecture
     create_template_genome()
     #Target genome architecture
-    with open('../../../data/gene_parameters/positive_control.yml', 'r') as gene_parameters:
+    with open('../../../data/gene_parameters/positive_control3.yml', 'r') as gene_parameters:
         gene_file = yaml.safe_load(gene_parameters)
     output_dir = '../../../data/figures/figure1/figure1_beg_genome_arch.png'
     create_genome_architecture(gene_file, output_dir)
     #Generation 0 genome architecture
-    with open('../../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/gene_0.yml', 'r') as gene_parameters:
+    with open('../../../results/2020_7_2/positive_control3_rep1_nmut20/gene_0.yml', 'r') as gene_parameters:
         gene_file = yaml.safe_load(gene_parameters)
     output_dir = '../../../data/figures/figure1/figure1_gen0_genome_arch.png'
     create_genome_architecture(gene_file, output_dir)
     #Intermediate generation genome architecture
-    with open('../../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/gene_701.yml', 'r') as gene_parameters:
+    with open('../../../results/2020_7_2/positive_control3_rep1_nmut20/gene_766.yml', 'r') as gene_parameters:
         gene_file = yaml.safe_load(gene_parameters)
     output_dir = '../../../data/figures/figure1/figure1_intermed_genome_arch.png'
     create_genome_architecture(gene_file, output_dir)
     #Final genome architecture
-    with open('../../../results/2020_5_6/positive_control_nf1.0_rep0_nmut5/final/gene_best.yml', 'r') as gene_parameters:
+    with open('../../../results/2020_7_2/positive_control3_rep1_nmut20/final/gene_best.yml', 'r') as gene_parameters:
         gene_file = yaml.safe_load(gene_parameters)
     output_dir = '../../../data/figures/figure1/figure1_final_genome_arch.png'
     create_genome_architecture(gene_file, output_dir)
 
+    #Figure 2
+    #Final first genome architecture
+    with open('../../../results/2020_7_2/paper_data1_rep1_nmut20/final/gene_best.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/figures/figure2/figure2_final1_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+    #Final second genome architecture
+    with open('../../../results/2020_7_2/paper_data3_rep1_nmut20/final/gene_best.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/figures/figure2/figure2_final2_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+    #Final third genome architecture
+    with open('../../../results/2020_7_2/paper_data7_rep1_nmut20/final/gene_best.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/figures/figure2/figure2_final3_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+    #Final fourth genome architecture
+    with open('../../../results/2020_7_2/paper_data13_rep2_nmut20/final/gene_best.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/figures/figure2/figure2_final4_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+    #Final fifth genome architecture
+    with open('../../../results/2020_7_2/paper_data13_rep3_nmut20/final/gene_best.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/figures/figure2/figure2_final5_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
 
-main()
+if __name__ == "__main__":
+    main()
