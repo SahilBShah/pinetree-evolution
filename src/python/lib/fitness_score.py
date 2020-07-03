@@ -1,8 +1,10 @@
 import math
 import sys
 
+#1e-5
+
 #Calculates the fitness of the new mutation
-def calc_fitness(variant_fit, orig_fit, N, beta_val):
+def calc_fitness(variant_fit, orig_fit, generations, count):
     """
     Calculates the fitness of the new mutation and compares it to the fitness of the old mutation.
     Code adapted from Ashley Teufel and Claus Wilke.
@@ -15,8 +17,14 @@ def calc_fitness(variant_fit, orig_fit, N, beta_val):
     Returns the comparison between fitness values.
     """
 
-    Ne = N
-    beta = beta_val
+    Ne = 1000
+    #Determines the value that controls variation within the simulation
+    if count <= 0.1 * generations:
+        beta = 1e-7
+    else:
+        #y = mx + b: linearly increases
+        slope = (1e-4 - 1e-7) / generations
+        beta = (slope * (count - (0.1 * generations))) + 1e-7
     thresholds = 0
 
     #Fitness values are calculated based on the new and current sum of squared values
@@ -25,11 +33,11 @@ def calc_fitness(variant_fit, orig_fit, N, beta_val):
 
     #Fitness values are compared to determine if a mutation should be accepted
     if xj >= xi:
-        return((1.0))
+        return 1.0
     #Deleterious mutations are accepted exponentially
     else:
         exponent = -2 * float(Ne) * (xi - xj)
-        return(safe_calc(exponent))
+        return safe_calc(exponent)
 
 
 def calc_x(data, beta, threshold):
@@ -47,7 +55,7 @@ def calc_x(data, beta, threshold):
     total = 0
     exponent = float(beta) * (float(data) - float(threshold))
     total += -math.log(safe_calc(exponent) + 1)
-    return(total)
+    return total
 
 
 def safe_calc(exponent):
@@ -61,7 +69,6 @@ def safe_calc(exponent):
     """
 
     if exponent > 700:
-        print("system maxed")
-        return(sys.float_info.max)
+        return sys.float_info.max
     else:
-        return(math.exp(exponent))
+        return math.exp(exponent)

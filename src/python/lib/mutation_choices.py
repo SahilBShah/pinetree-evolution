@@ -28,7 +28,7 @@ import mutation_analysis
 #{element: [genome_shift, starting_strengths]}
 element_dict = {'promoter': [34, 10e6], 'rnase': [9, 5e-3], 'terminator': [29, 0.3]}
 #{element: [min_strength, max_strength]}
-element_strengths_range = {'promoter': [10e5, 10e13], 'rnase': [0.0, 1.0], 'terminator': [0.0, 1.0]}
+element_strengths_range = {'promoter': [10e6, 10e13], 'rnase': [0.0, 1.0], 'terminator': [0.0, 1.0]}
 
 
 def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):
@@ -104,7 +104,7 @@ def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_cho
     if starting_position + 1 == ending_position:
         ending_position+=1
     #Adds the element to the genome with its starting strength
-    start = genome_tracker_new[element_choice]['start'] = random.randint(starting_position+1, ending_position)
+    start = genome_tracker_new[element_choice]['start'] = np.random.randint(starting_position+1, ending_position)
     stop = genome_tracker_new[element_choice]['stop'] = start + element_dict[element_choice.split('_')[0]][0]
     genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
     genome_tracker_new[element_choice]['current_strength'] = element_dict[element_choice.split('_')[0]][1]
@@ -151,10 +151,10 @@ def modify_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_
 
     #Modify the strength of the selected element present on the genome
     genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
-    genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.2)
+    genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['current_strength'] * np.random.normal(1, 0.15)
     #If the modified strength goes below the minimum threshold or above the maximum threshold, continue to modify the element's strength
     while genome_tracker_new[element_choice]['current_strength'] < element_strengths_range[element_choice.split('_')[0]][0] or genome_tracker_new[element_choice]['current_strength'] > element_strengths_range[element_choice.split('_')[0]][1]:
-        genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.2)
+        genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.15)
 
     return genome_tracker_new
 
@@ -276,7 +276,7 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
 
     return genome_tracker_new
 
-def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
+def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_genes, deg_rate):
     """
     Removes elements that have low strengths that are statistically insignificant to the overal gene expression pattern produced from the best found architecture.
     Input(s):
@@ -288,7 +288,7 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
     Output(s):
     Saves the best found genomic architecture to the output directory.
     """
-
+    np.seterr('raise')
     remove_elements = []
 
     #Get index with lowest sum of squared error value
@@ -302,6 +302,8 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
     genome_tracker_saved = copy.deepcopy(genome_tracker_best)
     #Calculate SSE for best genome and get a range of values
     ss_best = mutation_analysis.analyze_mutation(genome_tracker_best, output_dir, target_file, 20, deg_rate, True)
+    if replicate_mutations == 1:
+        ss_best.append(ss_best[0])
 
     #Iterate through each element and remove them and compare SSE values of new architecture to the best architecture previously found
     for gene in range(num_genes+1):
@@ -313,6 +315,8 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, terminator)
                 #Get SSE values range to compare to the best found architecture
                 ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                if replicate_mutations == 1:
+                    ss_comp.append(ss_comp[0])
                 if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
                     remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
@@ -322,6 +326,8 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, promoter)
                 #Get SSE values range to compare to the best found architecture
                 ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                if replicate_mutations == 1:
+                    ss_comp.append(ss_comp[0])
                 if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
                     remove_elements.append((promoter, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
@@ -331,6 +337,8 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, rnase)
                 #Get SSE values range to compare to the best found architecture
                 ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                if replicate_mutations == 1:
+                    ss_comp.append(ss_comp[0])
                 if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
                     remove_elements.append((rnase, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
@@ -343,6 +351,8 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
     for element in remove_elements:
         genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, element[0])
         ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+        if replicate_mutations == 1:
+            ss_comp.append(ss_comp[0])
         if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
             genome_tracker_best = copy.deepcopy(genome_tracker_saved)
         else:
@@ -351,7 +361,7 @@ def cleanup_genome(output_dir, target_file, sse_df, num_genes, deg_rate):
     #Saves best genome architecture found
     with open(output_dir+'final/gene_best.yml', 'w') as save_yaml:
         yaml.dump(genome_tracker_best, save_yaml)
-    mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate)
+    mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, replicate_mutations, deg_rate)
     save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
     save_df.to_csv(output_dir+"final/expression_pattern_best.tsv", sep='\t', index=False)
 

@@ -89,7 +89,7 @@ prom_line_plot <- ggplot(prom_data, aes(x=strengths, y=values)) +
         axis.ticks.length = unit(0.3, "cm"),
         axis.title.x = element_text(size=80), 
         axis.title.y = element_text(size=80)) +
-  xlab("Promoter strength") + 
+  xlab("Promoter strength (log scale)") + 
   ylab("Gene Y protein abundance/\nGene X protein abundance") + 
   panel_border() +
   geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means), width=0.05, size=2) +
@@ -110,7 +110,7 @@ prom_log_plot <- ggplot(prom_data, aes(x=strengths, y=values)) +
         axis.ticks.length = unit(0.3, "cm"),
         axis.title.x = element_text(size=80), 
         axis.title.y = element_text(size=80)) +
-  xlab("Promoter strength") + 
+  xlab("Promoter strength (log scale)") + 
   ylab("Gene Y protein abundance/\nGene X protein abundance (log scale)") + 
   panel_border() +
   geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means), width=0.05, size=2) +
@@ -203,11 +203,12 @@ term_log_plot <- ggplot(term_data, aes(x=strengths, y=values)) +
         axis.ticks.length = unit(0.3, "cm"),
         axis.title.x = element_text(size=80), 
         axis.title.y = element_text(size=80)) + 
-  xlab("Terminator strength") + 
+  xlab("Terminator strength (log scale)") + 
   ylab("Gene Y protein abundance/\nGene X protein abundance (log scale)") + 
   panel_border() +
   geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means), width=0.05, size=2) +
-  scale_y_log10()
+  scale_y_log10() +
+  scale_x_log10()
 
 ```
 Plot RNAse parameters
@@ -284,11 +285,12 @@ rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) +
         axis.ticks.length = unit(0.3, "cm"),
         axis.title.x = element_text(size=80), 
         axis.title.y = element_text(size=80)) +
-  xlab("RNAse strength") + 
+  xlab("RNAse strength (log scale)") + 
   ylab("Gene Y protein abundance/\nGene X protein abundance (log scale)") + 
   panel_border() +
   geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means), width=0.05, size=2) +
-  scale_y_log10()
+  scale_y_log10() +
+  scale_x_log10()
 
 ```
 Produce paramters figure

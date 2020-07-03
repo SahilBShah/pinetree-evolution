@@ -11,6 +11,7 @@ import numpy as np
 import os
 import pandas as pd
 import random
+import yaml
 
 #lib imports
 import file_setup
@@ -20,7 +21,6 @@ import initialize_yaml
 import mutation_choices
 import mutation_analysis
 import sum_of_squares
-import yaml
 
 
 class Command_line_args(object):
@@ -41,8 +41,6 @@ class Command_line_args(object):
         self.parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
         self.parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
         self.parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
-        self.parser.add_argument('N', type=float, default=1.0, nargs='?', help='Input desired effective population size value.')
-        self.parser.add_argument('beta', type=float, default=0.001, nargs='?', help='Input desired beta value based on starting sum of squares value for fitness calculation.')
         self.parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
         self.args = self.parser.parse_args()
 
@@ -62,7 +60,7 @@ def organize_output_dir(arguments):
     day = datetime.date.today().day
     output_dir = '../../results/{}_{}_{}/'.format(year, month, day)
 
-    output_dir = output_dir + '{}_nf{}_rep{}_nmut{}/'.format(arguments.args.target_transcript_data.strip('.tsv'), arguments.args.N, arguments.args.run_number, arguments.args.replicate_mutation_number)
+    output_dir = output_dir + '{}_rep{}_nmut{}/'.format(arguments.args.target_transcript_data.strip('.tsv'), arguments.args.run_number, arguments.args.replicate_mutation_number)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     final_data_dir = output_dir+'/final'
@@ -213,7 +211,7 @@ def progress_bar(count, total, replicates, status=''):
     time_left = round(((total*replicates*0.47) - (count*replicates*0.47)) / 60, 2)
 
     #Writes out the progress bar information
-    sys.stdout.write('\r%s: [%s] %.2fmin\r' % (status, bar, time_left))
+    sys.stdout.write('%s: [%s] %.2fmin\r' % (status, bar, time_left))
     sys.stdout.flush()
 
     return
@@ -238,10 +236,9 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     """
 
     #General setup
-    sse_iter_list = []
-    is_accepted = []
+    sse_iter_list = [0]
+    is_accepted = ['yes']
     i = 1
-    count = 0
     generation_number = arguments.args.generation_number
     ss_old = all_sse_list[0]
     found_arch = False
@@ -250,10 +247,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     while i <= generation_number:
 
         #Progress bar is printed out as each generation progresses
-        if count == 0:
-            progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
-        else:
-            progress_bar(count, 500, arguments.args.replicate_mutation_number, 'Simulation completing')
+        progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
 
         possibilities = enumerate_mutation_options(genome_tracker_new, arguments.args.dynamic_deg_rate)
 
@@ -271,17 +265,17 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
         #pinetree called in test_mutation
         ss_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_file, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
 
-        accept_prob = fitness_score.calc_fitness(ss_new, ss_old, arguments.args.N, arguments.args.beta)
+        accept_prob = fitness_score.calc_fitness(ss_new, ss_old, generation_number, i)
         all_sse_list.append(ss_new)
         sse_iter_list.append(i)
         if accept_prob > random.random():
-            #If accepted the old genome is replace by the new genome and files for the new genome are saved
+            #If accepted, the old genome is replace by the new genome and files for the new genome are saved
             genome_tracker_old = copy.deepcopy(genome_tracker_new)
             with open(output_dir+'gene_{}.yml'.format(i), 'w') as save_yaml:
                 yaml.dump(genome_tracker_old, save_yaml)
             save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
             save_df.to_csv(output_dir+"expression_pattern_{}.tsv".format(i), sep='\t', index=False)
-            ss_old = ss_new
+            ss_old = copy.copy(ss_new)
             is_accepted.append("yes")
         else:
             #If mutation is rejected then the new genome becomes the last accepted genome
@@ -289,14 +283,8 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
             is_accepted.append("no")
 
         #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
-        if ss_old <= max_sse and count == 0:
-            count = 1
-            generation_number+=500
+        if ss_old <= max_sse:
             found_arch = True
-        elif count != 0 and count != 500:
-            count+=1
-        elif count == 500:
-            break
 
         i+=1
 
@@ -318,12 +306,12 @@ def save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_
     """
 
     #Sum of squared error data is saved to output directory
-    all_sse_list = all_sse_list[1:]
+    all_sse_list = all_sse_list
     sse_dataframe = pd.DataFrame(data=zip(sse_iter_list, all_sse_list, is_accepted), columns=["Iteration", "SSE", "Accepted"])
     export_csv = sse_dataframe.to_csv(output_dir + 'final/sse_data.tsv', index=False, sep='\t')
     #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
     print('\nCleaning up genome architecture...')
-    mutation_choices.cleanup_genome(output_dir, target_file, sse_dataframe, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate)
+    mutation_choices.cleanup_genome(output_dir, target_file, sse_dataframe, arguments.args.replicate_mutation_number, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate)
     os.remove(output_dir+'expression_pattern.tsv')
 
     return
@@ -353,7 +341,7 @@ def main():
     target_file = pd.read_csv('../../data/'+arguments.args.target_transcript_data, header=0, sep='\t')
     target_file = file_setup.rearrange_file(target_file, genome_tracker_new)
     #Determines the highest SSE value allowed before finding and accepting a suitable architecture
-    max_sse = sum_of_squares.calc_accepted_sse_range(target_file, genome_tracker_new)
+    max_sse = sum_of_squares.calc_accepted_sse_range(target_file, genome_tracker_new['num_genes'])
 
     #Creates test files from pinetree to find average number of transcripts at generation 0
     #Template genome is simulated and compared against target file
@@ -373,7 +361,7 @@ def main():
     if found:
         print('Simulation successfully found an architecture!')
     else:
-        print('Simulation did not find a sound architecture. Try adjusting the effective population size.')
+        print('Simulation did not find a sound architecture.')
 
 
 if __name__ == '__main__':

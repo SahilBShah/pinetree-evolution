@@ -3,7 +3,9 @@ Evolutionary program that uses PineTree to evolve genomes based on user's specif
 
 If running on TACC determine number of cores present to maximize the amount of computing time available.
 
-To-Do:
-1) Edit PineTree to normalize time stamps so that output files can be compared to one another more easily. This must be done so that we have a standardized version to calculate the average sum of squares per mutation proposed in order to reduce noise.
-2) Create Documentation.
-3) Work on how to optimize program for usage on TACC.
+How to run an evolutionary simulation:
+
+1) Open the terminal.
+2) Navigate to folder containing "evolution.py" file in the terminal.
+3) In the terminal, enter "python3 evolution.py [target file name (string)] [yaml file name (string)] [run number (int)] [generaations (int)] [number of replicates per generation (int)] [If rnase sites should have individual degredation rates (bool)]"
+4) Press enter to run.
