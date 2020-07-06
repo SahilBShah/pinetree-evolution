@@ -251,7 +251,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
         if arguments.args.progress_bar_out:
             progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
         elif i == 1:
-            print('Running simulation...')
+            print('Running simulation...\nEstimated time:', round(((generation_number*arguments.args.replicate_mutation_number*0.47) - (i*arguments.args.replicate_mutation_number*0.47)) / 60, 2))
 
         possibilities = enumerate_mutation_options(genome_tracker_new, arguments.args.dynamic_deg_rate)
 
