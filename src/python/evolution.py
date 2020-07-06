@@ -42,6 +42,7 @@ class Command_line_args(object):
         self.parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
         self.parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
         self.parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
+        self.parser.add_argument('progress_bar_out', type=bool, default='', nargs='?', help='Input \'True\' if the progress bar should be outputted or leave blank if not.')
         self.args = self.parser.parse_args()
 
 
@@ -74,7 +75,7 @@ def setup_configuration_files(output_dir, arguments):
     Sets up all the files the program needs to run, such as the yaml file containing all the genome's information.
     Input(s):
     output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
-    aruments is the class containing all the command line arguments the user previously inputted when running the program.
+    arguments is the class containing all the command line arguments the user previously inputted when running the program.
     Output(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     genome_tracker_old is the dataframe containing the previously edited genomic data.
@@ -247,7 +248,10 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     while i <= generation_number:
 
         #Progress bar is printed out as each generation progresses
-        progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
+        if arguments.args.progress_bar_out:
+            progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
+        elif i == 1:
+            print('Running simulation...')
 
         possibilities = enumerate_mutation_options(genome_tracker_new, arguments.args.dynamic_deg_rate)
 
