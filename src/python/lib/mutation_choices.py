@@ -288,7 +288,7 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
     Output(s):
     Saves the best found genomic architecture to the output directory.
     """
-    np.seterr('raise')
+    
     remove_elements = []
 
     #Get index with lowest sum of squared error value
@@ -310,20 +310,9 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
         promoter = 'promoter_{}'.format(gene)
         terminator = 'terminator_{}'.format(gene)
         rnase = 'rnase_{}'.format(gene)
-        if gene != 0:
-            if genome_tracker_best[terminator]['start'] > 0:
-                genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, terminator)
-                #Get SSE values range to compare to the best found architecture
-                ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
-                #If the SSE values are insignificantly different from one another, remove element
-                if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
-                    remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
-                #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif (sum(ss_comp) / len(ss_comp)) < (sum(ss_best) / len(ss_best)):
-                    remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
-                #Set the genome architecture file back to original state
-                genome_tracker_saved = copy.deepcopy(genome_tracker_best)
-        if gene != num_genes and gene != 0:
+        #If the region selected is not before the first gene or after the last gene, analyze the significance of promoters and terminators to the genome
+        if gene != 0 and gene != num_genes:
+        	#Determine importance of promoters to the genome's fitness
             if genome_tracker_best[promoter]['start'] > 0:
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, promoter)
                 #Get SSE values range to compare to the best found architecture
@@ -336,7 +325,22 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
                     remove_elements.append((promoter, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
+            #Determine importance of terminators to the genome's fitness
+            if genome_tracker_best[terminator]['start'] > 0:
+                genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, terminator)
+                #Get SSE values range to compare to the best found architecture
+                ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                #If the SSE values are insignificantly different from one another, remove element
+                if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
+                    remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
+                #If the new mean SSE value is lower from the best SSE value found, remove element
+                elif (sum(ss_comp) / len(ss_comp)) < (sum(ss_best) / len(ss_best)):
+                    remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
+                #Set the genome architecture file back to original state
+                genome_tracker_saved = copy.deepcopy(genome_tracker_best)
+        #If the region selected is not after the last gene, analyze the significance of RNAses to the genome
         if gene != num_genes:
+        	#Determine importance of RNAses to the genome's fitness
             if genome_tracker_best[rnase]['start'] > 0:
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, rnase)
                 #Get SSE values range to compare to the best found architecture
