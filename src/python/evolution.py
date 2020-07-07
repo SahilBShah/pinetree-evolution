@@ -20,7 +20,7 @@ import genome_simulator
 import initialize_yaml
 import mutation_choices
 import mutation_analysis
-import sum_of_squares
+import root_mean_square_error
 
 
 class Command_line_args(object):
@@ -124,8 +124,8 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments):
     df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / arguments.args.replicate_mutation_number
     df_mean.to_csv(output_dir+'expression_pattern_0.tsv', sep='\t', index=False)
     orig_file = pd.read_csv(output_dir+'expression_pattern_0.tsv', header=0, sep='\t')
-    orig_file = file_setup.rearrange_file(orig_file, genome_tracker_new)
-    ss_old = sum_of_squares.calc_sse(target_file, orig_file, genome_tracker_new['num_genes'])
+    orig_file = file_setup.rearrange_file(orig_file, genome_tracker_new['num_genes'])
+    ss_old = root_mean_square_error.calc_nrmse(target_file, orig_file)
 
     return ss_old
 
@@ -217,7 +217,7 @@ def progress_bar(count, total, replicates, status=''):
 
     return
 
-def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_sse):
+def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_rmse):
     """
     The main part of the evolution program where the genome is modified with each generation and determine if the mutation should be acccepted.
     Input(s):
@@ -227,7 +227,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     target_file is the user-inputted tsv file containing thranscript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     all_sse_list is a list containing each sum of squared error value calculated.
-    max_sse is a float that refers to the highest sum of squared error value the program deems as a successfully found genomic architecture.
+    max_rmse is a float that refers to the highest root means square error value the program deems as a successfully found genomic architecture.
     Output(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     all_sse_list is a list containing each sum of squared error value calculated.
@@ -287,7 +287,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
             is_accepted.append("no")
 
         #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
-        if ss_old <= max_sse:
+        if ss_old <= max_rmse:
             found_arch = True
 
         i+=1
@@ -343,9 +343,9 @@ def main():
 
     #Target file inputted as dataframe
     target_file = pd.read_csv('../../data/'+arguments.args.target_transcript_data, header=0, sep='\t')
-    target_file = file_setup.rearrange_file(target_file, genome_tracker_new)
+    target_file = file_setup.rearrange_file(target_file, genome_tracker_new['num_genes'])
     #Determines the highest SSE value allowed before finding and accepting a suitable architecture
-    max_sse = sum_of_squares.calc_accepted_sse_range(target_file, genome_tracker_new['num_genes'])
+    max_rmse = root_mean_square_error.calc_accepted_rmse_range(target_file)
 
     #Creates test files from pinetree to find average number of transcripts at generation 0
     #Template genome is simulated and compared against target file
@@ -353,7 +353,7 @@ def main():
     all_sse_list = [ss_old]
 
     #Evolution program run and mutations are tested
-    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_sse)
+    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_rmse)
     genome_tracker_new = evo_vars[0]
     all_sse_list = evo_vars[1]
     sse_iter_list = evo_vars[2]

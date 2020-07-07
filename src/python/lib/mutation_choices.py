@@ -321,7 +321,7 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
                 if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
                     remove_elements.append((promoter, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif (sum(ss_comp) / len(ss_comp)) < (sum(ss_best) / len(ss_best)):
+                elif np.mean(ss_comp) < np.mean(ss_best):
                     remove_elements.append((promoter, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
@@ -334,7 +334,7 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
                 if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
                     remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif (sum(ss_comp) / len(ss_comp)) < (sum(ss_best) / len(ss_best)):
+                elif np.mean(ss_comp) < np.mean(ss_best):
                     remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
@@ -349,7 +349,7 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
                 if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
                     remove_elements.append((rnase, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif (sum(ss_comp) / len(ss_comp)) < (sum(ss_best) / len(ss_best)):
+                elif np.mean(ss_comp) < np.mean(ss_best):
                     remove_elements.append((rnase, stats.ttest_ind(ss_best, ss_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
@@ -363,7 +363,7 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
         ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
         if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
             genome_tracker_best = copy.deepcopy(genome_tracker_saved)
-        elif (sum(ss_comp) / len(ss_comp)) < (sum(ss_best) / len(ss_best)):
+        elif np.mean(ss_comp) < np.mean(ss_best):
             genome_tracker_best = copy.deepcopy(genome_tracker_saved)
         else:
             break
