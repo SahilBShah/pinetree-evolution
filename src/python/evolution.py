@@ -103,7 +103,7 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments):
     target_file is the user-inputted tsv file containing transcript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     Output(s):
-    ss_old is the float that refers to the sum of squared error value related to genome_tracker_old.
+    rmse_old is the float that refers to the root mean square error value related to genome_tracker_old.
     """
 
     dfs = []
@@ -124,10 +124,10 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments):
     df_mean[['protein', 'transcript', 'ribo_density']] = df_mean[['protein', 'transcript', 'ribo_density']] / arguments.args.replicate_mutation_number
     df_mean.to_csv(output_dir+'expression_pattern_0.tsv', sep='\t', index=False)
     orig_file = pd.read_csv(output_dir+'expression_pattern_0.tsv', header=0, sep='\t')
-    orig_file = file_setup.rearrange_file(orig_file, genome_tracker_new['num_genes'])
-    ss_old = root_mean_square_error.calc_nrmse(target_file, orig_file)
+    orig_file = file_setup.rearrange_file(orig_file, target_file.index[-1], genome_tracker_new['num_genes'])
+    rmse_old = root_mean_square_error.calc_nrmse(target_file, orig_file)
 
-    return ss_old
+    return rmse_old
 
 def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
     """
@@ -217,7 +217,7 @@ def progress_bar(count, total, replicates, status=''):
 
     return
 
-def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_rmse):
+def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_rmse_list, max_rmse):
     """
     The main part of the evolution program where the genome is modified with each generation and determine if the mutation should be acccepted.
     Input(s):
@@ -226,22 +226,22 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
     genome_tracker_old is the dataframe containing the previously edited genomic data.
     target_file is the user-inputted tsv file containing thranscript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
-    all_sse_list is a list containing each sum of squared error value calculated.
+    all_rmse_list is a list containing each root mean square error value calculated.
     max_rmse is a float that refers to the highest root means square error value the program deems as a successfully found genomic architecture.
     Output(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
-    all_sse_list is a list containing each sum of squared error value calculated.
-    sse_iter_list is a list containing the number of each generation that corresponds to each sum of squared value.
+    all_rmse_list is a list containing each root mean square error value calculated.
+    rmse_iter_list is a list containing the number of each generation that corresponds to each root mean square error value.
     is_accepted is a list containing information regarding if a mutation was accepted or not.
     found_arch is a boolean that that flags when a suitable genome architecture has been found.
     """
 
     #General setup
-    sse_iter_list = [0]
+    rmse_iter_list = [0]
     is_accepted = ['yes']
     i = 1
     generation_number = arguments.args.generation_number
-    ss_old = all_sse_list[0]
+    rmse_old = all_rmse_list[0]
     found_arch = False
 
     #Start of evolution program
@@ -267,11 +267,11 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
         #Sum of squared error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
         #pinetree called in test_mutation
-        ss_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_file, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
+        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_file, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
 
-        accept_prob = fitness_score.calc_fitness(ss_new, ss_old, generation_number, i)
-        all_sse_list.append(ss_new)
-        sse_iter_list.append(i)
+        accept_prob = fitness_score.calc_fitness(rmse_new, rmse_old, generation_number, i)
+        all_rmse_list.append(rmse_new)
+        rmse_iter_list.append(i)
         if accept_prob > random.random():
             #If accepted, the old genome is replace by the new genome and files for the new genome are saved
             genome_tracker_old = copy.deepcopy(genome_tracker_new)
@@ -279,7 +279,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
                 yaml.dump(genome_tracker_old, save_yaml)
             save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
             save_df.to_csv(output_dir+"expression_pattern_{}.tsv".format(i), sep='\t', index=False)
-            ss_old = copy.copy(ss_new)
+            rmse_old = copy.copy(rmse_new)
             is_accepted.append("yes")
         else:
             #If mutation is rejected then the new genome becomes the last accepted genome
@@ -287,14 +287,14 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_fil
             is_accepted.append("no")
 
         #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
-        if ss_old <= max_rmse:
+        if rmse_old <= max_rmse:
             found_arch = True
 
         i+=1
 
-    return (genome_tracker_new, all_sse_list, sse_iter_list, is_accepted, found_arch)
+    return (genome_tracker_new, all_rmse_list, rmse_iter_list, is_accepted, found_arch)
 
-def save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_sse_list, sse_iter_list, is_accepted):
+def save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_rmse_list, rmse_iter_list, is_accepted):
     """
     Saves the sum of squared error data, final/best genomic architecture it found, and removes any unnecessary files unrelated to the output.
     Input(s):
@@ -302,20 +302,20 @@ def save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     target_file is the user-inputted tsv file containing thranscript abundances for each gene.
-    all_sse_list is a list containing each sum of squared error value calculated.
-    sse_iter_list is a list containing the number of each generation that corresponds to each sum of squared value.
+    all_rmse_list is a list containing each root mean square error value calculated.
+    rmse_iter_list is a list containing the number of each generation that corresponds to each root mean square error value.
     is_accepted is a list containing information regarding if a mutation was accepted or not.
     Output(s):
     Saves all the relevant files to the output directory.
     """
 
     #Sum of squared error data is saved to output directory
-    all_sse_list = all_sse_list
-    sse_dataframe = pd.DataFrame(data=zip(sse_iter_list, all_sse_list, is_accepted), columns=["Iteration", "SSE", "Accepted"])
-    export_csv = sse_dataframe.to_csv(output_dir + 'final/sse_data.tsv', index=False, sep='\t')
+    all_rmse_list = all_rmse_list
+    rmse_dataframe = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
+    export_csv = rmse_dataframe.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
     print('\nCleaning up genome architecture...')
-    mutation_choices.cleanup_genome(output_dir, target_file, sse_dataframe, arguments.args.replicate_mutation_number, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate)
+    mutation_choices.cleanup_genome(output_dir, target_file, rmse_dataframe, arguments.args.replicate_mutation_number, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate)
     os.remove(output_dir+'expression_pattern.tsv')
 
     return
@@ -343,25 +343,25 @@ def main():
 
     #Target file inputted as dataframe
     target_file = pd.read_csv('../../data/'+arguments.args.target_transcript_data, header=0, sep='\t')
-    target_file = file_setup.rearrange_file(target_file, genome_tracker_new['num_genes'])
-    #Determines the highest SSE value allowed before finding and accepting a suitable architecture
+    target_file = file_setup.rearrange_file(target_file, target_file.iloc[-1]['time'], genome_tracker_new['num_genes'])
+    #Determines the highest RMSE value allowed before finding and accepting a suitable architecture
     max_rmse = root_mean_square_error.calc_accepted_rmse_range(target_file)
 
     #Creates test files from pinetree to find average number of transcripts at generation 0
     #Template genome is simulated and compared against target file
-    ss_old = sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments)
-    all_sse_list = [ss_old]
+    rmse_old = sim_initial_genome(output_dir, genome_tracker_new, target_file, arguments)
+    all_rmse_list = [rmse_old]
 
     #Evolution program run and mutations are tested
-    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_sse_list, max_rmse)
+    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_file, arguments, all_rmse_list, max_rmse)
     genome_tracker_new = evo_vars[0]
-    all_sse_list = evo_vars[1]
-    sse_iter_list = evo_vars[2]
+    all_rmse_list = evo_vars[1]
+    rmse_iter_list = evo_vars[2]
     is_accepted = evo_vars[3]
     found = evo_vars[4]
 
     #Files containing sum of squared data and genome information are saved in output directory
-    save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_sse_list, sse_iter_list, is_accepted)
+    save_final_data(output_dir, genome_tracker_new, arguments, target_file, all_rmse_list, rmse_iter_list, is_accepted)
     if found:
         print('Simulation successfully found an architecture!')
     else:

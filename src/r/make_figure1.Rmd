@@ -172,11 +172,11 @@ Produce fitness over time plot
 setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/final/")
 
 #Filter sum of squares data
-all_sse_data <- read.table("sse_data.tsv", header=TRUE)
-sse_data_acc <- all_sse_data %>% filter(Accepted=='yes')
+all_rmse_data <- read.table("rmse_data.tsv", header=TRUE)
+rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
 
 #Create sum of squares plot
-sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) + 
+rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) + 
   geom_point(stat='identity', color='#D55E00', size=3) + 
   geom_line(size=2, stat='identity', color='#D55E00') + 
   theme(panel.grid.major = element_blank(), 
@@ -191,11 +191,11 @@ sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) +
         axis.title = element_text(size=35),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Root mean squared error (log scale)") + 
+  ylab("Root mean square error (log scale)") + 
   panel_border() +
   scale_y_log10()
 
-sse_line_plot <- arrangeGrob(sse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 
 ```
 Make figure 1
@@ -211,7 +211,7 @@ img3 <- readPNG("figure1_intermed_genome_arch.png")
 img4 <- readPNG("figure1_final_genome_arch.png")
 
 #Create and save Figure 1
-figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.86, width=0.98), rasterGrob(img4, vjust=3.68, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, sse_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
+figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.86, width=0.98), rasterGrob(img4, vjust=3.68, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, rmse_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
 
 ggsave("figure1.png", figure1, height=25, width=40)
 
