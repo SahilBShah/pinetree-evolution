@@ -191,7 +191,7 @@ sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) +
         axis.title = element_text(size=35),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Sum of squared error (log scale)") + 
+  ylab("Root mean squared error (log scale)") + 
   panel_border() +
   scale_y_log10()
 

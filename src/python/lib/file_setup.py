@@ -1,7 +1,7 @@
 import pandas as pd
 
 #Removes unnecessary rows and columns in produced file
-def rearrange_file(file, genome_tracker_new):
+def rearrange_file(file, num_genes):
     """
     Rearranges files so that the target input file can be compared to the simulated output file so that sum of squares can be easily calculated.
     Input(s):
@@ -14,7 +14,7 @@ def rearrange_file(file, genome_tracker_new):
     protein_species = []
 
     #File is rearranged to have columns represent each gene's transcript abundances and each row represent the time
-    for gene_number in range(1, genome_tracker_new['num_genes']+1):
+    for gene_number in range(1, num_genes+1):
         protein_species.append('protein{}'.format(gene_number))
     file = file[file['species'].isin(protein_species)]
     file = file[['time', 'species', 'transcript']]
@@ -26,6 +26,12 @@ def rearrange_file(file, genome_tracker_new):
     for protein in protein_species:
         if protein not in file.columns:
             file[protein] = 0.0
+    #If none of the proteins are present at a certain time point then no (0) transcripts are produced
+    for t in range(1, file.index[-1]):
+        if t not in file.index:
+            new_row = pd.Series(data={'protein1': 0, 'protein2': 0, 'protein3': 0}, name=t)
+            file = file.append(new_row, ignore_index=False)
+            file = file.sort_index()
     file = file[protein_species]
 
     return file

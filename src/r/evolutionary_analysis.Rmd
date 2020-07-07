@@ -119,8 +119,9 @@ sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) +
         axis.title = element_text(size=39),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Sum of squared error") + 
-  panel_border()
+  ylab("Root mean squared error (log scale)") + 
+  panel_border() +
+  scale_x_log10()
 
 sse_line_plot <- arrangeGrob(sse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 ggsave("../../../data/figures/positive_control3_rep0_sse.png", sse_line_plot, width=20, height=10, limitsize=FALSE)
