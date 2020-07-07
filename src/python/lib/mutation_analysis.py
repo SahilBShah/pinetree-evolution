@@ -6,7 +6,7 @@ import genome_simulator
 import file_setup
 import root_mean_square_error
 
-def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_rate, sse_range=False):
+def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_rate, rmse_range=False):
     """
     Calls the pinetree script to simulate the genome x number of times and calculate the average of transcript abundances.
     Returns the sum of squares value to compare the fitness of the new and previously accepted genome.
@@ -16,13 +16,13 @@ def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_ra
     df is the dataframe containing information regarding the target transcript abundances.
     mutation_number refers to the number of times to run a simulation on the same architecture to reduce noise.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
-    sse_range is a list that contains the sum of squared error values for each simulation ran when compared to the target.
+    rmse_range is a list that contains the root mean square error values for each simulation ran when compared to the target.
     Output(s):
     Returns a floating point number that refers to the sum of squared error for the recently simulated genome.
     """
 
     dfs = []
-    sse_list = []
+    rmse_list = []
 
     #Creates test files from pinetree to find average number of transcripts at each time
     for i in range(1, mutation_number+1):
@@ -32,16 +32,16 @@ def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_ra
         else:
             #If each individual RNase site's binding strength is NOT being altered
             genome_simulator.pt_call(output_dir, genome_tracker_new)
-        if sse_range:
+        if rmse_range:
             nf = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
-            nf = file_setup.rearrange_file(nf, genome_tracker_new['num_genes'])
-            sse_list.append(root_mean_square_error.calc_nrmse(df, nf))
+            nf = file_setup.rearrange_file(nf, df.index[-1], genome_tracker_new['num_genes'])
+            rmse_list.append(root_mean_square_error.calc_nrmse(df, nf))
         save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
 
-    if sse_range:
-        return sse_list
+    if rmse_range:
+        return rmse_list
 
     #Averages all the values in each file and creates a new file with those averages
     df_concat = pd.concat(dfs)
@@ -51,6 +51,6 @@ def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number, deg_ra
     df_mean.to_csv(output_dir+'expression_pattern.tsv', sep='\t', index=False)
     #New file is read in as a dataframe
     nf = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
-    nf = file_setup.rearrange_file(nf, genome_tracker_new['num_genes'])
+    nf = file_setup.rearrange_file(nf, df.index[-1], genome_tracker_new['num_genes'])
 
     return root_mean_square_error.calc_nrmse(df, nf)

@@ -276,13 +276,13 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
 
     return genome_tracker_new
 
-def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_genes, deg_rate):
+def cleanup_genome(output_dir, target_file, rmse_df, replicate_mutations, num_genes, deg_rate):
     """
     Removes elements that have low strengths that are statistically insignificant to the overal gene expression pattern produced from the best found architecture.
     Input(s):
     output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
     target_file is the user-inputted tsv file containing transcript abundances for each gene.
-    sse_df is the dataframe containing all the sum of squared error data at each generation.
+    rmse_df is the dataframe containing all the sroot mean square error data at each generation.
     num_genes refers to the number of genes in the genome.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     Output(s):
@@ -292,20 +292,20 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
     remove_elements = []
 
     #Get index with lowest sum of squared error value
-    sse_df = sse_df[sse_df['Accepted'] == 'yes']
-    min_sse_df = sse_df[sse_df.SSE == sse_df.SSE.min()]
-    min_sse_index = min_sse_df.iloc[-1]['Iteration']
+    rmse_df = rmse_df[rmse_df['Accepted'] == 'yes']
+    min_rmse_df = rmse_df[rmse_df.NRMSE == rmse_df.NRMSE.min()]
+    min_rmse_index = min_rmse_df.iloc[-1]['Iteration']
 
     #Open genome architecture file
-    with open(output_dir+'gene_{}.yml'.format(min_sse_index), 'r') as gene_elements:
+    with open(output_dir+'gene_{}.yml'.format(min_rmse_index), 'r') as gene_elements:
         genome_tracker_best = yaml.safe_load(gene_elements)
     genome_tracker_saved = copy.deepcopy(genome_tracker_best)
-    #Calculate SSE for best genome and get a range of values
-    ss_best = mutation_analysis.analyze_mutation(genome_tracker_best, output_dir, target_file, 20, deg_rate, True)
+    #Calculate RMSE for best genome and get a range of values
+    rmse_best = mutation_analysis.analyze_mutation(genome_tracker_best, output_dir, target_file, 20, deg_rate, True)
     if replicate_mutations == 1:
-        ss_best.append(ss_best[0])
+        rmse_best.append(ss_best[0])
 
-    #Iterate through each element and remove them and compare SSE values of new architecture to the best architecture previously found
+    #Iterate through each element and remove them and compare RMSE values of new architecture to the best architecture previously found
     for gene in range(num_genes+1):
         promoter = 'promoter_{}'.format(gene)
         terminator = 'terminator_{}'.format(gene)
@@ -315,27 +315,27 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
         	#Determine importance of promoters to the genome's fitness
             if genome_tracker_best[promoter]['start'] > 0:
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, promoter)
-                #Get SSE values range to compare to the best found architecture
-                ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
-                #If the SSE values are insignificantly different from one another, remove element
-                if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
-                    remove_elements.append((promoter, stats.ttest_ind(ss_best, ss_comp)[1]))
-                #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif np.mean(ss_comp) < np.mean(ss_best):
-                    remove_elements.append((promoter, stats.ttest_ind(ss_best, ss_comp)[1]))
+                #Get RMSE values range to compare to the best found architecture
+                rmse_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                #If the RMSE values are insignificantly different from one another, remove element
+                if stats.ttest_ind(rmse_best, rmse_comp)[1] >= 0.05:
+                    remove_elements.append((promoter, stats.ttest_ind(rmse_best, rmse_comp)[1]))
+                #If the new mean RMSE value is lower from the best R<SE value found, remove element
+                elif np.mean(rmse_comp) < np.mean(rmse_best):
+                    remove_elements.append((promoter, stats.ttest_ind(rmse_best, rmse_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
             #Determine importance of terminators to the genome's fitness
             if genome_tracker_best[terminator]['start'] > 0:
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, terminator)
-                #Get SSE values range to compare to the best found architecture
-                ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
-                #If the SSE values are insignificantly different from one another, remove element
-                if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
-                    remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
-                #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif np.mean(ss_comp) < np.mean(ss_best):
-                    remove_elements.append((terminator, stats.ttest_ind(ss_best, ss_comp)[1]))
+                #Get RMSE values range to compare to the best found architecture
+                rmse_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                #If the RMSE values are insignificantly different from one another, remove element
+                if stats.ttest_ind(rmse_best, rmse_comp)[1] >= 0.05:
+                    remove_elements.append((terminator, stats.ttest_ind(rmse_best, rmse_comp)[1]))
+                #If the new mean RMSE value is lower from the best RMSE value found, remove element
+                elif np.mean(rmse_comp) < np.mean(rmse_best):
+                    remove_elements.append((terminator, stats.ttest_ind(rmse_best, rmse_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
         #If the region selected is not after the last gene, analyze the significance of RNAses to the genome
@@ -343,14 +343,14 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
         	#Determine importance of RNAses to the genome's fitness
             if genome_tracker_best[rnase]['start'] > 0:
                 genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, rnase)
-                #Get SSE values range to compare to the best found architecture
-                ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
-                #If the SSE values are insignificantly different from one another, remove element
-                if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
-                    remove_elements.append((rnase, stats.ttest_ind(ss_best, ss_comp)[1]))
-                #If the new mean SSE value is lower from the best SSE value found, remove element
-                elif np.mean(ss_comp) < np.mean(ss_best):
-                    remove_elements.append((rnase, stats.ttest_ind(ss_best, ss_comp)[1]))
+                #Get RMSE values range to compare to the best found architecture
+                rmse_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+                #If the RMSE values are insignificantly different from one another, remove element
+                if stats.ttest_ind(rmse_best, rmse_comp)[1] >= 0.05:
+                    remove_elements.append((rnase, stats.ttest_ind(rmse_best, rmse_comp)[1]))
+                #If the new mean RMSE value is lower from the best RMSE value found, remove element
+                elif np.mean(rmse_comp) < np.mean(rmse_best):
+                    remove_elements.append((rnase, stats.ttest_ind(rmse_best, rmse_comp)[1]))
                 #Set the genome architecture file back to original state
                 genome_tracker_saved = copy.deepcopy(genome_tracker_best)
 
@@ -360,10 +360,10 @@ def cleanup_genome(output_dir, target_file, sse_df, replicate_mutations, num_gen
     remove_elements.sort(key=lambda x: (-x[1],x[0]))
     for element in remove_elements:
         genome_tracker_saved = remove_element(genome_tracker_saved, output_dir, num_genes, deg_rate, element[0])
-        ss_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
-        if stats.ttest_ind(ss_best, ss_comp)[1] >= 0.05:
+        rmse_comp = mutation_analysis.analyze_mutation(genome_tracker_saved, output_dir, target_file, 20, deg_rate, True)
+        if stats.ttest_ind(rmse_best, rmse_comp)[1] >= 0.05:
             genome_tracker_best = copy.deepcopy(genome_tracker_saved)
-        elif np.mean(ss_comp) < np.mean(ss_best):
+        elif np.mean(rmse_comp) < np.mean(rmse_best):
             genome_tracker_best = copy.deepcopy(genome_tracker_saved)
         else:
             break

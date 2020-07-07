@@ -38,15 +38,15 @@ library(grid)
 #Set working directory to the directory in which the results are contained in
 setwd("../../results/2020_4_30/paper_data13_nf1.0_rep8_nmut5/")
 
-all_sse_data <- read.table("sse_data.tsv", header=TRUE)
-sse_data_acc <- all_sse_data %>% filter(Accepted=='yes')
+all_rmse_data <- read.table("rmse_data.tsv", header=TRUE)
+rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
 
-#sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_sse_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+#rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=Sum_of_Squares, color='red')) + geom_point(aes(color='red'), stat="identity") + geom_line(aes(color='red'), size= 1, stat="identity") + geom_line(data=all_rmse_data, aes(x=Iteration, y=Sum_of_Squares), color='black') + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
 #panel.background = element_blank(), axis.line = element_line(color = "black")) + xlab("Sum of Squares") + ylab("Iteration")
-sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat="identity") + geom_line(size= 1, stat="identity") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold")) + xlab("Generation") + ylab("Sum of Squares")
-sse_plots <- grid.arrange(sse_line_plot, nrow=1, top=textGrob("Fitness over Time", gp=gpar(fontsize=30, fontface="bold")))
-#Change name of sse_graphs to a unique identifier
-ggsave("../../../data/figures/sse_graphs_paper_data13_rep8_nf1.png", sse_plots, width=20, height=10)
+rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat="identity") + geom_line(size= 1, stat="identity") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold")) + xlab("Generation") + ylab("Sum of Squares")
+rmse_plots <- grid.arrange(rmse_line_plot, nrow=1, top=textGrob("Fitness over Time", gp=gpar(fontsize=30, fontface="bold")))
+#Change name of rmse_graphs to a unique identifier
+ggsave("../../../data/figures/rmse_graphs_paper_data13_rep8_nf1.png", rmse_plots, width=20, height=10)
 ```
 
 Evolutionary Analysis of Mutations
@@ -56,7 +56,7 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 #Set working directory to the directory in which the results are contained in 
-setwd("../../results/2020_7_1/positive_control3_rep0_nmut20/")
+setwd("../../results/2020_7_7/paper_data1_rep107_nmut5/")
 
 plots_list <- list()
 best_files <- list.files(pattern="expression_pattern_")
@@ -89,22 +89,22 @@ plots_list <- list()
 # #Change name of saved graphs file to a unique identifier
 # ggsave("../../../data/figures/paper_data1_rep103_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
 # 
-sse_data <- read.table("./final/sse_data.tsv", header=TRUE)
-sse_data <- sse_data %>% filter(Accepted=='yes')
-min_sse <- sse_data$Iteration[sse_data$SSE == min(sse_data$SSE)]
-best_file <- list.files(pattern=paste0("expression_pattern_", min_sse, ".tsv"))
+rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+rmse_data <- rmse_data %>% filter(Accepted=='yes')
+min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
 plot_data <- read.table(best_file, header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest SSE Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('Transcript abundances')
-ggsave("../../../data/figures/positive_control3_rep0_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest rmse Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('Transcript abundances')
+ggsave("../../../data/figures/paper_data1_rep107_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
 
 
 #Filter sum of squares data
-all_sse_data <- read.table("./final/sse_data.tsv", header=TRUE)
-sse_data_acc <- all_sse_data %>% filter(Accepted=='yes')
+all_rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
 
 #Create sum of squares plot
-sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) + 
+rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) + 
   geom_point(stat='identity', color='#D55E00', size=3) + 
   geom_line(size=2, stat='identity', color='#D55E00') + 
   theme(panel.grid.major = element_blank(), 
@@ -119,20 +119,20 @@ sse_line_plot <- ggplot(sse_data_acc, aes(x=Iteration, y=SSE)) +
         axis.title = element_text(size=39),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Root mean squared error (log scale)") + 
+  ylab("Root mean square error (log scale)") + 
   panel_border() +
   scale_x_log10()
 
-sse_line_plot <- arrangeGrob(sse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-ggsave("../../../data/figures/positive_control3_rep0_sse.png", sse_line_plot, width=20, height=10, limitsize=FALSE)
+rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+ggsave("../../../data/figures/paper_data1_rep107_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 
 ```{r}
 setwd("../../results/2020_5_29/positive_control_nf1.0_rep2_nmut5/")
-sse_data <- read.table("./final/sse_data.tsv", header=TRUE)
-sse_data <- sse_data %>% filter(Accepted=='yes')
-min_sse <- sse_data$Iteration[sse_data$SSE == min(sse_data$SSE)]
+rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+rmse_data <- rmse_data %>% filter(Accepted=='yes')
+min_rmse <- rmse_data$Iteration[rmse_data$rmse == min(rmse_data$rmse)]
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

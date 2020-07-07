@@ -20,11 +20,11 @@ def calc_fitness(variant_fit, orig_fit, generations, count):
     Ne = 1000
     #Determines the value that controls variation within the simulation
     if count <= 0.1 * generations:
-        beta = 1e-7
+        beta = 1e-2
     else:
         #y = mx + b: linearly increases
-        slope = (1e-4 - 1e-7) / generations
-        beta = (slope * (count - (0.1 * generations))) + 1e-7
+        slope = (0.5 - 1e-2) / generations
+        beta = (slope * (count - (0.1 * generations))) + 1e-2
     thresholds = 0
 
     #Fitness values are calculated based on the new and current sum of squared values

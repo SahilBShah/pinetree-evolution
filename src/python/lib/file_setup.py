@@ -1,7 +1,7 @@
 import pandas as pd
 
 #Removes unnecessary rows and columns in produced file
-def rearrange_file(file, num_genes):
+def rearrange_file(file, max_time, num_genes):
     """
     Rearranges files so that the target input file can be compared to the simulated output file so that sum of squares can be easily calculated.
     Input(s):
@@ -27,11 +27,11 @@ def rearrange_file(file, num_genes):
         if protein not in file.columns:
             file[protein] = 0.0
     #If none of the proteins are present at a certain time point then no (0) transcripts are produced
-    for t in range(1, file.index[-1]):
+    for t in range(1, max_time+1):
         if t not in file.index:
-            new_row = pd.Series(data={'protein1': 0, 'protein2': 0, 'protein3': 0}, name=t)
+            new_row = pd.Series(data={'protein1': 0.0, 'protein2': 0.0, 'protein3': 0.0}, name=t)
             file = file.append(new_row, ignore_index=False)
-            file = file.sort_index()
+    file = file.sort_index()
     file = file[protein_species]
 
     return file
