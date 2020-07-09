@@ -1,8 +1,6 @@
 import math
 import sys
 
-#1e-5
-
 #Calculates the fitness of the new mutation
 def calc_fitness(variant_fit, orig_fit, generations, count):
     """
@@ -23,7 +21,7 @@ def calc_fitness(variant_fit, orig_fit, generations, count):
         beta = 1e-2
     else:
         #y = mx + b: linearly increases
-        slope = (0.5 - 1e-2) / generations
+        slope = (1.0 - 1e-2) / (0.9 * generations)
         beta = (slope * (count - (0.1 * generations))) + 1e-2
     thresholds = 0
 

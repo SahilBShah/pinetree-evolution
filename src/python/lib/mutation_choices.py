@@ -302,8 +302,6 @@ def cleanup_genome(output_dir, target_file, rmse_df, replicate_mutations, num_ge
     genome_tracker_saved = copy.deepcopy(genome_tracker_best)
     #Calculate RMSE for best genome and get a range of values
     rmse_best = mutation_analysis.analyze_mutation(genome_tracker_best, output_dir, target_file, 20, deg_rate, True)
-    if replicate_mutations == 1:
-        rmse_best.append(ss_best[0])
 
     #Iterate through each element and remove them and compare RMSE values of new architecture to the best architecture previously found
     for gene in range(num_genes+1):

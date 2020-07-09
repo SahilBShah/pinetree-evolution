@@ -15,6 +15,7 @@ library(ggplot2)
 library(grid)
 library(reshape2)
 library(gtools)
+library(png)
 ```
 Produce the first set of plots
 ```{r cars}
@@ -55,7 +56,7 @@ target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_2/paper_data1_rep1_nmut20/final/")
+setwd("../results/2020_7_7/paper_data1_rep2_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -121,7 +122,7 @@ target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_2/paper_data3_rep1_nmut20/final/")
+setwd("../results/2020_7_7/paper_data3_rep1_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -188,7 +189,7 @@ target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_2/paper_data7_rep1_nmut20/final/")
+setwd("../results/2020_7_7/paper_data7_rep1_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -226,7 +227,7 @@ Produce the fourth set of plots
 setwd("../../data/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data13.tsv", header=TRUE)
+target_data <- read.table("paper_data16.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -251,7 +252,7 @@ target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_2/paper_data13_rep2_nmut20/final/")
+setwd("../results/2020_7_7/paper_data16_rep2_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -289,7 +290,7 @@ Produce the fifth set of plots
 setwd("../../data/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data13.tsv", header=TRUE)
+target_data <- read.table("paper_data17.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -314,7 +315,7 @@ target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_2/paper_data13_rep3_nmut20/final/")
+setwd("../results/2020_7_7/paper_data17_rep1_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -354,7 +355,7 @@ img3 <- readPNG("figure2_final3_genome_arch.png")
 img4 <- readPNG("figure2_final4_genome_arch.png")
 img5 <- readPNG("figure2_final5_genome_arch.png")
 
-figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, rasterGrob(img1, vjust=-0.97, hjust=0.45, width=0.90), rasterGrob(img2, vjust=-1, width=0.98), rasterGrob(img3, vjust=-1, width=0.98), rasterGrob(img4, vjust=-1, width=0.98), rasterGrob(img5, vjust=-1.06, width=0.98), final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15)), widths=c(2.6,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=65, fontfamily="Arial"), vjust=-9))
+figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, rasterGrob(img1, vjust=-0.97, hjust=0.45, width=0.90), rasterGrob(img2, vjust=-1.07, width=0.98), rasterGrob(img3, vjust=-1.1, width=0.98), rasterGrob(img4, vjust=-1.25, width=0.98), rasterGrob(img5, vjust=-1.1, width=0.98), final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15)), widths=c(2.6,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=65, fontfamily="Arial"), vjust=-9))
 
 ggsave("figure2.png", figure2, height=35, width=65, limitsize=FALSE)
 ```

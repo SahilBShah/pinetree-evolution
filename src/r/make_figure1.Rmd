@@ -191,9 +191,8 @@ rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) +
         axis.title = element_text(size=35),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Root mean square error (log scale)") + 
+  ylab("Root mean square error") + 
   panel_border() +
-  scale_y_log10()
 
 rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 

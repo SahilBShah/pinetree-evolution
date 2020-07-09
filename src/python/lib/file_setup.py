@@ -6,7 +6,8 @@ def rearrange_file(file, max_time, num_genes):
     Rearranges files so that the target input file can be compared to the simulated output file so that sum of squares can be easily calculated.
     Input(s):
     file is the transcript abundances file outputted from pinetree.
-    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    max_time is the amount of time for the infection cycle that pinetree is simulating.
+    num_genes is the total number of genes on the genome.
     Output(s):
     file is a dataframe with a modified layout.
     """
