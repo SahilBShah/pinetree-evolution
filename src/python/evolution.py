@@ -343,7 +343,7 @@ def main():
     genome_tracker_old = genome_trackers[1]
 
     #Target file inputted as dataframe
-    target_file = pd.read_csv('../../data/'+arguments.args.target_transcript_data, header=0, sep='\t')
+    target_file = pd.read_csv('../../data/targets/'+arguments.args.target_transcript_data, header=0, sep='\t')
     target_df = file_setup.rearrange_file(target_file, target_file.iloc[-1]['time'], genome_tracker_new['num_genes'])
     #Determines the highest RMSE value allowed before finding and accepting a suitable architecture
     max_rmse = root_mean_square_error.calc_accepted_rmse_range(target_df)

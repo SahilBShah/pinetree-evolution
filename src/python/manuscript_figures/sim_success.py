@@ -37,12 +37,12 @@ def calc_success(target_df, target_name, n_folders):
 def main():
 
 	target_file_name = input("Please input the name of the target file with the extension: ")
-	target_file = pd.read_csv("../../../data/{}".format(target_file_name), header=0, sep='\t')
+	target_file = pd.read_csv("../../../data/targets/{}".format(target_file_name), header=0, sep='\t')
 	target_df = file_setup.rearrange_file(target_file, target_file.iloc[-1]['time'], 3)
 	num_folders = int(input("Please input number of directories to access: "))
 
 	print()
-	print(str(calc_success(target_df, target_file_name, num_folders)) + '%')
+	print('Percent successful:', str(calc_success(target_df, target_file_name, num_folders)) + '%')
 
 if __name__ == '__main__':
 	main()
