@@ -25,7 +25,7 @@ for i in range(151, 301):
 #     transcript_list.append([i, "protein3", (0.05 * i)])
 
 
-file = open("../../../data/paper_data17.tsv", "w")
+file = open("../../../data/targets/paper_data17.tsv", "w")
 writer = csv.writer(file, delimiter='\t')
 writer.writerow(["time", "species", "transcript"])
 for item in transcript_list:
