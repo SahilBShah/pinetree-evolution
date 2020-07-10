@@ -120,7 +120,8 @@ rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) +
         legend.position = "none") +
   xlab("Generation") + 
   ylab("Root mean square error") + 
-  panel_border()
+  panel_border() +
+  scale_y_continuous(limits = c(0, 3), expand = c(0, 0))
 
 rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 ggsave("../../../data/figures/paper_data1_rep202_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
