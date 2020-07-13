@@ -43,7 +43,6 @@ class Command_line_args(object):
         self.parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
         self.parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
         self.parser.add_argument('progress_bar_out', type=bool, default='', nargs='?', help='Input \'True\' if the progress bar should be outputted or leave blank if not.')
-        self.parser.add_argument('clean_up', type=bool, default='', nargs='?', help='Input \'True\' if the simulation should remove any potentially unnecessary elements on the genome.')
         self.args = self.parser.parse_args()
 
 
@@ -218,7 +217,7 @@ def progress_bar(count, total, replicates, status=''):
 
     return
 
-def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list, max_rmse):
+def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list):
     """
     The main part of the evolution program where the genome is modified with each generation and determine if the mutation should be acccepted.
     Input(s):
@@ -228,13 +227,11 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
     target_df is the user-inputted tsv dataframe containing thranscript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     all_rmse_list is a list containing each root mean square error value calculated.
-    max_rmse is a float that refers to the highest root means square error value the program deems as a successfully found genomic architecture.
     Output(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     all_rmse_list is a list containing each root mean square error value calculated.
     rmse_iter_list is a list containing the number of each generation that corresponds to each root mean square error value.
     is_accepted is a list containing information regarding if a mutation was accepted or not.
-    found_arch is a boolean that that flags when a suitable genome architecture has been found.
     """
 
     #General setup
@@ -243,7 +240,6 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
     i = 1
     generation_number = arguments.args.generation_number
     rmse_old = all_rmse_list[0]
-    found_arch = False
 
     #Start of evolution program
     while i <= generation_number:
@@ -267,8 +263,8 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
 
         #Sum of squared error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
-        #pinetree called in test_mutation
-        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
+        #pinetree called in analyze_mutation
+        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number, 1, arguments.args.dynamic_deg_rate)
 
         accept_prob = fitness_score.calc_fitness(rmse_new, rmse_old, generation_number, i)
         all_rmse_list.append(rmse_new)
@@ -287,15 +283,11 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
             genome_tracker_new = copy.deepcopy(genome_tracker_old)
             is_accepted.append("no")
 
-        #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
-        if rmse_old <= max_rmse:
-            found_arch = True
-
         i+=1
 
-    return (genome_tracker_old, all_rmse_list, rmse_iter_list, is_accepted, found_arch)
+    return (genome_tracker_old, all_rmse_list, rmse_iter_list, is_accepted)
 
-def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, cleanup_bool):
+def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse):
     """
     Saves the sum of squared error data, final/best genomic architecture it found, and removes any unnecessary files unrelated to the output.
     Input(s):
@@ -306,9 +298,13 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     all_rmse_list is a list containing each root mean square error value calculated.
     rmse_iter_list is a list containing the number of each generation that corresponds to each root mean square error value.
     is_accepted is a list containing information regarding if a mutation was accepted or not.
+    max_rmse is a float that refers to the highest root means square error value the program deems as a successfully found genomic architecture.
     Output(s):
+    found_arch is a boolean that that flags when a suitable genome architecture has been found.
     Saves all the relevant files to the output directory.
     """
+
+    found_arch = False
 
     #Sum of squared error data is saved to output directory
     all_rmse_list = all_rmse_list
@@ -316,10 +312,14 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     export_csv = rmse_dataframe.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
     print('\nCleaning up genome architecture...')
-    mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, rmse_dataframe, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate, cleanup_bool)
+    rmse_best = mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, rmse_dataframe, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
     os.remove(output_dir+'expression_pattern.tsv')
 
-    return
+    #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
+    if rmse_best <= max_rmse:
+        found_arch = True
+
+    return found_arch
 
 def main():
     """
@@ -354,15 +354,14 @@ def main():
     all_rmse_list = [rmse_old]
 
     #Evolution program run and mutations are tested
-    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list, max_rmse)
+    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list)
     genome_tracker_old = evo_vars[0]
     all_rmse_list = evo_vars[1]
     rmse_iter_list = evo_vars[2]
     is_accepted = evo_vars[3]
-    found = evo_vars[4]
 
     #Files containing sum of squared data and genome information are saved in output directory
-    save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, arguments.args.clean_up)
+    found = save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
     if found:
         print('Simulation successfully found an architecture!')
     else:

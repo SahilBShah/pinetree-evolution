@@ -19,10 +19,11 @@ def calc_success(target_df, target_name, n_folders):
 	success = 0
 	max_rmse = root_mean_square_error.calc_accepted_rmse_range(target_df)
 
+	print("Successes:")
 	for i in range(1, n_folders+1):
 		#final_file = pd.read_csv("../../../results/2020_7_9/{}_rep{}_nmut10/final/expression_pattern_best.tsv".format(target_name.strip(".tsv"), i), header=0, sep='\t')
 		#final_df = file_setup.rearrange_file(final_file, final_file.iloc[-1]['time'], 3)
-		rmse_df = pd.read_csv("../../../results/2020_7_10/{}_rep{}_nmut10/final/rmse_data.tsv".format(target_name.strip(".tsv"), i), header=0, sep='\t')
+		rmse_df = pd.read_csv("../../../results/2020_7_11/{}_rep{}_nmut10/final/rmse_data.tsv".format(target_name.strip(".tsv"), i), header=0, sep='\t')
 		#df_rmse = root_mean_square_error.calc_nrmse(target_df, final_df)
 		#Get index with lowest sum of squared error value
 		rmse_df = rmse_df[rmse_df['Accepted'] == 'yes']
@@ -30,6 +31,7 @@ def calc_success(target_df, target_name, n_folders):
 		min_rmse = min_rmse_df.iloc[-1]['NRMSE']
 		if min_rmse <= max_rmse:
 			success+=1
+			print(i)
 
 	return ((success / n_folders) * 100)
 
