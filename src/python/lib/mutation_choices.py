@@ -276,14 +276,13 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
 
     return genome_tracker_new
 
-def cleanup_genome(output_dir, genome_tracker_old, target_df, rmse_df, mutation_number, deg_rate):
+def cleanup_genome(output_dir, genome_tracker_old, target_df, mutation_number, deg_rate):
     """
     Removes elements that have low strengths that are statistically insignificant to the overal gene expression pattern produced from the best found architecture.
     Input(s):
     output_dir is a string containing information of the path to the directory in which all the saved files are stored by the program.
     genome_tracker_old is the dataframe containing the most recently accepted genomic data.
     target_df is the user-inputted tsv dataframe containing transcript abundances for each gene.
-    rmse_df is the dataframe containing all the sroot mean square error data at each generation.
     deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     Output(s):
     rmse_best refers to the normalized RMSE value of the best genome architecture found.
