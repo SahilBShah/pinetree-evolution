@@ -93,7 +93,7 @@ def pt_call(output_dir, genome_tracker_new):
     sim.add_ribosome(copy_number=100, speed=30, footprint=30)
 
     plasmid = pt.Genome(name="plasmid", length=genome_tracker_new['length_of_genome'],
-                        transcript_degradation_rate=1e-2,
+                        transcript_degradation_rate=1e-3,
                         transcript_degradation_rate_ext=1e-3,
                         rnase_speed=20,
                         rnase_footprint=10)

@@ -209,7 +209,7 @@ def progress_bar(count, total, replicates, status=''):
     #Bar displays equals sign when progressing
     bar = '=' * filled_len + '-' * (bar_len - filled_len)
     #Calculates how much time is left until the simulation is complete
-    time_left = round(((total*replicates*0.47) - (count*replicates*0.47)) / 60, 2)
+    time_left = round(((total*replicates*0.47) - (count*replicates*0.43)) / 60, 2)
 
     #Writes out the progress bar information
     sys.stdout.write('%s: [%s] %.2fmin\r' % (status, bar, time_left))
@@ -306,18 +306,22 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
 
     found_arch = False
 
-    #Sum of squared error data is saved to output directory
-    all_rmse_list = all_rmse_list
-    rmse_dataframe = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
-    export_csv = rmse_dataframe.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
     print('\nCleaning up genome architecture...')
-    rmse_best = mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, rmse_dataframe, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
+    rmse_best = mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
+    
+    #Sum of squared error data is saved to output directory
+    rmse_iter_list.append(arguments.args.generation_number+1)
+    all_rmse_list.append(rmse_best)
+    is_accepted.append('yes')
+    rmse_dataframe = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
+    export_csv = rmse_dataframe.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     os.remove(output_dir+'expression_pattern.tsv')
 
     #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
     if rmse_best <= max_rmse:
         found_arch = True
+
 
     return found_arch
 
