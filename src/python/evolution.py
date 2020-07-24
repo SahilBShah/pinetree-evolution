@@ -209,7 +209,7 @@ def progress_bar(count, total, replicates, status=''):
     #Bar displays equals sign when progressing
     bar = '=' * filled_len + '-' * (bar_len - filled_len)
     #Calculates how much time is left until the simulation is complete
-    time_left = round(((total*replicates*0.47) - (count*replicates*0.43)) / 60, 2)
+    time_left = round(((total*replicates*0.41) - (count*replicates*0.41)) / 60, 2)
 
     #Writes out the progress bar information
     sys.stdout.write('%s: [%s] %.2fmin\r' % (status, bar, time_left))

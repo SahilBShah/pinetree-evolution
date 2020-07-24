@@ -18,11 +18,11 @@ setwd("../../data/targets/")
 #Change grant_data name to the target file used
 #target_data <- read.table("expression_pattern_757.tsv", header=TRUE)
 #target_data <- read.table("test.tsv", header=TRUE)
-target_data <- read.table("paper_data20.tsv", header=TRUE)
+target_data <- read.table("paper_data139.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('transcript abundances')
 
-ggsave("../figures/paper_data20.png", target_line_plot, width=10, height=10, limitsize=FALSE)
+ggsave("../figures/paper_data139.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 #ggsave("test.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 
 ```
@@ -56,47 +56,48 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 #Set working directory to the directory in which the results are contained in 
-setwd("../../results/2020_7_8/paper_data1_rep202_nmut10/")
+setwd("../../results/2020_7_23/paper_data139_rep0_nmut10/")
 
 plots_list <- list()
 best_files <- list.files(pattern="expression_pattern_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
 #Change grant_data name to the target file used
-# target_data <- read.table("../../../data/paper_data1.tsv", header=TRUE)
-# target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
-# target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + panel_border()
-#   plots_list[[1]] <- target_line_plot
-#   #Determines if there are too many accepted mutations and, if so, only display the last 20 that were accepted
-#   starting_point <- 1
-#   if (length(best_files) > 40){
-#     starting_point <- length(best_files) - 40
-#   }
-#   plots_start <- 1
-#   #Creates plots for each accepted mutation
-#   for(i in starting_point:length(best_files)){
-#     plots_start <- plots_start + 1
-#     best <- "best"
-#     evolution_title <- "Genome Evolution "
-#     plot_title <- paste(evolution_title, i, sep="")
-#     file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
-#     file_name <- filter(file_name, species == "protein1" | species == "protein2" | species == "protein3")
-#     plot <- ggplot(file_name, aes(fill=species, color=species, size=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + geom_line(stat="identity", size=2) + ggtitle(plot_title) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7"))
-#     plots_list[[plots_start]] <- plot
-#   }
-# #Outputs file with the generated plots
-# evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 4), ncol=4, top=textGrob("Evolution of Gene Expression Pattern", gp=gpar(fontsize=30, fontface="bold")))
-# #Change name of saved graphs file to a unique identifier
-# ggsave("../../../data/figures/paper_data1_rep103_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
+target_data <- read.table("../../../data/targets/paper_data139.tsv", header=TRUE)
+target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome Function") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + panel_border()
+  plots_list[[1]] <- target_line_plot
+  #Determines if there are too many accepted mutations and, if so, only display the last 20 that were accepted
+  starting_point <- 1
+  if (length(best_files) > 40){
+    starting_point <- length(best_files) - 40
+  }
+  plots_start <- 1
+  #Creates plots for each accepted mutation
+  for(i in starting_point:length(best_files)){
+    plots_start <- plots_start + 1
+    best <- "best"
+    evolution_title <- "Genome Evolution "
+    plot_title <- paste(evolution_title, i, sep="")
+    file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
+    file_name <- filter(file_name, species == "protein1" | species == "protein2" | species == "protein3")
+    plot <- ggplot(file_name, aes(fill=species, color=species, size=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + geom_line(stat="identity", size=2) + ggtitle(plot_title) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7"))
+    plots_list[[plots_start]] <- plot
+  }
+  
+#Outputs file with the generated plots
+evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 4), ncol=4, top=textGrob("Evolution of Gene Expression Pattern", gp=gpar(fontsize=30, fontface="bold")))
+#Change name of saved graphs file to a unique identifier
+ggsave("../../../data/figures/paper_data139_rep0_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
 # 
-# rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
-# rmse_data <- rmse_data %>% filter(Accepted=='yes')
-# min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
-# best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
-# plot_data <- read.table("expression_pattern_best.tsv", header=TRUE)
-# plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
-# line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest target genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('Transcript abundances')
-# ggsave("../../../data/figures/paper_data17_rep10_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
+rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+rmse_data <- rmse_data %>% filter(Accepted=='yes')
+min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
+plot_data <- read.table("./final/expression_pattern_best.tsv", header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest target genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('Transcript abundances')
+ggsave("../../../data/figures/paper_data139_rep0_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
 
 
 #Filter sum of squares data
@@ -124,7 +125,7 @@ rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) +
   scale_y_continuous(limits = c(0, 3), expand = c(0, 0))
 
 rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-ggsave("../../../data/figures/paper_data1_rep202_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
+ggsave("../../../data/figures/paper_data139_rep0_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 
