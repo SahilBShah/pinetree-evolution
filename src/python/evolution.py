@@ -217,7 +217,7 @@ def progress_bar(count, total, replicates, status=''):
 
     return
 
-def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list):
+def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list, max_rmse):
     """
     The main part of the evolution program where the genome is modified with each generation and determine if the mutation should be acccepted.
     Input(s):
@@ -227,6 +227,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
     target_df is the user-inputted tsv dataframe containing thranscript abundances for each gene.
     arguments is the class containing all the command line arguments the user previously inputted when running the program.
     all_rmse_list is a list containing each root mean square error value calculated.
+    max_rmse is a float that refers to the highest root means square error value the program deems as a successfully found genomic architecture.
     Output(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     all_rmse_list is a list containing each root mean square error value calculated.
@@ -240,6 +241,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
     i = 1
     generation_number = arguments.args.generation_number
     rmse_old = all_rmse_list[0]
+    found_arch = False
 
     #Start of evolution program
     while i <= generation_number:
@@ -283,9 +285,13 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
             genome_tracker_new = copy.deepcopy(genome_tracker_old)
             is_accepted.append("no")
 
+        #If the genome architecture pattern produces an expression at least 90% similar to the target then an architecture has been found
+        if rmse_old <= max_rmse:
+            found_arch = True
+
         i+=1
 
-    return (genome_tracker_old, all_rmse_list, rmse_iter_list, is_accepted)
+    return (genome_tracker_old, all_rmse_list, rmse_iter_list, is_accepted, found_arch)
 
 def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse):
     """
@@ -318,10 +324,9 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     export_csv = rmse_dataframe.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     os.remove(output_dir+'expression_pattern.tsv')
 
-    #If the genome architecture pattern produces an expression at least 90% similar to the target then only run for 500 more generations
+    #If the genome architecture pattern produces an expression at least 90% similar to the target then an architecture has been found
     if rmse_best <= max_rmse:
         found_arch = True
-
 
     return found_arch
 
@@ -358,18 +363,23 @@ def main():
     all_rmse_list = [rmse_old]
 
     #Evolution program run and mutations are tested
-    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list)
+    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list, max_rmse)
     genome_tracker_old = evo_vars[0]
     all_rmse_list = evo_vars[1]
     rmse_iter_list = evo_vars[2]
     is_accepted = evo_vars[3]
+    found = evo_vars[4]
 
     #Files containing sum of squared data and genome information are saved in output directory
-    found = save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
     if found:
+        found_tmp = save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
         print('Simulation successfully found an architecture!')
     else:
-        print('Simulation did not find a sound architecture.')
+        found = save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
+        if found:
+            print('Simulation successfully found an architecture!')
+        else:
+            print('Simulation did not find a sound architecture.')
 
 
 if __name__ == '__main__':
