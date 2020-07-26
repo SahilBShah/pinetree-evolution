@@ -11,14 +11,14 @@
 for i in $(seq 1 139); do
     #Then iterate through the hundreds (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     for j in $(seq 1 50); do
-        eval 'nohup python evolution.py paper_data'\$i'.tsv testing.yml' \$j '10000 10 True' \& #$i$j$k just concatenates the numbers to make my i
+        eval 'nohup python evolution.py paper_data'\$i'.tsv testing.yml' \$j '10000 10 True &' #$i$j$k just concatenates the numbers to make my i
     done
     wait #WAIT. This is super important, make sure all those eval calls finish before moving on
         
     #echo "Finished with a batch!"
     #Now iterate through 50-100
     for k in $(seq 51 100); do  
-        eval 'nohup python evolution.py paper_data'\$i'.tsv testing.yml' \$k '10000 10 True' \&
+        eval 'nohup python evolution.py paper_data'\$i'.tsv testing.yml' \$k '10000 10 True &'
     done
     wait #Another wait call to make sure this batch finishes before moving on
         
