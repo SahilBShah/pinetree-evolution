@@ -310,25 +310,36 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     Saves all the relevant files to the output directory.
     """
 
-    found_arch = False
+    #found_arch = False
 
     #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
-    print('\nCleaning up genome architecture...')
-    rmse_best = mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
-    
+    #print('\nCleaning up genome architecture...')
+    #rmse_best = mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
+
     #Sum of squared error data is saved to output directory
-    rmse_iter_list.append(arguments.args.generation_number+1)
-    all_rmse_list.append(rmse_best)
-    is_accepted.append('yes')
-    rmse_dataframe = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
-    export_csv = rmse_dataframe.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
+    # rmse_iter_list.append(arguments.args.generation_number+1)
+    # all_rmse_list.append(rmse_best)
+    # is_accepted.append('yes')
+    rmse_df = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
+    export_csv = rmse_df.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     os.remove(output_dir+'expression_pattern.tsv')
+    #Get index with lowest sum of squared error value
+    rmse_df = rmse_df[rmse_df['Accepted'] == 'yes']
+    min_rmse_df = rmse_df[rmse_df.NRMSE == rmse_df.NRMSE.min()]
+    min_rmse_index = min_rmse_df.iloc[-1]['Iteration']
+    #Save best found genome architecture
+    with open(output_dir+'final/gene_best.yml', 'w') as save_yaml:
+        yaml.dump(genome_tracker_old, save_yaml)
+    #Save best found gene expression pattern associated with its best found architecture
+    save_df = pd.read_csv(output_dir+"expression_pattern_{}.tsv".format(min_rmse_index), header=0, sep='\t')
+    save_df.to_csv(output_dir+"final/expression_pattern_best.tsv", sep='\t', index=False)
 
     #If the genome architecture pattern produces an expression at least 90% similar to the target then an architecture has been found
-    if rmse_best <= max_rmse:
-        found_arch = True
+    # if rmse_best <= max_rmse:
+    #     found_arch = True
 
-    return found_arch
+    # return found_arch
+    return
 
 def main():
     """
@@ -371,15 +382,11 @@ def main():
     found = evo_vars[4]
 
     #Files containing sum of squared data and genome information are saved in output directory
+    save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
     if found:
-        found_tmp = save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
-        print('Simulation successfully found an architecture!')
+        print('\nSimulation successfully found an architecture!')
     else:
-        found = save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rmse_list, rmse_iter_list, is_accepted, max_rmse)
-        if found:
-            print('Simulation successfully found an architecture!')
-        else:
-            print('Simulation did not find a sound architecture.')
+        print('\nSimulation did not find a sound architecture.')
 
 
 if __name__ == '__main__':
