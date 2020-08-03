@@ -56,7 +56,7 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 #Set working directory to the directory in which the results are contained in 
-setwd("../../results/2020_7_24/paper_data1_rep10_nmut10/")
+setwd("../../results/2020_7_27/paper_data64_rep6_nmut10/")
 
 plots_list <- list()
 best_files <- list.files(pattern="expression_pattern_")
@@ -97,7 +97,7 @@ best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
 plot_data <- read.table("./final/expression_pattern_best.tsv", header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest target genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('Transcript abundances')
-ggsave("../../../data/figures/paper_data1_rep10_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
+ggsave("../../../data/figures/paper_data64_rep6_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
 
 
 #Filter sum of squares data
@@ -125,7 +125,7 @@ rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) +
   scale_y_continuous(limits = c(0, 3), expand = c(0, 0))
 
 rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-ggsave("../../../data/figures/paper_data1_rep10_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
+ggsave("../../../data/figures/paper_data64_rep6_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 

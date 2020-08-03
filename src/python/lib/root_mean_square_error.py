@@ -37,7 +37,7 @@ def calc_accepted_rmse_range(df_target):
     """
 
     #Decreases the transcript abundances of the target file by 10%
-    df_altered = df_target[['protein1', 'protein2', 'protein3']] * 0.9
+    df_altered = df_target[['protein1', 'protein2', 'protein3']] * 0.95
     #Calculates the sum of squared error between the reduced values and the target values and returns it
     max_rmse = calc_nrmse(df_target, df_altered)
     return max_rmse

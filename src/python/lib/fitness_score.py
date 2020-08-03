@@ -21,11 +21,11 @@ def calc_fitness(variant_fit, orig_fit, generations, count):
         beta = 1e-2
     elif count <= 0.9 * generations:
         #y = mx + b: linearly increases
-        slope = (1.5 - 1e-2) / (0.8 * generations)
+        slope = (1.1 - 1e-2) / (0.8 * generations)
         beta = (slope * (count - (0.1 * generations))) + 1e-2
     else:
-        slope = (2.0 - 1.5) / (0.9 * generations)
-        beta = (slope * (count - (0.1 * generations))) + 1.5
+        slope = (1.3 - 1.1) / (0.1 * generations)
+        beta = (slope * (count - (0.9 * generations))) + 1.1
     thresholds = 0
 
     #Fitness values are calculated based on the new and current sum of squared values
