@@ -1,0 +1,78 @@
+---
+title: "Figure 3"
+author: "Sahil Shah"
+date: "8/5/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(viridis)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+
+setwd("../../results/")
+
+pattern <- c()
+nrmse <- c()
+
+for(data in 1:3){
+  data_name <- paste0("paper_data", data)
+  pattern_name <- as.character(data)
+  for(day in 3:4){
+    date <- paste0("2020_8_", day)
+    for(rep in 1:20){
+      if(dir.exists(paste0("./", date, "/", data_name, "_rep", rep, "_nmut10/final/"))){
+        rmse_data <- read.table(paste0("./", date, "/", data_name, "_rep", rep, "_nmut10/final/rmse_data.tsv"), header=TRUE)
+        rmse_data <- rmse_data %>% filter(Accepted=='yes')
+        min_rmse <- rmse_data$NRMSE[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+        pattern[length(pattern) + 1] <- pattern_name
+        nrmse[length(nrmse) + 1] <- min_rmse
+        #cat(paste0(data_name, ", ", min_rmse), "mydf.csv", sep="\n", append=TRUE)
+      }
+      else{
+        break
+      }
+    }
+  }
+}
+
+df <- data.frame(pattern, nrmse)
+
+#write.csv(df, "./fig3_data.csv", row.names=FALSE)
+#fig3_data <- read.csv("./fig3_data.csv")
+#boxplot(nrmse~pattern, main="Normalized RMSE values per pattern", xlab="Pattern", ylab="Normalized RMSE")
+nrmse_bp <- df %>% ggplot(aes(x=pattern, y=nrmse)) + 
+  geom_boxplot() +
+  scale_fill_viridis(discrete = TRUE, alpha=0.6) +
+  geom_jitter(color="black", size=1.0, alpha=0.9) +
+  theme(
+    legend.position="none",
+    plot.title = element_text(size=50),
+    panel.background = element_blank(),
+    plot.margin = unit(c(2,2,2,2), "cm"), 
+    axis.text.x = element_text(size=45), 
+    axis.text.y = element_text(size=45), 
+    axis.line = element_line(size=0.5), 
+    axis.ticks = element_line(size=1.3), 
+    axis.ticks.length = unit(0.5, "cm"),
+    axis.title.x = element_text(size=45), 
+    axis.title.y = element_text(size=45)
+  ) +
+  ggtitle("Normalized RMSE values per pattern") +
+  xlab("Pattern") +
+  ylab("Normalized RMSE")
+
+ggsave("../data/figures/figure3/figure3_bp.png", nrmse_bp, height=10, width=20, limitsize=FALSE)
+
+
+```
+
