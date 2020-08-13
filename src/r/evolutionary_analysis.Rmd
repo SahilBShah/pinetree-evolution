@@ -18,11 +18,11 @@ setwd("../../data/targets/")
 #Change grant_data name to the target file used
 #target_data <- read.table("expression_pattern_757.tsv", header=TRUE)
 #target_data <- read.table("test.tsv", header=TRUE)
-target_data <- read.table("paper_data139.tsv", header=TRUE)
+target_data <- read.table("paper_data1.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('transcript abundances')
 
-ggsave("../figures/paper_data139.png", target_line_plot, width=10, height=10, limitsize=FALSE)
+ggsave("../figures/paper_data1.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 #ggsave("test.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 
 ```
