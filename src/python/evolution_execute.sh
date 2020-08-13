@@ -8,7 +8,7 @@
 
 #So this little loop will run 3000 simulations in batches of 50
 #First iterate through the thousands (0, 1, 2)
-for i in $(seq 1 66; i+=2); do
+for i in $(seq 1 2 66); do
     #Then iterate through the hundreds (0, 1, 2, 3, 4, 5, 6, 7, 8, 9)
     for j in $(seq 1 20); do
         eval 'nohup python evolution.py paper_data'\$i'.tsv testing.yml' \$j '5000 10 True &' 
