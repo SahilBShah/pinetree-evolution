@@ -59,9 +59,9 @@ def organize_output_dir(arguments):
     year = datetime.date.today().year
     month = datetime.date.today().month
     day = datetime.date.today().day
-    output_dir = '../../results/{}_{}_{}/'.format(year, month, day)
+    output_dir = '../../results/{}/'.format(arguments.args.target_transcript_data.strip('.tsv'))
 
-    output_dir = output_dir + '{}_rep{}_nmut{}/'.format(arguments.args.target_transcript_data.strip('.tsv'), arguments.args.run_number, arguments.args.replicate_mutation_number)
+    output_dir = output_dir + 'rep{}/'.format(arguments.args.run_number)
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
     final_data_dir = output_dir+'/final'
@@ -366,7 +366,7 @@ def main():
     target_file = pd.read_csv('../../data/targets/'+arguments.args.target_transcript_data, header=0, sep='\t')
     target_df = file_setup.rearrange_file(target_file, target_file.iloc[-1]['time'], genome_tracker_new['num_genes'])
     #Determines the highest RMSE value allowed before finding and accepting a suitable architecture
-    max_rmse = root_mean_square_error.calc_accepted_rmse_range(target_df)
+    max_rmse = root_mean_square_error.calc_accepted_rmse_range(target_df, genome_tracker_new['num_genes'])
 
     #Creates test files from pinetree to find average number of transcripts at generation 0
     #Template genome is simulated and compared against target dataframe

@@ -13,6 +13,7 @@ def rearrange_file(file, max_time, num_genes):
     """
 
     protein_species = []
+    protein_dict = dict()
 
     #File is rearranged to have columns represent each gene's transcript abundances and each row represent the time
     for gene_number in range(1, num_genes+1):
@@ -30,8 +31,12 @@ def rearrange_file(file, max_time, num_genes):
     #If none of the proteins are present at a certain time point then no (0) transcripts are produced
     for t in range(1, max_time+1):
         if t not in file.index:
-            new_row = pd.Series(data={'protein1': 0.0, 'protein2': 0.0, 'protein3': 0.0}, name=t)
+            for prot in range(1, num_genes+1):
+                protein_dict['protein{}'.format(prot)] = 0.0
+            new_row = pd.Series(data=protein_dict, name=t)
             file = file.append(new_row, ignore_index=False)
+    if 301 in file.index:
+        file = file.drop(301, axis=0)
     file = file.sort_index()
     file = file[protein_species]
 

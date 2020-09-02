@@ -28,7 +28,7 @@ import mutation_analysis
 #{element: [genome_shift, starting_strengths]}
 element_dict = {'promoter': [34, 10e6], 'rnase': [9, 5e-3], 'terminator': [29, 0.2]}
 #{element: [min_strength, max_strength]}
-element_strengths_range = {'promoter': [10e6, 10e13], 'rnase': [0.0, 1.0], 'terminator': [0.0, 1.0]}
+element_strengths_range = {'promoter': [10e5, 10e13], 'rnase': [0.0, 1.0], 'terminator': [0.0, 1.0]}
 
 
 def add_element(genome_tracker_new, output_dir, num_genes, deg_rate, element_choice):

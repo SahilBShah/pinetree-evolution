@@ -18,11 +18,28 @@ setwd("../../data/targets/")
 #Change grant_data name to the target file used
 #target_data <- read.table("expression_pattern_757.tsv", header=TRUE)
 #target_data <- read.table("test.tsv", header=TRUE)
-target_data <- read.table("paper_data1.tsv", header=TRUE)
+target_data <- read.table("paper_data6.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
-target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Target Genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('transcript abundances')
+#target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3" | species == "protein4" | species == "protein5" | species == "protein6" | species == "protein7" | species == "protein8" | species == "protein9" | species == "protein10")
+target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
+  geom_line(stat="identity", size=2) + 
+  theme(legend.position="none",
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(size=30), 
+        axis.text.y = element_text(size=30), 
+        axis.line = element_line(size=1.3), 
+        axis.ticks = element_line(size=1.3), 
+        axis.ticks.length = unit(0.5, "cm"),
+        axis.title = element_text(size=25)) + 
+  scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
+  #scale_color_manual(values=c("#000000", "#000000", "#000000")) +
+  scale_y_continuous(limits=c(0,45), expand=c(0,0)) +
+  ylab('Transcript abundance') +
+  xlab("Time (s)")
 
-ggsave("../figures/paper_data1.png", target_line_plot, width=10, height=10, limitsize=FALSE)
+  ggsave("../figures/paper_data6.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 #ggsave("test.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 
 ```
@@ -56,7 +73,7 @@ library(reshape2)
 library(gridExtra)
 library(gtools)
 #Set working directory to the directory in which the results are contained in 
-setwd("../../results/2020_8_7/paper_data1_rep6_nmut10/")
+setwd("../../results/2020_8_23/paper_data48_rep2_nmut10/")
 
 plots_list <- list()
 best_files <- list.files(pattern="expression_pattern_")
@@ -78,7 +95,7 @@ plots_list <- list()
 #     plots_start <- plots_start + 1
 #     best <- "best"
 #     evolution_title <- "Genome Evolution "
-#     plot_title <- paste(evolution_title, i, sep="")
+#     plot_title <- paste(evolution_title, i, sep="")   
 #     file_name <- assign(paste(best, i, sep=""), read.table(best_files[i], fill=TRUE, header=TRUE))
 #     file_name <- filter(file_name, species == "protein1" | species == "protein2" | species == "protein3")
 #     plot <- ggplot(file_name, aes(fill=species, color=species, size=species, x=time, y=transcript)) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + geom_line(stat="identity", size=2) + ggtitle(plot_title) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7"))
@@ -90,42 +107,57 @@ plots_list <- list()
 # #Change name of saved graphs file to a unique identifier
 # ggsave("../../../data/figures/paper_data139_rep0_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
 # # 
-# rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
-# rmse_data <- rmse_data %>% filter(Accepted=='yes')
-# min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
-# best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
-# plot_data <- read.table("./final/expression_pattern_best.tsv", header=TRUE)
-# plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
-# line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + geom_line(stat="identity", size=2) + ggtitle("Lowest target genome") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(color="black",size=30,face="bold"), axis.title=element_text(size=30,face="bold"), plot.title=element_text(size = 25, face = "bold")) + scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + ylab('Transcript abundances')
-# ggsave("../../../data/figures/paper_data64_rep6_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
+rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+rmse_data <- rmse_data %>% filter(Accepted=='yes')
+min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
+plot_data <- read.table("./final/expression_pattern_best.tsv", header=TRUE)
+plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
+  geom_line(stat="identity", size=2) + 
+  theme(legend.position="none",
+        panel.background = element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.text.x = element_text(size=30), 
+        axis.text.y = element_text(size=30), 
+        axis.line = element_line(size=1.3), 
+        axis.ticks = element_line(size=1.3), 
+        axis.ticks.length = unit(0.5, "cm"),
+        axis.title = element_text(size=25)) + 
+  scale_y_continuous(limits=c(0,45), expand = c(0,0)) +
+  scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
+  ylab('Transcript abundance') +
+  xlab("Time (s)")
+ggsave("../../../data/figures/paper_data48_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
 
 
 #Filter sum of squares data
-all_rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
-rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
-
-#Create sum of squares plot 
-rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) + 
-  geom_point(stat='identity', color='#D55E00', size=3) + 
-  geom_line(size=2, stat='identity', color='#D55E00') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(0.5,1,1,1), "cm"), 
-        axis.text.x = element_text(size=39), 
-        axis.text.y = element_text(size=39), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.3, "cm"),
-        axis.title = element_text(size=39),
-        legend.position = "none") +
-  xlab("Generation") + 
-  ylab("Root mean square error") + 
-  panel_border() +
-  scale_y_continuous(limits = c(0, 3), expand = c(0, 0))
-
-rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-ggsave("../../../data/figures/paper_data1_rep6_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
+# all_rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+# rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
+# 
+# #Create sum of squares plot 
+# rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) + 
+#   geom_point(stat='identity', color='#D55E00', size=3) + 
+#   geom_line(size=2, stat='identity', color='#D55E00') + 
+#   theme(panel.grid.major = element_blank(), 
+#         panel.grid.minor = element_blank(), 
+#         panel.background = element_blank(), 
+#         plot.margin = unit(c(0.5,1,1,1), "cm"), 
+#         axis.text.x = element_text(size=39), 
+#         axis.text.y = element_text(size=39), 
+#         axis.line = element_line(size=1.3), 
+#         axis.ticks = element_line(size=1.3), 
+#         axis.ticks.length = unit(0.3, "cm"),
+#         axis.title = element_text(size=39),
+#         legend.position = "none") +
+#   xlab("Generation") + 
+#   ylab("Root mean square error") + 
+#   panel_border() +
+#   scale_y_continuous(limits = c(0, 3), expand = c(0, 0))
+# 
+# rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
+# ggsave("../../../data/figures/paper_data1_rep6_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 

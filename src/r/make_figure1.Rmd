@@ -23,7 +23,7 @@ Produce target data plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/")
+setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("positive_control3.tsv", header=TRUE)
@@ -59,7 +59,7 @@ Produce generation 0 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the template genome data is contained in 
-setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/")
+setwd("../../results/2020_8_24/positive_control3_rep3_nmut10/")
 
 #List all transcript output files
 best_files <- list.files(pattern="expression_pattern_")
@@ -97,17 +97,16 @@ Produce generation 1 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/")
+setwd("../../results/2020_8_24/positive_control3_rep3_nmut10/")
 
 #List all transcript output files
-best_files <- list.files(pattern="expression_pattern_")
-plot_data <- read.table(best_files[20], header=TRUE)
+plot_data <- read.table("expression_pattern_488.tsv", header=TRUE)
 plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
 line_plot_int <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
   geom_line(stat="identity", size=2) + 
-  ggtitle("Generation 766") + 
+  ggtitle("Generation 488") + 
   theme(panel.grid.major = element_blank(), 
         panel.grid.minor = element_blank(), 
         panel.background = element_blank(), 
@@ -134,7 +133,7 @@ Produce final generation plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/final/")
+setwd("../../results/2020_8_24/positive_control3_rep3_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -169,11 +168,14 @@ Produce fitness over time plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the results are contained in
-setwd("../../results/2020_7_2/positive_control3_rep1_nmut20/final/")
+setwd("../../results/2020_8_24/positive_control3_rep3_nmut10/final/")
 
 #Filter sum of squares data
 all_rmse_data <- read.table("rmse_data.tsv", header=TRUE)
 rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
+if(!(5000 %in% rmse_data_acc$Iteration)){
+  rmse_data_acc <- rmse_data_acc %>% add_row(Iteration=5000, NRMSE=rmse_data_acc$NRMSE[length(rmse_data_acc$NRMSE)], Accepted="yes")
+}
 
 #Create sum of squares plot
 rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) + 
@@ -191,8 +193,9 @@ rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=NRMSE)) +
         axis.title = element_text(size=35),
         legend.position = "none") +
   xlab("Generation") + 
-  ylab("Root mean square error") + 
+  ylab("Normalized RMSE") + 
   panel_border() +
+  scale_y_continuous(limits = c(0, 0.85), expand = c(0,0))
 
 rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
 
@@ -210,8 +213,8 @@ img3 <- readPNG("figure1_intermed_genome_arch.png")
 img4 <- readPNG("figure1_final_genome_arch.png")
 
 #Create and save Figure 1
-figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.86, width=0.98), rasterGrob(img4, vjust=3.68, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, rmse_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
+figure1 <- grid.arrange(img1, rasterGrob(img2, vjust=3.5, width=0.98), rasterGrob(img3, vjust=3.79, width=0.98), rasterGrob(img4, vjust=3.75, width=0.99), target_line_plot, line_plot_zero, line_plot_int, line_plot_final, rmse_line_plot, layout_matrix=rbind(c(1,2,3,4), c(5,6,7,8), c(9,9,9,9)), widths=c(2.3,2,2,2))
 
-ggsave("figure1.png", figure1, height=25, width=40)
+ggsave("figure1.png", figure1, height=25, width=40, dpi=72)
 
 ```
