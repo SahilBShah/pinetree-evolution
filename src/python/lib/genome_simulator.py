@@ -124,7 +124,7 @@ def pt_call(output_dir, genome_tracker_new):
     sim.register_genome(plasmid)
     supress = SupressOutput()
     with supress:
-        sim.simulate(time_limit=300, time_step=1, output=output_dir+'expression_pattern.tsv')
+        sim.simulate(time_limit=301, time_step=1, output=output_dir+'expression_pattern.tsv')
 
     return
 
@@ -174,6 +174,6 @@ def pt_call_alt(output_dir, genome_tracker_new):
     sim.register_genome(plasmid)
     supress = SupressOutput()
     with supress:
-        sim.simulate(time_limit=300, time_step=1, output=output_dir+'expression_pattern.tsv')
+        sim.simulate(time_limit=301, time_step=1, output=output_dir+'expression_pattern.tsv')
 
     return

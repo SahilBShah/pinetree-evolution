@@ -23,7 +23,7 @@ Produce the first set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/")
+setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data1.tsv", header=TRUE)
@@ -48,7 +48,7 @@ target_line_plot_1 <-  ggplot(target_data, aes(fill=species, color=species, size
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
   ylab("Target transcript \nabundance")
 
 target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit(0, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
@@ -56,7 +56,7 @@ target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_7/paper_data1_rep2_nmut10/final/")
+setwd("../../results/2020_8_13/paper_data1_rep1_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -82,7 +82,7 @@ final_line_plot_1 <-  ggplot(plot_data, aes(fill=species, color=species, size=sp
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
   ylab("Evolved transcript \nabundance")
 
 final_line_plot_1 <- arrangeGrob(final_line_plot_1, top=textGrob("A", x = unit(-1, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
@@ -94,10 +94,10 @@ Produce the second set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/")
+setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data3.tsv", header=TRUE)
+target_data <- read.table("paper_data5.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -115,14 +115,14 @@ target_line_plot_2 <-  ggplot(target_data, aes(fill=species, color=species, size
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_7/paper_data3_rep1_nmut10/final/")
+setwd("../../results/2020_8_14/paper_data5_rep7_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -150,7 +150,7 @@ final_line_plot_2 <-  ggplot(plot_data, aes(fill=species, color=species, size=sp
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 final_line_plot_2 <- arrangeGrob(final_line_plot_2, top=textGrob("B", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
 
@@ -161,10 +161,10 @@ Produce the third set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/")
+setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data7.tsv", header=TRUE)
+target_data <- read.table("paper_data19.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -182,14 +182,14 @@ target_line_plot_3 <-  ggplot(target_data, aes(fill=species, color=species, size
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_7/paper_data7_rep1_nmut10/final/")
+setwd("../../results/2020_8_17/paper_data19_rep18_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -213,7 +213,7 @@ final_line_plot_3 <-  ggplot(plot_data, aes(fill=species, color=species, size=sp
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 final_line_plot_3 <- arrangeGrob(final_line_plot_3, top=textGrob("C", x = unit(-0.0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
 
@@ -224,10 +224,10 @@ Produce the fourth set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/")
+setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data16.tsv", header=TRUE)
+target_data <- read.table("paper_data7.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -245,14 +245,14 @@ target_line_plot_4 <-  ggplot(target_data, aes(fill=species, color=species, size
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_7/paper_data16_rep2_nmut10/final/")
+setwd("../../results/2020_8_14/paper_data7_rep10_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -276,7 +276,7 @@ final_line_plot_4 <-  ggplot(plot_data, aes(fill=species, color=species, size=sp
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 final_line_plot_4 <- arrangeGrob(final_line_plot_4, top=textGrob("D", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
 
@@ -287,10 +287,10 @@ Produce the fifth set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/")
+setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data17.tsv", header=TRUE)
+target_data <- read.table("paper_data64.tsv", header=TRUE)
 target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
 
 #Create plot
@@ -308,14 +308,14 @@ target_line_plot_5 <-  ggplot(target_data, aes(fill=species, color=species, size
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../results/2020_7_7/paper_data17_rep1_nmut10/final/")
+setwd("../../results/2020_8_25/paper_data64_rep7_nmut10/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -339,7 +339,7 @@ final_line_plot_5 <-  ggplot(plot_data, aes(fill=species, color=species, size=sp
         legend.position = "none") + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 40), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
 
 final_line_plot_5 <- arrangeGrob(final_line_plot_5, top=textGrob("E", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
 
@@ -355,7 +355,7 @@ img3 <- readPNG("figure2_final3_genome_arch.png")
 img4 <- readPNG("figure2_final4_genome_arch.png")
 img5 <- readPNG("figure2_final5_genome_arch.png")
 
-figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, rasterGrob(img1, vjust=-0.97, hjust=0.45, width=0.90), rasterGrob(img2, vjust=-1.07, width=0.98), rasterGrob(img3, vjust=-1.1, width=0.98), rasterGrob(img4, vjust=-1.25, width=0.98), rasterGrob(img5, vjust=-1.1, width=0.98), final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15)), widths=c(2.6,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=65, fontfamily="Arial"), vjust=-9))
+figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, rasterGrob(img1, vjust=-1.1, hjust=0.40, width=0.78), rasterGrob(img2, vjust=-1.09, width=0.95), rasterGrob(img3, vjust=-1.1, width=0.95), rasterGrob(img4, vjust=-1.184, width=0.95), rasterGrob(img5, vjust=-1.123, width=0.95), final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15)), widths=c(2.6,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=65, fontfamily="Arial"), vjust=-9))
 
-ggsave("figure2.png", figure2, height=35, width=65, limitsize=FALSE)
+ggsave("figure2.png", figure2, height=35, width=65, limitsize=FALSE, dpi=72)
 ```

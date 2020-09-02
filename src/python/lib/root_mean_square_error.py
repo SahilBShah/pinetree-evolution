@@ -27,17 +27,23 @@ def calc_nrmse(df_target, df_new):
 
     return np.mean(norm_errs)
 
-def calc_accepted_rmse_range(df_target):
+def calc_accepted_rmse_range(df_target, num_genes):
     """
     Calculates the highest RMSE value allowed before the program has found the a suitable architecture to reproduce the target data.
     Input(s):
     df_target is the user-inputted tsv file containing transcript abundances for each gene.
+    num_genes is the number of genes present on the user-inputted genome configuration.
     Output(s):
     max_sse is a floating point number that refers to the highest sum of squared error value that is considered a success.
     """
 
+    protein_list = []
+
     #Decreases the transcript abundances of the target file by 10%
-    df_altered = df_target[['protein1', 'protein2', 'protein3']] * 0.95
+    for n_genes in range(1, num_genes+1):
+        protein_list.append("protein{}".format(n_genes))
+
+    df_altered = df_target[protein_list] * 0.95
     #Calculates the sum of squared error between the reduced values and the target values and returns it
     max_rmse = calc_nrmse(df_target, df_altered)
     return max_rmse

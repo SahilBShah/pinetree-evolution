@@ -12,12 +12,12 @@ def create_yaml(starting_file, gene_file):
     """
 
     data = dict(
-                promoter_0 = dict(start=1, stop=35, current_strength=10e8, previous_strength=0),
+                promoter_0 = dict(start=1, stop=35, current_strength=10e7, previous_strength=0),
                 region_0 = dict(start=35, stop=gene_file['gene_1']['start']-30),
     )
 
     if data['region_0']['start'] > data['region_0']['stop']:
-        print('Intergenic region is not long before gene 1.')
+        print('Intergenic region is not long enough before gene 1.')
         sys.exit()
 
     #Adds promoters to yaml file
