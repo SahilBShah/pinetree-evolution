@@ -399,5 +399,21 @@ def main():
     output_dir = '../../../data/figures/figure2/figure2_final5_genome_arch.png'
     create_genome_architecture(gene_file, output_dir)
 
+    #Promoter genome architecture - parameter sweep
+    with open('../../../data/gene_parameters/promoter_test.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/parameter_testing/figures/promoter_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+    #Terminator genome architecture - parameter sweep
+    with open('../../../data/gene_parameters/terminator_test.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/parameter_testing/figures/terminator_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+    #RNAse genome architecture - parameter sweep
+    with open('../../../data/gene_parameters/rnase_test.yml', 'r') as gene_parameters:
+        gene_file = yaml.safe_load(gene_parameters)
+    output_dir = '../../../data/parameter_testing/figures/rnase_genome_arch.png'
+    create_genome_architecture(gene_file, output_dir)
+
 if __name__ == "__main__":
     main()

@@ -162,7 +162,7 @@ ggsave("../../../data/figures/paper_data48_lowest.png", line_plot, width=10, hei
 ```
 
 ```{r}
-setwd("../../results/2020_7_8/paper_data1_rep202_nmut10/")
+setwd("../../results/2020_8_18/paper_data30_rep8_nmut10/")
 rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
 rmse_data <- rmse_data %>% filter(Accepted=='yes')
 min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]

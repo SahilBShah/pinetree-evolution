@@ -15,6 +15,7 @@ library(ggplot2)
 library(grid)
 library(reshape2)
 library(gtools)
+library(png)
 ```
 Function that returns the mean of tsv files are time point 239 seconds
 ```{r}
@@ -93,7 +94,8 @@ prom_line_plot <- ggplot(prom_data, aes(x=strengths, y=values)) +
   ylab("Gene Y protein abundance/\nGene X protein abundance") + 
   panel_border() +
   geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means), width=0.05, size=2) +
-  scale_x_log10()
+  scale_x_log10() +
+  geom_vline(xintercept = 1e7, linetype="dashed", color = "dark grey", size=1.3)
 
 #Log scaled plot
 prom_log_plot <- ggplot(prom_data, aes(x=strengths, y=values)) + 
@@ -115,7 +117,8 @@ prom_log_plot <- ggplot(prom_data, aes(x=strengths, y=values)) +
   panel_border() +
   geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means), width=0.05, size=2) +
   scale_y_log10() +
-  scale_x_log10()
+  scale_x_log10() +
+  geom_vline(xintercept = 1e7, linetype="dashed", color = "dark grey", size=1.3)
 
 ```
 Plot terminator parameters
@@ -186,7 +189,8 @@ term_line_plot <- ggplot(term_data, aes(x=strengths, y=values)) +
   xlab("Terminator strength") + 
   ylab("Gene Y protein abundance/\nGene X protein abundance") + 
   panel_border() +
-  geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means), width=0.05, size=2)
+  geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means), width=0.05, size=2) +
+  geom_vline(xintercept = 0.2, linetype="dashed", color = "dark grey", size=1.3)
 
 #Log scaled plot
 term_log_plot <- ggplot(term_data, aes(x=strengths, y=values)) + 
@@ -208,7 +212,8 @@ term_log_plot <- ggplot(term_data, aes(x=strengths, y=values)) +
   panel_border() +
   geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means), width=0.05, size=2) +
   scale_y_log10() +
-  scale_x_log10()
+  scale_x_log10() +
+  geom_vline(xintercept = 0.2, linetype="dashed", color = "dark grey", size=1.3)
 
 ```
 Plot RNAse parameters
@@ -268,7 +273,8 @@ rnase_line_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) +
   xlab("RNAse strength") + 
   ylab("Gene Y protein abundance/\nGene X protein abundance") + 
   panel_border() +
-  geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means), width=0.05, size=2)
+  geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means), width=0.05, size=2) +
+  geom_vline(xintercept = 5e-3, linetype="dashed", color = "dark grey", size=1.3)
 
 #Log scaled plot
 rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) + 
@@ -290,7 +296,8 @@ rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) +
   panel_border() +
   geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means), width=0.05, size=2) +
   scale_y_log10() +
-  scale_x_log10()
+  scale_x_log10() +
+  geom_vline(xintercept = 5e-3, linetype="dashed", color = "dark grey", size=1.3)
 
 ```
 Produce paramters figure
@@ -298,7 +305,12 @@ Produce paramters figure
 
 setwd("../../data/parameter_testing/figures/")
 
-param_figure <- grid.arrange(prom_line_plot, term_line_plot, rnase_line_plot, prom_log_plot, term_log_plot, rnase_log_plot, layout_matrix=rbind(c(1,2,3), c(4,5,6)))
+#Read in genome architecture images
+prom_arch <- readPNG("promoter_genome_arch.png")
+term_arch <- readPNG("terminator_genome_arch.png")
+rnase_arch <- readPNG("rnase_genome_arch.png")
 
-ggsave("parameters_figure.png", param_figure, height=40, width=80, limitsize=FALSE, dpi=72)
+param_figure <- grid.arrange(rasterGrob(prom_arch, vjust=2.5, width=0.9), rasterGrob(term_arch, vjust=2.5, width=0.9), rasterGrob(rnase_arch, vjust=2.5, width=0.9), prom_line_plot, term_line_plot, rnase_line_plot, prom_log_plot, term_log_plot, rnase_log_plot, layout_matrix=rbind(c(1,2,3), c(4,5,6), c(7,8,9)))
+
+ggsave("parameters_figure.png", param_figure, height=70, width=110, limitsize=FALSE, dpi=72)
 ```

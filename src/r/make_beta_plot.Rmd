@@ -51,7 +51,7 @@ beta_plot <- fitness_landscape %>% ggplot(aes(x=generations, y=beta)) +
         plot.title = element_text(size=45, face='bold')) +
   ggtitle("Beta value over generations") +
   xlab("Generation") + 
-  ylab("Beta value") + 
+  ylab("Beta value (log scale)") + 
   panel_border(size=1, color="grey") +
   scale_y_log10()
 
