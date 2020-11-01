@@ -15,12 +15,7 @@ library(grid)
 library(cowplot)
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+Values to create nRMSE plot of accepted deleterious mutations
 ```{r}
 
 nrmse_ratios <- c(0.5002038733810914, 0.4984854031362939, 0.4717189300202526, 0.03286139689848213, 0.04466259779355728, 0.022548489894631128)
@@ -29,33 +24,26 @@ nrmse_sd <- c(0.1667346244603638, 0.15763492542579308, 0.1491706234281576, 0.010
 
 ```
 
+Create bar plot of the number of accepted deleterious mutations
 ```{r}
 
 df <- data.frame(betas, nrmse_ratios)
 df$betas <- format(df$betas, scientific = FALSE)
 
 nrmse_bar <- df %>% ggplot(aes(x=as.character(betas), y=nrmse_ratios)) + 
-  geom_bar(stat='identity', fill="white", color="black", lwd=3.0) + 
-  theme(legend.position="none",
-        plot.margin = unit(c(2,2,2,2),"cm"), 
-        panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        axis.text.x = element_text(size=210), 
-        axis.text = element_text(size=210), 
-        axis.line = element_line(size=2.6), 
-        axis.ticks = element_line(size=2.6), 
-        axis.ticks.length = unit(1.0, "cm"),
-        axis.title = element_text(size=210)) + 
+  geom_bar(stat='identity', fill="white", color="black") + 
+  theme_cowplot() + 
   xlab("Beta values") + 
   ylab("Fraction of deleterious accepted mutations") +
   scale_y_continuous(limits = c(0, 0.75), expand = c(0,0)) +
-  geom_errorbar(aes(ymin=nrmse_ratios-nrmse_sd, ymax=nrmse_ratios+nrmse_sd), width=0.2, size=2)
+  geom_errorbar(aes(ymin=nrmse_ratios-nrmse_sd, ymax=nrmse_ratios+nrmse_sd), width=0.2) +
+  theme(legend.position = "none")
 
-nrmse_bar <- arrangeGrob(nrmse_bar, top=textGrob("B", x = unit(0.01, "npc"), y=unit(1.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=280, fontfamily="Arial")))
+nrmse_bar <- arrangeGrob(nrmse_bar, top=textGrob("B", x = unit(0.01, "npc"), y=unit(1.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
 
 ```
 
+Create scatterplot of nRMSE value for each accepted mutation
 ```{r}
 
 nrmse_plots <- list()
@@ -83,51 +71,36 @@ for(rep in c(107, 115, 130, 131, 145, 152)){
   }
   if(rep != 152){
   nrmse_line_plot <- ggplot(nrmse, aes(x=Iteration, y=NRMSE)) + 
-    geom_point(stat='identity', color='#D55E00', size=6) + 
-    geom_line(size=4, stat='identity', color='#D55E00') + 
-    theme(panel.grid.major = element_blank(), 
-          panel.grid.minor = element_blank(), 
-          panel.background = element_blank(), 
-          plot.margin = unit(c(2,3,2,2), "cm"), 
-          axis.text.y = element_text(size=150), 
-          axis.text.x = element_blank(),
-          axis.line.y = element_line(size=3.0), 
-          axis.line.x = element_blank(),
-          axis.ticks.y = element_line(size=3.0), 
-          axis.ticks.x = element_blank(),
-          axis.ticks.length = unit(1.0, "cm"),
-          axis.title = element_blank(),
-          legend.position = "none") +
+    geom_point(stat='identity', color='#D55E00', size=1) + 
+    geom_line(size=1, stat='identity', color='#D55E00') + 
+    theme_cowplot() +
     ylab("Root mean square error") +
     scale_y_continuous(limits = c(0, 3.5), expand = c(0, 0)) +
     scale_x_continuous(limits = c(0, 5100), expand = c(0, 0)) +
-    panel_border(size=2, color="dark grey")
+    panel_border(size=1, color="dark grey") +
+    theme(legend.position = "none",
+          axis.title = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.line.x = element_blank(),
+          axis.text.x = element_blank())
   }else{
   nrmse_line_plot <- ggplot(nrmse, aes(x=Iteration, y=NRMSE)) +
-    geom_point(stat='identity', color='#D55E00', size=6) + 
-    geom_line(size=4, stat='identity', color='#D55E00') + 
-    theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,3,2,2), "cm"), 
-        axis.text = element_text(size=150), 
-        axis.line = element_line(size=3.6), 
-        axis.ticks = element_line(size=3.6), 
-        axis.ticks.length = unit(1.0, "cm"),
-        axis.title.x = element_text(size=210),
-        axis.title.y = element_blank(),
-        legend.position = "none") +
+    geom_point(stat='identity', color='#D55E00', size=1) + 
+    geom_line(size=1, stat='identity', color='#D55E00') + 
+    theme_cowplot() +
   xlab("Generation") + 
   ylab("Root mean square error") +
   scale_y_continuous(limits = c(0, 3.5), expand = c(0, 0)) +
   scale_x_continuous(limits = c(0, 5100), expand = c(0, 0)) +
-  panel_border(size=2, color="dark grey")
+  panel_border(size=1, color="dark grey") +
+  theme(legend.position = "none",
+        axis.title.y = element_blank())
   }
   
   nrmse_line_plot <- arrangeGrob(nrmse_line_plot, top=textGrob(paste0("beta = ", beta), 
-                                                                  x = unit(0.82, "npc"), y=unit(0.8, "npc"),
+                                                                  x = unit(0.65, "npc"), y=unit(0.8, "npc"),
                                                                   just=c("left","top"), 
-                                                                  gp=gpar(col="black", font="bold", fontsize=200,
+                                                                  gp=gpar(col="black", font="bold", fontsize=15,
                                                                           fontfamily="Arial")))   
 
   
@@ -155,32 +128,24 @@ Plots the beta values over each generation and saves it
 
 fitness_landscape <- data.frame(generations, beta)
 beta_plot <- fitness_landscape %>% ggplot(aes(x=generations, y=beta)) + 
-  geom_line(size=4, stat='identity', color='#000000') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(1.8,1,1,1), "cm"), 
-        axis.text = element_text(size=150), 
-        axis.line = element_line(size=3.6), 
-        axis.ticks = element_line(size=3.6), 
-        axis.ticks.length = unit(1.0, "cm"),
-        axis.title = element_text(size=210),
-        legend.position = "none",
-        plot.title = element_blank()) +
+  geom_line(size=1, stat='identity', color='#000000') + 
+  theme_cowplot() +
   xlab("Generation") + 
-  ylab("Beta value\n(log scale)") + 
-  panel_border(size=2, color="dark grey") +
-  scale_y_log10()
+  ylab("Beta value (log scale)") + 
+  panel_border(size=1, color="dark grey") +
+  scale_y_log10() +
+  theme(legend.position = "none",
+        plot.title = element_blank())
 
-beta_plot <- arrangeGrob(beta_plot, top=textGrob("C", x = unit(0.01, "npc"), y=unit(1.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=280, fontfamily="Arial")))
+beta_plot <- arrangeGrob(beta_plot, top=textGrob("C", x = unit(0, "npc"), y=unit(1.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
 ```
 
 Save nRMSE figure
 ```{r}
 
-nrmse_supp <- grid.arrange(nrmse_plots[[1]], nrmse_plots[[2]], nrmse_plots[[3]], nrmse_plots[[4]], nrmse_plots[[5]], nrmse_plots[[6]], nrmse_bar, beta_plot, layout_matrix=rbind(cbind(c(1,2,3,4,5,6), c(7)), c(8)), left=textGrob("Normalized RMSE", gp=gpar(fontsize=210), rot=90), top=textGrob("A",just=c("left","top"), x = unit(-0.01, "npc"), y=unit(0.4, "npc"), gp=gpar(col="black", font="bold", fontsize=280,fontfamily="Arial")))
+nrmse_supp <- grid.arrange(nrmse_plots[[1]], nrmse_plots[[2]], nrmse_plots[[3]], nrmse_plots[[4]], nrmse_plots[[5]], nrmse_plots[[6]], nrmse_bar, beta_plot, layout_matrix=rbind(cbind(c(1,2,3,4,5,6), c(7)), c(8)), left=textGrob("Normalized RMSE", gp=gpar(fontsize=15), rot=90, y=unit(0.6, "npc")), top=textGrob("A",just=c("left","top"), x = unit(-0.01, "npc"), y=unit(0.4, "npc"), gp=gpar(col="black", font="bold", fontsize=20,fontfamily="Arial")), heights=c(1,1,1,1,1,1.35,2,1))
 
-ggsave("../../manuscript_figures/si_figures/nrmse_supplemental.png", nrmse_supp, height=170, width=200, limitsize=FALSE, dpi=72)
+ggsave("../../manuscript_figures/si_figures/nrmse_supplemental.png", nrmse_supp, height=12, width=9, limitsize=FALSE, units="in")
 
 ```
 

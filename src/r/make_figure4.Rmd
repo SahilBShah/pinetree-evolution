@@ -1,0 +1,91 @@
+---
+title: "Figure 4"
+author: "Sahil Shah"
+date: "9/27/2020"
+output: pdf_document
+---
+
+
+```{r}
+library(cowplot)
+library(ggplot2)
+library(dplyr)
+library(grid)
+library(gridExtra)
+```
+
+Create first target plot.
+
+```{r}
+
+setwd("../../data/targets/")
+
+#Read in file to create target pattern graph
+target_data1 <- read.table("paper_data5.tsv", header=TRUE)
+target_data1 <- filter(target_data1, species == "protein1" | species == "protein2" | species == "protein3")
+
+#Create plot
+target_line_plot1 <-  ggplot(target_data1, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
+  scale_color_manual(values=c("#000000", "#000000", "#000000")) +
+  scale_y_continuous(limits=c(0,45), expand=c(0,0)) +
+  ylab('Target transcript abundance') +
+  xlab("Time (s)") +
+  theme(legend.position = "none",
+        axis.ticks.length = unit(2, "mm"))
+
+ggsave("../../data/figures/figure4/first_target_plot.png", target_line_plot1, height=3, width=3, limitsize=FALSE, units="in")
+```
+
+Create second target plot.
+
+```{r}
+
+setwd("../../data/targets/")
+
+#Read in file to create target pattern graph
+target_data2 <- read.table("paper_data19.tsv", header=TRUE)
+target_data2 <- filter(target_data2, species == "protein1" | species == "protein2" | species == "protein3")
+
+target_line_plot2 <-  ggplot(target_data2, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
+  scale_color_manual(values=c("#000000", "#000000", "#000000")) +
+  scale_y_continuous(limits=c(0,45), expand=c(0,0)) +
+  ylab('Target transcript abundance') +
+  xlab("Time (s)") +
+  theme(legend.position = "none",
+        axis.ticks.length = unit(2, "mm"))
+
+ggsave("../../data/figures/figure4/second_target_plot.png", target_line_plot2, height=3, width=3, limitsize=FALSE, units="in")
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+
+setwd("../../data/targets/")
+
+#Set entropy values for each pattern
+patterns <- c(1,2,3,4,5,6,7,8,9,10)
+entropy <- c(3.5588108279845434, 3.990009704040741, 3.676440908696869, 3.813566073017023, 4.945038697540245, 3.121928094887363, 3.6732696895151085, 4.152518266288632, 3.646439344671015, 1.0)
+entropy_df <- data.frame(Pattern=patterns, Entropy=entropy)
+
+#Create entropy plot
+entropy_bar_plot <- entropy_df %>% ggplot(aes(x=Pattern, y=Entropy)) +
+  geom_bar(stat='identity', fill="grey", color="black") +
+  theme_cowplot() +
+  xlab("Pattern") +
+  ylab("Entropy (bits)") +
+  coord_flip() +
+  scale_x_reverse(breaks=c(1:10)) +
+  scale_y_continuous(limits=c(0, 5.5), expand=c(0,0)) +
+  panel_border() +
+  theme(legend.position = "none",
+        axis.ticks.length = unit(2, "mm"))
+
+#Save entropy bar plot
+ggsave("../../data/figures/figure4/entropy_bar_plot.png", entropy_bar_plot, height=4, width=8, limitsize=FALSE, units="in")
+  
+```

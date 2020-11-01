@@ -41,7 +41,6 @@ class Command_line_args(object):
         self.parser.add_argument('run_number', type=int, default=1, nargs='?', help='Input the file number so that folder names are unique.')
         self.parser.add_argument('generation_number', type=int, default=1, nargs='?', help='Input number of generations to run evolutionary program.')
         self.parser.add_argument('replicate_mutation_number', type=int, default=1, nargs='?', help='Input number of times to simulate proposed mutation.')
-        self.parser.add_argument('dynamic_deg_rate', type=bool, default='', nargs='?', help='Input \'True\' if rnase site degredation rate should be an option to be modified or leave blank if not.')
         self.parser.add_argument('progress_bar_out', type=bool, default='', nargs='?', help='Input \'True\' if the progress bar should be outputted or leave blank if not.')
         self.args = self.parser.parse_args()
 
@@ -110,10 +109,7 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_df, arguments):
 
     #Template genome is simulated and its gene expression pattern is compared to the target
     for x in range(1, arguments.args.replicate_mutation_number+1):
-        if arguments.args.dynamic_deg_rate:
-            genome_simulator.pt_call_alt(output_dir, genome_tracker_new)
-        else:
-            genome_simulator.pt_call(output_dir, genome_tracker_new)
+        genome_simulator.pt_call(output_dir, genome_tracker_new, target_df.index[-1])
         save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
@@ -129,12 +125,11 @@ def sim_initial_genome(output_dir, genome_tracker_new, target_df, arguments):
 
     return rmse_old
 
-def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
+def enumerate_mutation_options(genome_tracker_new):
     """
     All the mutation possibilities are added to a dictionary.
     Input(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
-    dynamic_deg_rate is a command line argument that specifies if rnase degredation rates should be individually specified or not.
     Output(s):
     possibilities is a dictionary containing all the information regarding which mutations are possible to occur.
     """
@@ -182,8 +177,7 @@ def enumerate_mutation_options(genome_tracker_new, dynamic_deg_rate):
                     modify_possibilities[promoter+'.modify{}'.format(prom)] = 'modify'
             if genome_tracker_new[rnase]['start'] > 0:
                 for rna in range(len(possibilities)*13):
-                    if dynamic_deg_rate:
-                        modify_possibilities[rnase+'.modify{}'.format(rna)] = 'modify'
+                    modify_possibilities[rnase+'.modify{}'.format(rna)] = 'modify'
     possibilities.update(modify_possibilities)
 
     return possibilities
@@ -252,21 +246,21 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
         elif i == 1:
             print('Running simulation...\nEstimated time:', round(((generation_number*arguments.args.replicate_mutation_number*0.47) - (i*arguments.args.replicate_mutation_number*0.47)) / 60, 2))
 
-        possibilities = enumerate_mutation_options(genome_tracker_new, arguments.args.dynamic_deg_rate)
+        possibilities = enumerate_mutation_options(genome_tracker_new)
 
         #Mutation is chosen and performed on best genome
         item = random.choice(list(possibilities.keys()))
         if possibilities[item] == 'add':
-            genome_tracker_new = mutation_choices.add_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate, item.split('.')[0])
+            genome_tracker_new = mutation_choices.add_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], item.split('.')[0])
         elif possibilities[item] == 'remove':
-            genome_tracker_new = mutation_choices.remove_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate, item.split('.')[0])
+            genome_tracker_new = mutation_choices.remove_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], item.split('.')[0])
         else:
-            genome_tracker_new = mutation_choices.modify_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], arguments.args.dynamic_deg_rate, item.split('.')[0])
+            genome_tracker_new = mutation_choices.modify_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], item.split('.')[0])
 
         #Sum of squared error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
         #pinetree called in analyze_mutation
-        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number, 1, arguments.args.dynamic_deg_rate)
+        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number, 1)
 
         accept_prob = fitness_score.calc_fitness(rmse_new, rmse_old, generation_number, i)
         all_rmse_list.append(rmse_new)
@@ -310,16 +304,7 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     Saves all the relevant files to the output directory.
     """
 
-    #found_arch = False
-
-    #Genome is tested to determine if any elements on the genome significantly alter the expression pattern produced when deleted
-    #print('\nCleaning up genome architecture...')
-    #rmse_best = mutation_choices.cleanup_genome(output_dir, genome_tracker_old, target_df, arguments.args.replicate_mutation_number, arguments.args.dynamic_deg_rate)
-
-    #Sum of squared error data is saved to output directory
-    # rmse_iter_list.append(arguments.args.generation_number+1)
-    # all_rmse_list.append(rmse_best)
-    # is_accepted.append('yes')
+    #RMSE data is saved to output directory
     rmse_df = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
     export_csv = rmse_df.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     os.remove(output_dir+'expression_pattern.tsv')
@@ -334,11 +319,6 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     save_df = pd.read_csv(output_dir+"expression_pattern_{}.tsv".format(min_rmse_index), header=0, sep='\t')
     save_df.to_csv(output_dir+"final/expression_pattern_best.tsv", sep='\t', index=False)
 
-    #If the genome architecture pattern produces an expression at least 90% similar to the target then an architecture has been found
-    # if rmse_best <= max_rmse:
-    #     found_arch = True
-
-    # return found_arch
     return
 
 def main():

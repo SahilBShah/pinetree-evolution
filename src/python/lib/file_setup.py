@@ -35,8 +35,8 @@ def rearrange_file(file, max_time, num_genes):
                 protein_dict['protein{}'.format(prot)] = 0.0
             new_row = pd.Series(data=protein_dict, name=t)
             file = file.append(new_row, ignore_index=False)
-    if 301 in file.index:
-        file = file.drop(301, axis=0)
+    if max_time+1 in file.index:
+        file = file.drop(max_time+1, axis=0)
     file = file.sort_index()
     file = file[protein_species]
 
