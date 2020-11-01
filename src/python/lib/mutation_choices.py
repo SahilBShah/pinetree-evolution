@@ -9,21 +9,9 @@ import yaml
 #lib imports
 import mutation_analysis
 
-#promoter_starting_strength = 10e6
-# max_promoter_strength = 10e13
-# min_promoter_strength = 10e5
-#promoter_offset = 34
-#promoter_min_space = 35
-#rnase_starting_strength = 5e-3
-# max_rnase_strength = 1.0
-# min_rnase_strength = 0.0
-#rnase_offset = 9
-#rnase_min_space = 10
-# max_terminator_strength = 1.0
-# min_terminator_strength = 0.0
-#terminator_starting_strength = 0.3
-#terminator_offset = 29
-#terminator_min_space = 30
+#promoter_min_space = 35 nucleotides
+#rnase_min_space = 10 nucleotides
+#terminator_min_space = 30 nucleotides
 
 #{element: [genome_shift, starting_strengths]}
 element_dict = {'promoter': [34, 10e6], 'rnase': [9, 5e-3], 'terminator': [29, 0.2]}
