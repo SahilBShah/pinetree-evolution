@@ -10,36 +10,31 @@ output: pdf_document
 library(reshape2)
 library(gridExtra)
 library(gtools)
+library(cowplot)
 #Set working directory to the directory in which the results are contained in 
 setwd("../../data/targets/")
-#setwd("../results/2020_4_30/paper_data8_nf1.0_rep8_nmut5/")
+#setwd("../../results/paper_data145/rep14/final/")
 #setwd("/home/sahil/")
 
 #Change grant_data name to the target file used
-#target_data <- read.table("expression_pattern_757.tsv", header=TRUE)
+#target_data <- read.table("expression_pattern_best.tsv", header=TRUE)
 #target_data <- read.table("test.tsv", header=TRUE)
-target_data <- read.table("paper_data6.tsv", header=TRUE)
-target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
-#target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3" | species == "protein4" | species == "protein5" | species == "protein6" | species == "protein7" | species == "protein8" | species == "protein9" | species == "protein10")
+target_data <- read.table("paper_data61.tsv", header=TRUE)
+#target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3" | species == "protein4" | species == "protein5" | species == "protein6" | species == "protein7" | species == "protein8" | species == "protein9" | species == "protein10") & time != 301)
 target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
   geom_line(stat="identity", size=2) + 
-  theme(legend.position="none",
-        panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.text.x = element_text(size=30), 
-        axis.text.y = element_text(size=30), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title = element_text(size=25)) + 
-  scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
-  #scale_color_manual(values=c("#000000", "#000000", "#000000")) +
+  theme_cowplot() + 
+  #scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
+  scale_color_manual(values=c("#000000", "#000000", "#000000")) +
   scale_y_continuous(limits=c(0,45), expand=c(0,0)) +
   ylab('Transcript abundance') +
-  xlab("Time (s)")
+  xlab("Time (s)") +
+  theme(legend.position = "none")
 
-  ggsave("../figures/paper_data6.png", target_line_plot, width=10, height=10, limitsize=FALSE)
+target_line_plot
+
+ggsave("../../data/figures/paper_data61_black.png", target_line_plot, width=4, height=4, limitsize=FALSE, units = "in")
 #ggsave("test.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 
 ```
@@ -69,16 +64,35 @@ ggsave("../../../data/figures/rmse_graphs_paper_data13_rep8_nf1.png", rmse_plots
 Evolutionary Analysis of Mutations
 
 ```{r pressure, echo=FALSE}
-library(reshape2)
-library(gridExtra)
-library(gtools)
+#library(reshape2)
+#library(gridExtra)
+#library(gtools)
+#library(cowplot)
 #Set working directory to the directory in which the results are contained in 
-setwd("../../results/2020_8_23/paper_data48_rep2_nmut10/")
+setwd("../../results/paper_data66/rep14/")
 
 plots_list <- list()
 best_files <- list.files(pattern="expression_pattern_")
 best_files <- mixedsort(sort(best_files))
 plots_list <- list()
+
+rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
+rmse_data <- rmse_data %>% filter(Accepted=='yes')
+min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
+plot_data <- read.table("./final/expression_pattern_best.tsv", header=TRUE)
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3" | species == "protein4" | species == "protein5" | species == "protein6" | species == "protein7" | species == "protein8" | species == "protein9" | species == "protein10") & time != "301")
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
+  geom_line(stat="identity", size=2) + 
+  theme_cowplot() + 
+  scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
+  #scale_color_manual(values=c("#000000", "#000000", "#000000")) +
+  scale_y_continuous(limits=c(0,45), expand=c(0,0)) +
+  ylab('Transcript abundance') +
+  xlab("Time (s)") +
+  theme(legend.position = "none")
+
+ggsave("../../../data/figures/supp/paper_data66_lowest.png", line_plot, width=4, height=4, limitsize=FALSE, units="in")
 # #Change grant_data name to the target file used
 # target_data <- read.table("../../../data/targets/paper_data1.tsv", header=TRUE)
 # target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
@@ -107,29 +121,7 @@ plots_list <- list()
 # #Change name of saved graphs file to a unique identifier
 # ggsave("../../../data/figures/paper_data139_rep0_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
 # # 
-rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
-rmse_data <- rmse_data %>% filter(Accepted=='yes')
-min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
-best_file <- list.files(pattern=paste0("expression_pattern_", min_rmse, ".tsv"))
-plot_data <- read.table("./final/expression_pattern_best.tsv", header=TRUE)
-plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
-line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
-  geom_line(stat="identity", size=2) + 
-  theme(legend.position="none",
-        panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        axis.text.x = element_text(size=30), 
-        axis.text.y = element_text(size=30), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title = element_text(size=25)) + 
-  scale_y_continuous(limits=c(0,45), expand = c(0,0)) +
-  scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
-  ylab('Transcript abundance') +
-  xlab("Time (s)")
-ggsave("../../../data/figures/paper_data48_lowest.png", line_plot, width=10, height=10, limitsize=FALSE)
+
 
 
 #Filter sum of squares data
@@ -166,6 +158,31 @@ setwd("../../results/2020_8_18/paper_data30_rep8_nmut10/")
 rmse_data <- read.table("./final/rmse_data.tsv", header=TRUE)
 rmse_data <- rmse_data %>% filter(Accepted=='yes')
 min_rmse <- rmse_data$Iteration[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+```
+
+```{r}
+
+library(reshape2)
+library(gridExtra)
+library(gtools)
+library(cowplot)
+#Set working directory to the directory in which the results are contained in 
+setwd("../../tests/single_run_outputs/")
+
+
+plot_data <- read.table("./expression_pattern.tsv", header=TRUE)
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3" | species == "protein4" | species == "protein5" | species == "protein6" | species == "protein7" | species == "protein8" | species == "protein9" | species == "protein10") & time != "301")
+line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
+  #scale_y_continuous(limits=c(0,45), expand = c(0,0)) +
+  #scale_color_manual(values=c("#0072B2", "#E69F00", "#CC79A7")) + 
+  ylab('Transcript abundance') +
+  xlab("Time (s)") +
+  theme(legend.position = "none")
+
+ggsave("./exp_pattern.png", line_plot, width=5, height=5, limitsize=FALSE, units="in")
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

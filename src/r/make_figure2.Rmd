@@ -27,65 +27,53 @@ setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data1.tsv", header=TRUE)
-target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 target_line_plot_1 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
-        axis.line.x = element_blank(), 
-        axis.line.y = element_line(size=1.8), 
-        axis.ticks.x = element_blank(), 
-        axis.ticks.y = element_line(size=1.8), 
-        axis.text.x = element_blank(), 
-        axis.text.y = element_text(size=65), 
-        axis.ticks.length.y = unit(0.5, "cm"),
-        axis.title.x = element_blank(), 
-        axis.title.y = element_text(size=60),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
   scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
-  ylab("Target transcript \nabundance")
+  ylab("Target transcript \nabundance") +
+  theme(legend.position = "none",
+        axis.line.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=17),
+        axis.title.x = element_blank(),
+        axis.title.y = element_text(size=17),
+        plot.margin = unit(c(0.5, 0.5, 0.25, 0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit(0, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit(0, "npc"), y=unit(0.2, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=24, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/2020_8_13/paper_data1_rep1_nmut10/final/")
+setwd("../../results/paper_data1/rep18/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
-plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
-
-# best_files <- list.files(pattern="expression_pattern_")
-# plot_data <- read.table(best_files[length(best_files)], header=TRUE)
-# plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 final_line_plot_1 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(-17,1.6,16.5,1), "cm"), 
-        axis.line = element_line(size=1.8), 
-        axis.ticks = element_line(size=1.8), 
-        axis.text = element_text(size=65), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_blank(),
-        axis.title.y = element_text(size=60),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
   scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
-  ylab("Evolved transcript \nabundance")
+  ylab("Evolved transcript \nabundance") +
+  theme(legend.position = "none",
+        axis.title.x = element_blank(),
+        axis.text = element_text(size=17),
+        axis.title.y = element_text(size=17),
+        plot.margin = unit(c(-5.50,0.5,5.75,0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-final_line_plot_1 <- arrangeGrob(final_line_plot_1, top=textGrob("A", x = unit(-1, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+final_line_plot_1 <- arrangeGrob(final_line_plot_1, top=textGrob("B", x = unit(0, "npc"), y=unit(8.5, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=24, fontfamily="Arial")))
 
 ```
 Produce the second set of plots
@@ -98,61 +86,51 @@ setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data5.tsv", header=TRUE)
-target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 target_line_plot_2 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
-        axis.line = element_blank(),
-        axis.ticks = element_blank(), 
-        axis.text = element_blank(), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.25, 0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit(-0.03, "npc"), y=unit(0.2, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/2020_8_14/paper_data5_rep7_nmut10/final/")
+setwd("../../results/paper_data5/rep8/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
-plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
-
-# best_files <- list.files(pattern="expression_pattern_")
-# plot_data <- read.table(best_files[length(best_files)], header=TRUE)
-# plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 final_line_plot_2 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(-17,1.6,16.5,1), "cm"), 
-        axis.line.y = element_blank(),
-        axis.ticks.y = element_blank(), 
-        axis.text.y = element_blank(), 
-        axis.line.x = element_line(size=1.8),
-        axis.ticks.x = element_line(size=1.8), 
-        axis.text.x = element_text(size=65), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size=17),
+        axis.title = element_blank(),
+        axis.line.y = element_blank(),
+        plot.margin = unit(c(-5.50,0.5,5.75,0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-final_line_plot_2 <- arrangeGrob(final_line_plot_2, top=textGrob("B", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+final_line_plot_2 <- arrangeGrob(final_line_plot_2, top=textGrob("B", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 ```
 Produce the third set of plots
@@ -165,57 +143,51 @@ setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data19.tsv", header=TRUE)
-target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 target_line_plot_3 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2.5) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
-        axis.line = element_blank(),
-        axis.ticks = element_blank(), 
-        axis.text = element_blank(), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.25, 0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit(-0.03, "npc"), y=unit(0.2, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/2020_8_17/paper_data19_rep18_nmut10/final/")
+setwd("../../results/paper_data19/rep20/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
-plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 final_line_plot_3 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2.5) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(-17,1.6,16.5,1), "cm"), 
-        axis.line.y = element_blank(),
-        axis.ticks.y = element_blank(), 
-        axis.text.y = element_blank(), 
-        axis.line.x = element_line(size=1.8),
-        axis.ticks.x = element_line(size=1.8), 
-        axis.text.x = element_text(size=65), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size=17),
+        axis.title = element_blank(),
+        plot.margin = unit(c(-5.50,0.5,5.75,0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-final_line_plot_3 <- arrangeGrob(final_line_plot_3, top=textGrob("C", x = unit(-0.0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+final_line_plot_3 <- arrangeGrob(final_line_plot_3, top=textGrob("C", x = unit(0.0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 ```
 Produce the fourth set of plots
@@ -228,57 +200,51 @@ setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data7.tsv", header=TRUE)
-target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 target_line_plot_4 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2.5) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
+  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
+  panel_border() + 
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
         axis.line = element_blank(),
         axis.ticks = element_blank(), 
         axis.text = element_blank(), 
-        axis.ticks.length.x = unit(0.5, "cm"),
         axis.title = element_blank(),
-        legend.position = "none") + 
-  scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
-  panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+        plot.margin = unit(c(0.5, 0.5, 0.25, 0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit(-0.03, "npc"), y=unit(0.2, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/2020_8_14/paper_data7_rep10_nmut10/final/")
+setwd("../../results/paper_data7/rep21/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
-plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 final_line_plot_4 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2.5) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(-17,1.6,16.5,1), "cm"), 
-        axis.line.y = element_blank(),
-        axis.ticks.y = element_blank(), 
-        axis.text.y = element_blank(), 
-        axis.line.x = element_line(size=1.8),
-        axis.ticks.x = element_line(size=1.8), 
-        axis.text.x = element_text(size=65), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size=17),
+        axis.title = element_blank(),
+        plot.margin = unit(c(-5.50,0.5,5.75,0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-final_line_plot_4 <- arrangeGrob(final_line_plot_4, top=textGrob("D", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+final_line_plot_4 <- arrangeGrob(final_line_plot_4, top=textGrob("D", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 ```
 Produce the fifth set of plots
@@ -290,58 +256,52 @@ Produce the fifth set of plots
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data64.tsv", header=TRUE)
-target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+target_data <- read.table("paper_data59.tsv", header=TRUE)
+target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 target_line_plot_5 <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2.5) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(1,1.6,0.5,1), "cm"), 
-        axis.line = element_blank(),
-        axis.ticks = element_blank(), 
-        axis.text = element_blank(), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.line = element_blank(),
+        axis.ticks = element_blank(), 
+        axis.text = element_blank(),
+        axis.title = element_blank(),
+        plot.margin = unit(c(0.5, 0.5, 0.25, 0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit(-0.04, "npc"), y=unit(0.3, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=80, fontfamily="Arial")))
+target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit(-0.03, "npc"), y=unit(0.2, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/2020_8_25/paper_data64_rep7_nmut10/final/")
+setwd("../../results/paper_data59/rep8/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
-plot_data <- filter(plot_data, species == "protein1" | species == "protein2" | species == "protein3")
+plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
 final_line_plot_5 <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-  geom_line(stat="identity", size=2.5) + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(-17,1.6,16.5,1), "cm"), 
-        axis.line.y = element_blank(),
-        axis.ticks.y = element_blank(), 
-        axis.text.y = element_blank(), 
-        axis.line.x = element_line(size=1.8),
-        axis.ticks.x = element_line(size=1.8), 
-        axis.text.x = element_text(size=65), 
-        axis.ticks.length.x = unit(0.5, "cm"),
-        axis.title = element_blank(),
-        legend.position = "none") + 
+  geom_line(stat="identity", size=1) + 
+  theme_cowplot() + 
   scale_color_manual(values=c("#56B4E9", "#E69F00", "#CC79A7")) + 
   panel_border() + 
-  scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
+  scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+  theme(legend.position = "none",
+        axis.line.y = element_blank(),
+        axis.ticks.y = element_blank(), 
+        axis.text.y = element_blank(),
+        axis.text.x = element_text(size=17),
+        axis.title = element_blank(),
+        plot.margin = unit(c(-5.50,0.5,5.75,0.5), "cm"),
+        axis.ticks.length = unit(2, "mm"))
 
-final_line_plot_5 <- arrangeGrob(final_line_plot_5, top=textGrob("E", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=80, fontfamily="Arial")))
+final_line_plot_5 <- arrangeGrob(final_line_plot_5, top=textGrob("E", x = unit(0, "npc"), y=unit(0.9, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=24, fontfamily="Arial")))
 
 ```
 Produce figure 2
@@ -355,7 +315,7 @@ img3 <- readPNG("figure2_final3_genome_arch.png")
 img4 <- readPNG("figure2_final4_genome_arch.png")
 img5 <- readPNG("figure2_final5_genome_arch.png")
 
-figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, rasterGrob(img1, vjust=-1.1, hjust=0.40, width=0.78), rasterGrob(img2, vjust=-1.09, width=0.95), rasterGrob(img3, vjust=-1.1, width=0.95), rasterGrob(img4, vjust=-1.184, width=0.95), rasterGrob(img5, vjust=-1.123, width=0.95), final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15)), widths=c(2.6,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=65, fontfamily="Arial"), vjust=-9))
+figure2 <- grid.arrange(target_line_plot_1, target_line_plot_2, target_line_plot_3, target_line_plot_4, target_line_plot_5, rasterGrob(img1, vjust=-2.05, hjust=0.40, width=0.75), rasterGrob(img2, vjust=-2.27, width=0.93), rasterGrob(img3, vjust=-2.27, width=0.93), rasterGrob(img4, vjust=-2.34, width=0.93), rasterGrob(img5, vjust=-2.22, width=0.93), final_line_plot_1, final_line_plot_2, final_line_plot_3, final_line_plot_4, final_line_plot_5, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11,12,13,14,15)), widths=c(3.07,2.35,2.35,2.35,2.35), bottom=textGrob("Time (s)", gp=gpar(fontsize=17, fontfamily="Arial"), vjust=-13, hjust=-0.01))
 
-ggsave("figure2.png", figure2, height=35, width=65, limitsize=FALSE, dpi=72)
+ggsave("figure2.png", figure2, height=8, width=14, limitsize=FALSE, units="in")
 ```

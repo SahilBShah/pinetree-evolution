@@ -31,19 +31,13 @@ tmp_avg <- 5.0
 for(data in 1:66){
   data_name <- paste0("paper_data", data)
   pattern_name <- as.character(data)
-  for(day in 13:26){
-    date <- paste0("2020_8_", day)
-    for(rep in 1:20){
-      if(dir.exists(paste0("./", date, "/", data_name, "_rep", rep, "_nmut10/final/"))){
-        rmse_data <- read.table(paste0("./", date, "/", data_name, "_rep", rep, "_nmut10/final/rmse_data.tsv"), header=TRUE)
-        rmse_data <- rmse_data %>% filter(Accepted=='yes')
-        min_rmse <- rmse_data$NRMSE[rmse_data$NRMSE == min(rmse_data$NRMSE)]
-        pattern[length(pattern) + 1] <- pattern_name
-        nrmse[length(nrmse) + 1] <- min_rmse
-      }
-      else{
-        break
-      }
+  for(rep in 1:50){
+    if(dir.exists(paste0("./", data_name, "/rep", rep, "/final/"))){
+      rmse_data <- read.table(paste0("./", data_name, "/rep", rep, "/final/rmse_data.tsv"), header=TRUE)
+      rmse_data <- rmse_data %>% filter(Accepted=='yes')
+      min_rmse <- rmse_data$NRMSE[rmse_data$NRMSE == min(rmse_data$NRMSE)]
+      pattern[length(pattern) + 1] <- pattern_name
+      nrmse[length(nrmse) + 1] <- min_rmse
     }
   }
 }
@@ -58,7 +52,8 @@ Determines the best subpattern for a set and removes all others from dataframe.
 index <- 1
 
 #If the mean is lower than the previous subplot then it is retained in the dataframe
-for(data in 1:60){
+df <- df %>% filter(pattern != c("13", "14", "15", "16", "17", "18"))
+for(data in c(1:12, 19:66)){
   if(mean(df[df$pattern==as.character(data),]$nrmse) < tmp_avg){
     best_patterns[index] <- as.character(data)
     tmp_avg <- mean(df[df$pattern==as.character(data),]$nrmse)
@@ -72,35 +67,31 @@ for(data in 1:60){
 
 #Reorganize the data so that they can be plotted in desired order
 df <- df %>% filter(pattern %in% best_patterns)
-df$pattern <- factor(df$pattern,levels = unique(df$pattern))
+df$pattern <- factor(df$pattern,levels = c(5,30,32,39,19,7,45,56,52,64))
 
 ```
 
 Creates boxplot of the normalized RMSE values per pattern.
 ```{r}
 
-nrmse_bp <- df %>% ggplot(aes(x=pattern, y=nrmse)) + 
-  geom_boxplot(lwd=3) + 
-  geom_jitter(color="black", size=7.0, alpha=1.0) + 
-  theme(legend.position="none",
-        plot.title = element_blank(),
-        panel.background = element_blank(),
-        panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),
-        plot.margin = unit(c(8,1,1,1), "cm"), 
-        axis.text.x = element_text(size=130), 
-        axis.text.y = element_text(size=130), 
-        axis.line = element_line(size=2.3), 
-        axis.ticks = element_line(size=2.3), 
-        axis.ticks.length = unit(1.0, "cm"),
-        axis.title = element_text(size=125)) +
+  nrmse_bp <- df %>% ggplot(aes(x=pattern, y=nrmse)) + 
+    geom_boxplot(outlier.shape = NA) + 
+    geom_jitter(color="black", size=0.5) + 
+  theme_cowplot() +
   xlab("Pattern") +
   ylab("Normalized RMSE") +
   scale_y_continuous(limits=c(0, 0.35), expand=c(0,0)) +
-  scale_x_discrete(labels=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10"))
+  scale_x_discrete(labels=c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")) +
+  geom_hline(yintercept = 0.1, linetype="solid", color = "red") +
+  theme(legend.position = "none",
+        axis.text.x = element_text(size=17),
+        axis.text.y = element_text(size=15),
+        axis.title = element_text(size=15),
+        plot.margin = unit(c(4.0, 2.0, 0, -1.0), "mm"),
+        axis.ticks.length = unit(2, "mm"))
 
 #Letter corresponding to plot in figure is added
-nrmse_bp <- arrangeGrob(nrmse_bp, top=textGrob("B", x = unit(0, "npc"), y=unit(-0.2, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=180, fontfamily="Arial")))
+nrmse_bp <- arrangeGrob(nrmse_bp, top=textGrob("B", x = unit(-0.02, "npc"), y=unit(1.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
 ```
 
 Creates plots for each pattern to display on the top of the figure.
@@ -108,89 +99,69 @@ Creates plots for each pattern to display on the top of the figure.
 
 plots <- list()
 starting <- 1
+skip <- 6
 
 #Reads in tsv files containing transcript abundances
-for(dat in seq(1, 60, 6)){
+for(dat in c(1,25,31,37,19,7,43,55,49,61)){
   target_data <- read.table(paste0("../../data/targets/paper_data", dat, ".tsv"), header=TRUE)
-  target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
+  target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
   #Plots each pattern and modifies based on position of plot in outputted figure
   if(starting == 1){
     target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-      geom_line(stat="identity", size=2) + 
-      theme(panel.grid.major = element_blank(), 
-            panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), 
-            plot.margin = unit(c(1,1.5,1,1), "cm"), 
-            axis.line.x = element_blank(), 
-            axis.line.y = element_line(size=2.3), 
-            axis.ticks.x = element_blank(), 
-            axis.ticks.y = element_line(size=2.3), 
-            axis.text.x = element_blank(), 
-            axis.text.y = element_text(size=130), 
-            axis.ticks.length.y = unit(1.0, "cm"),
-            axis.title.x = element_blank(), 
-            axis.title.y = element_text(size=125),
-            legend.position = "none") + 
+      geom_line(stat="identity", size=1) + 
+      theme_cowplot() + 
       scale_color_manual(values=c("#000000", "#000000", "#000000")) +
       panel_border(size=1, color="grey") +
       scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
-      ylab("Transcript abundance")
+      theme(legend.position = "none",
+            axis.line.x = element_blank(),
+            axis.ticks.x = element_blank(),
+            axis.text.x = element_blank(),
+            axis.text = element_text(size=15),
+            axis.title = element_blank(),
+            plot.margin = unit(c(3.5, 2.5, 3.5, 7), "mm"),
+            axis.ticks.length = unit(2, "mm"))
   }else if(starting == 6){
     target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-      geom_line(stat="identity", size=2) + 
-      theme(panel.grid.major = element_blank(), 
-            panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), 
-            plot.margin = unit(c(1,1.5,1,1), "cm"), 
-            axis.line = element_line(size=2.3), 
-            axis.ticks = element_line(size=2.3), 
-            axis.text = element_text(size=130), 
-            axis.ticks.length = unit(1.0, "cm"),
-            axis.title.x = element_text(size=125),
-            axis.title.y = element_text(size=125),
-            legend.position = "none") + 
+      geom_line(stat="identity", size=1) + 
+      theme_cowplot() + 
       scale_color_manual(values=c("#000000", "#000000", "#000000")) + 
       panel_border(size=1, color="grey") + 
       scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
-      ylab("Transcript abundance") +
-      xlab("Time (s)")
+      theme(legend.position = "none",
+            plot.margin = unit(c(2.5, 2.5, 6.0, 7), "mm"),
+            axis.text = element_text(size=15),
+            axis.title = element_blank(),
+            axis.ticks.length = unit(2, "mm"))
   }else if(starting <= 5){
     target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-      geom_line(stat="identity", size=2) + 
-      theme(panel.grid.major = element_blank(), 
-            panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), 
-            plot.margin = unit(c(1,1,1,1.5), "cm"), 
-            axis.line = element_blank(),
-            axis.ticks = element_blank(), 
-            axis.text = element_blank(), 
-            axis.ticks.length.x = unit(1.0, "cm"),
-            axis.title = element_blank(),
-            legend.position = "none") + 
-      scale_color_manual(values=c("#000000", "#000000", "#000000")) + 
-      panel_border(size=1, color="grey") + 
-      scale_y_continuous(limits = c(0, 45), expand = c(0, 0))
-  }else{
-    target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
-      geom_line(stat="identity", size=2) + 
-      theme(panel.grid.major = element_blank(), 
-            panel.grid.minor = element_blank(), 
-            panel.background = element_blank(), 
-            plot.margin = unit(c(1,1,1,1.5), "cm"), 
-            axis.line.y = element_blank(),
-            axis.ticks.y = element_blank(), 
-            axis.text.y = element_blank(), 
-            axis.line.x = element_line(size=2.3),
-            axis.ticks.x = element_line(size=2.3), 
-            axis.text.x = element_text(size=130), 
-            axis.ticks.length.x = unit(1.0, "cm"),
-            axis.title.y = element_blank(),
-            axis.title.x = element_text(size=125),
-            legend.position = "none") + 
+      geom_line(stat="identity", size=1) + 
+      theme_cowplot() + 
       scale_color_manual(values=c("#000000", "#000000", "#000000")) + 
       panel_border(size=1, color="grey") + 
       scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
-      xlab("Time (s)")
+      theme(legend.position = "none",
+            axis.line = element_blank(),
+            axis.ticks = element_blank(), 
+            axis.text = element_blank(),
+            axis.title = element_blank(),
+            plot.margin = unit(c(3.5, 2.5, 3.5, 3.5), "mm"),
+            axis.ticks.length = unit(2, "mm"))
+  }else{
+    target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=species, x=time, y=transcript)) +
+      geom_line(stat="identity", size=1) + 
+      theme_cowplot() + 
+      scale_color_manual(values=c("#000000", "#000000", "#000000")) + 
+      panel_border(size=1, color="grey") + 
+      scale_y_continuous(limits = c(0, 45), expand = c(0, 0)) +
+      theme(legend.position = "none",
+            axis.line.y = element_blank(),
+            axis.ticks.y = element_blank(), 
+            axis.text.y = element_blank(),
+            axis.text = element_text(size=15),
+            axis.title = element_blank(),
+            plot.margin = unit(c(2.5, 2.5, 6.0, 3.5), "mm"),
+            axis.ticks.length = unit(2, "mm"))
   }
   plots[[starting]] <- target_line_plot
   starting <- starting + 1
@@ -199,13 +170,19 @@ for(dat in seq(1, 60, 6)){
 #Labels plots with its corresponding lettering
 for(i in 1:length(plots)){
   if(i == 1){
-    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob("A", x = unit(0, "npc"), y=unit(0.7, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=180, fontfamily="Arial")))
+    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob("A", x = unit(-0.08, "npc"), y=unit(0.8, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
+    
+    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob(paste0(i), x = unit(0.3, "npc"), y=unit(-2.25, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=17, fontfamily="Arial")))
   }else if(i <= 5){
-    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob("A", x = unit(0, "npc"), y=unit(0.5, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=180, fontfamily="Arial")))
+    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob("A", x = unit(0, "npc"), y=unit(0.4, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=20, fontfamily="Arial")))
+    
+    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob(paste0(i), x = unit(0.15, "npc"), y=unit(-2.25, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=17, fontfamily="Arial")))
+  }else if(i == 6){
+    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob(paste0(i), x = unit(0.3, "npc"), y=unit(-1.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=17, fontfamily="Arial")))
   }else{
-    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob("A", x = unit(0, "npc"), y=unit(0, "npc"), just=c("left","top"), gp=gpar(col="white", font="bold", fontsize=180, fontfamily="Arial")))
+    plots[[i]] <- arrangeGrob(plots[[i]], top=textGrob(paste0(i), x = unit(0.15, "npc"), y=unit(-1.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=17, fontfamily="Arial")))
   }
-
+  
 }
 
 ```
@@ -213,8 +190,8 @@ for(i in 1:length(plots)){
 Create figure and save.
 ```{r}
 
-figure3 <- grid.arrange(plots[[1]], plots[[2]], plots[[3]], plots[[4]], plots[[5]], plots[[6]], plots[[7]], plots[[8]], plots[[9]], plots[[10]], nrmse_bp, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11)), widths=c(2.6,2.2,2.2,2.2,2.2))
-ggsave("../../data/figures/figure3/figure3.png", figure3, height=80, width=150, limitsize=FALSE, dpi=72)
+figure3 <- grid.arrange(plots[[1]], plots[[2]], plots[[3]], plots[[4]], plots[[5]], plots[[6]], plots[[7]], plots[[8]], plots[[9]], plots[[10]], nrmse_bp, layout_matrix=rbind(c(1,2,3,4,5), c(6,7,8,9,10), c(11)), widths=c(2.6,2.2,2.2,2.2,2.2), bottom=textGrob("Time (s)", gp=gpar(fontsize=15, fontfamily="Arial"), vjust=-19, hjust=0.1), left=textGrob("Target transcript abundance", rot=90, gp=gpar(fontsize=15, fontfamily="Arial"), vjust=2.0, hjust=-0.03))
+ggsave("../../data/figures/figure3/figure3.png", figure3, height=8, width=12, limitsize=FALSE, units="in")
 
 ```
 

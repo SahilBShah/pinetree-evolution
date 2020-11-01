@@ -75,50 +75,19 @@ for(p in 1:length(prom_x_data)){
   prom_means[p] <- get_limits(prom)
 }
 
-#Create plots
-prom_line_plot <- ggplot(prom_data, aes(x=strengths, y=values)) + 
-  geom_point(stat='identity', color='#009E73', size=5) + 
-  geom_line(size=4, stat='identity', color='#009E73') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,2,2,2), "cm"), 
-        axis.text.x = element_text(size=80), 
-        axis.text.y = element_text(size=80), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_text(size=80), 
-        axis.title.y = element_text(size=80)) +
-  xlab("Promoter strength (log scale)") + 
-  ylab("Gene Y protein abundance/\nGene X protein abundance") + 
-  panel_border() +
-  geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means), width=0.05, size=2) +
-  scale_x_log10() +
-  geom_vline(xintercept = 1e7, linetype="dashed", color = "dark grey", size=1.3)
-
-#Log scaled plot
+#Create plot
 prom_log_plot <- ggplot(prom_data, aes(x=strengths, y=values)) + 
-  geom_point(stat='identity', color='#009E73', size=5) + 
-  geom_line(size=4, stat='identity', color='#009E73') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,2,2,2), "cm"), 
-        axis.text.x = element_text(size=80), 
-        axis.text.y = element_text(size=80), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_text(size=80), 
-        axis.title.y = element_text(size=80)) +
+  geom_point(stat='identity', color='#009E73', size=2) + 
+  geom_line(size=1, stat='identity', color='#009E73') + 
+  theme_cowplot() +
   xlab("Promoter strength (log scale)") + 
-  ylab("Gene Y protein abundance/\nGene X protein abundance (log scale)") + 
+  ylab("Normalized transcript abundance\n(log scale)") + 
   panel_border() +
-  geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means), width=0.05, size=2) +
-  scale_y_log10() +
+  geom_errorbar(aes(ymin=prom_y_data-prom_means, ymax=prom_y_data+prom_means)) +
   scale_x_log10() +
-  geom_vline(xintercept = 1e7, linetype="dashed", color = "dark grey", size=1.3)
+  scale_y_log10() +
+  geom_vline(xintercept = 1e7, linetype="dashed", color = "dark grey") +
+  theme(plot.margin = unit(c(4.5, 5, 4.5, 5), "mm"))
 
 ```
 Plot terminator parameters
@@ -171,49 +140,17 @@ for(t in 1:length(term_x_data)){
   term_means[t] <- get_limits(term)
 }
 
-#Create plots
+#Create plot
 term_line_plot <- ggplot(term_data, aes(x=strengths, y=values)) + 
-  geom_point(stat='identity', color='#009E73', size=5) + 
-  geom_line(size=4, stat='identity', color='#009E73') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,2,2,2), "cm"), 
-        axis.text.x = element_text(size=80), 
-        axis.text.y = element_text(size=80), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_text(size=80), 
-        axis.title.y = element_text(size=80)) +
+  geom_point(stat='identity', color='#009E73', size=2) + 
+  geom_line(size=1, stat='identity', color='#009E73') + 
+  theme_cowplot() +
   xlab("Terminator strength") + 
-  ylab("Gene Y protein abundance/\nGene X protein abundance") + 
+  ylab("Normalized transcript abundance") + 
   panel_border() +
-  geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means), width=0.05, size=2) +
-  geom_vline(xintercept = 0.2, linetype="dashed", color = "dark grey", size=1.3)
-
-#Log scaled plot
-term_log_plot <- ggplot(term_data, aes(x=strengths, y=values)) + 
-  geom_point(stat='identity', color='#009E73', size=5) + 
-  geom_line(size=4, stat='identity', color='#009E73') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,2,2,2), "cm"), 
-        axis.text.x = element_text(size=80), 
-        axis.text.y = element_text(size=80), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_text(size=80), 
-        axis.title.y = element_text(size=80)) + 
-  xlab("Terminator strength (log scale)") + 
-  ylab("Gene Y protein abundance/\nGene X protein abundance (log scale)") + 
-  panel_border() +
-  geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means), width=0.05, size=2) +
-  scale_y_log10() +
-  scale_x_log10() +
-  geom_vline(xintercept = 0.2, linetype="dashed", color = "dark grey", size=1.3)
+  geom_errorbar(aes(ymin=term_y_data-term_means, ymax=term_y_data+term_means)) +
+  geom_vline(xintercept = 0.2, linetype="dashed", color = "dark grey") +
+  theme(plot.margin = unit(c(4.5, 7, 4.5, 3), "mm"))
 
 ```
 Plot RNAse parameters
@@ -256,48 +193,19 @@ for(r in 1:length(rnase_x_data)){
 }
 
 #Create plots
-rnase_line_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) + 
-  geom_point(stat='identity', color='#009E73', size=5) + 
-  geom_line(size=4, stat='identity', color='#009E73') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,2,2,2), "cm"), 
-        axis.text.x = element_text(size=80), 
-        axis.text.y = element_text(size=80), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_text(size=80), 
-        axis.title.y = element_text(size=80)) +
-  xlab("RNAse strength") + 
-  ylab("Gene Y protein abundance/\nGene X protein abundance") + 
-  panel_border() +
-  geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means), width=0.05, size=2) +
-  geom_vline(xintercept = 5e-3, linetype="dashed", color = "dark grey", size=1.3)
-
 #Log scaled plot
 rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) + 
-  geom_point(stat='identity', color='#009E73', size=5) + 
-  geom_line(size=4, stat='identity', color='#009E73') + 
-  theme(panel.grid.major = element_blank(), 
-        panel.grid.minor = element_blank(), 
-        panel.background = element_blank(), 
-        plot.margin = unit(c(2,2,2,2), "cm"), 
-        axis.text.x = element_text(size=80), 
-        axis.text.y = element_text(size=80), 
-        axis.line = element_line(size=1.3), 
-        axis.ticks = element_line(size=1.3), 
-        axis.ticks.length = unit(0.5, "cm"),
-        axis.title.x = element_text(size=80), 
-        axis.title.y = element_text(size=80)) +
+  geom_point(stat='identity', color='#009E73', size=2) + 
+  geom_line(size=1, stat='identity', color='#009E73') + 
+  theme_cowplot() +
   xlab("RNAse strength (log scale)") + 
-  ylab("Gene Y protein abundance/\nGene X protein abundance (log scale)") + 
+  ylab("Normalized transcript abundance\n(log scale)") + 
   panel_border() +
-  geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means), width=0.05, size=2) +
+  geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means)) +
   scale_y_log10() +
   scale_x_log10() +
-  geom_vline(xintercept = 5e-3, linetype="dashed", color = "dark grey", size=1.3)
+  geom_vline(xintercept = 5e-3, linetype="dashed", color = "dark grey") +
+  theme(plot.margin = unit(c(4.5, 1.0, 4.5, 0.5), "mm"))
 
 ```
 Produce paramters figure
@@ -310,7 +218,7 @@ prom_arch <- readPNG("promoter_genome_arch.png")
 term_arch <- readPNG("terminator_genome_arch.png")
 rnase_arch <- readPNG("rnase_genome_arch.png")
 
-param_figure <- grid.arrange(rasterGrob(prom_arch, vjust=2.5, width=0.9), rasterGrob(term_arch, vjust=2.5, width=0.9), rasterGrob(rnase_arch, vjust=2.5, width=0.9), prom_line_plot, term_line_plot, rnase_line_plot, prom_log_plot, term_log_plot, rnase_log_plot, layout_matrix=rbind(c(1,2,3), c(4,5,6), c(7,8,9)))
+param_figure <- grid.arrange(rasterGrob(prom_arch, vjust=5.0, hjust=0.4, width=0.80), rasterGrob(term_arch, vjust=5.0, hjust=0.45, width=0.80), rasterGrob(rnase_arch, vjust=5.0, hjust=0.4, width=0.80), prom_log_plot, term_line_plot, rnase_log_plot, layout_matrix=rbind(c(1,2,3), c(4,5,6)))
 
-ggsave("parameters_figure.png", param_figure, height=70, width=110, limitsize=FALSE, dpi=72)
+ggsave("parameters_figure.png", param_figure, height=9, width=14, limitsize=FALSE, units="in")
 ```

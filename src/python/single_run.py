@@ -23,7 +23,7 @@ def main():
     #Opens yaml files containing genome coordinates
     starting_genome = output_dir + 'config.yml'
     #Opens yaml file
-    with open('../../data/gene_parameters/testing.yml', 'r') as gene_parameters:
+    with open('../../results/positive_control3/rep5/final/gene_best_alt.yml', 'r') as gene_parameters:
         genome_config = yaml.safe_load(gene_parameters)
     #Create a configuration file from yaml file
     initialize_yaml.create_yaml(starting_genome, genome_config)
@@ -31,7 +31,7 @@ def main():
     with open(starting_genome, 'r') as gene_elements:
         genome_tracker_new = yaml.safe_load(gene_elements)
     #Simulates genome from yaml file
-    pt_call_alt(output_dir, genome_tracker_new)
+    pt_call_alt(output_dir, genome_tracker_new, 300)
     print('Simulation successful.')
 
 
