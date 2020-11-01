@@ -304,17 +304,17 @@ def save_final_data(output_dir, genome_tracker_old, arguments, target_df, all_rm
     Saves all the relevant files to the output directory.
     """
 
-    #RMSE data is saved to output directory
+    #nRMSE data is saved to output directory
     rmse_df = pd.DataFrame(data=zip(rmse_iter_list, all_rmse_list, is_accepted), columns=["Iteration", "NRMSE", "Accepted"])
     export_csv = rmse_df.to_csv(output_dir + 'final/rmse_data.tsv', index=False, sep='\t')
     os.remove(output_dir+'expression_pattern.tsv')
-    #Get index with lowest sum of squared error value
-    rmse_df = rmse_df[rmse_df['Accepted'] == 'yes']
-    min_rmse_df = rmse_df[rmse_df.NRMSE == rmse_df.NRMSE.min()]
-    min_rmse_index = min_rmse_df.iloc[-1]['Iteration']
     #Save best found genome architecture
     with open(output_dir+'final/gene_best.yml', 'w') as save_yaml:
         yaml.dump(genome_tracker_old, save_yaml)
+    #Get index with lowest nRMSE value
+    rmse_df = rmse_df[rmse_df['Accepted'] == 'yes']
+    min_rmse_df = rmse_df[rmse_df.NRMSE == rmse_df.NRMSE.min()]
+    min_rmse_index = min_rmse_df.iloc[-1]['Iteration']
     #Save best found gene expression pattern associated with its best found architecture
     save_df = pd.read_csv(output_dir+"expression_pattern_{}.tsv".format(min_rmse_index), header=0, sep='\t')
     save_df.to_csv(output_dir+"final/expression_pattern_best.tsv", sep='\t', index=False)
