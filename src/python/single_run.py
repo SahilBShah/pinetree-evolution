@@ -10,7 +10,7 @@ import pinetree as pt
 import yaml
 
 #lib imports
-from genome_simulator import pt_call_alt
+from genome_simulator import pt_call
 import initialize_yaml
 
 def main():
@@ -31,7 +31,7 @@ def main():
     with open(starting_genome, 'r') as gene_elements:
         genome_tracker_new = yaml.safe_load(gene_elements)
     #Simulates genome from yaml file
-    pt_call_alt(output_dir, genome_tracker_new, 300)
+    pt_call(output_dir, genome_tracker_new, 300)
     print('Simulation successful.')
 
 

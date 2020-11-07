@@ -1,17 +1,21 @@
+#Common imports
 import sys
 
-sys.path.insert(1, '../src/python/lib/')
+sys.path.append('../src/python/')
 
 import copy
 import filecmp
 import os
 import pandas as pd
 import pytest
-import mutation_choices
 import yaml
+
+#lib imports
+import lib.mutation_choices
 
 def test_expand_genome():
 
+    #Verify that increasing the size of the genome is working as intended
     with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
@@ -19,7 +23,7 @@ def test_expand_genome():
     element_choice = 'promoter_2'
     genome_shift = 35
     num_genes = 3
-    genome_tracker_new = mutation_choices.expand_genome(genome_tracker, num_genes, region_choice, genome_shift, element_choice)
+    genome_tracker_new = lib.mutation_choices.expand_genome(genome_tracker, num_genes, region_choice, genome_shift, element_choice)
     assert genome_tracker_new['length_of_genome'] > genome_tracker_old['length_of_genome']
     assert genome_tracker_new['length_of_genome'] - 35 == genome_tracker_old['length_of_genome']
     assert not (genome_tracker_new['length_of_genome'] < genome_tracker_old['length_of_genome'])
@@ -27,6 +31,7 @@ def test_expand_genome():
 
 def test_shrink_genome():
 
+    #Verify decreasing the size of the genome is working as intended
     with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
@@ -34,34 +39,22 @@ def test_shrink_genome():
     element_choice = 'promoter_2'
     genome_shift = 35
     num_genes = 3
-    genome_tracker_new = mutation_choices.shrink_genome(genome_tracker, num_genes, region_choice, genome_shift, element_choice)
+    genome_tracker_new = lib.mutation_choices.shrink_genome(genome_tracker, num_genes, region_choice, genome_shift, element_choice)
     assert genome_tracker_new['length_of_genome'] < genome_tracker_old['length_of_genome']
     assert genome_tracker_new['length_of_genome'] + 35 == genome_tracker_old['length_of_genome']
     assert not (genome_tracker_new['length_of_genome'] > genome_tracker_old['length_of_genome'])
     assert genome_tracker_new['rnase_2']['start'] < genome_tracker_old['rnase_2']['start']
 
-def test_cleanup_genome():
-
-    target_file = pd.read_csv('./inputs/test_compare.tsv', header=0, sep='\t')
-    sse_df = pd.read_csv('./inputs/sse_data.tsv', header=0, sep='\t')
-    output_dir = './inputs/'
-    num_genes = 3
-    deg_rate = True
-    mutation_choices.cleanup_genome(target_file, sse_df, output_dir, num_genes, deg_rate)
-    assert not filecmp.cmp('./inputs/gene_2.yml', './inputs/final/gene_best.yml')
-    os.remove('./inputs/expression_pattern.tsv')
-    os.remove('./inputs/final/expression_pattern_best.tsv')
-
 def test_add_element():
 
+    #Verify the insertion mutation is accurate
     with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
     output_dir = './inputs/'
     num_genes = 3
-    deg_rate = True
     element_choice = 'promoter_1'
-    genome_tracker_new = mutation_choices.add_element(genome_tracker, output_dir, num_genes, deg_rate, element_choice)
+    genome_tracker_new = lib.mutation_choices.add_element(genome_tracker, output_dir, num_genes, element_choice)
     with open('./inputs/testing_tmp_comp.yml', 'w') as save_yaml:
         yaml.dump(genome_tracker_new, save_yaml)
     assert not filecmp.cmp('./inputs/testing_tmp_comp.yml', './inputs/testing.yml')
@@ -75,14 +68,14 @@ def test_add_element():
 
 def test_remove_element():
 
+    #Verify the deletion mutation is accurate
     with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
     output_dir = './inputs/'
     num_genes = 3
-    deg_rate = True
     element_choice = 'promoter_2'
-    genome_tracker_new = mutation_choices.remove_element(genome_tracker, output_dir, num_genes, deg_rate, element_choice)
+    genome_tracker_new = lib.mutation_choices.remove_element(genome_tracker, output_dir, num_genes, element_choice)
     with open('./inputs/testing_tmp_comp.yml', 'w') as save_yaml:
         yaml.dump(genome_tracker_new, save_yaml)
     assert not filecmp.cmp('./inputs/testing_tmp_comp.yml', './inputs/testing.yml')
@@ -97,14 +90,14 @@ def test_remove_element():
 
 def test_modify_element():
 
+    #Verify the modificaiton of an element's strength is accurate
     with open('./inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
     output_dir = './inputs/'
     num_genes = 3
-    deg_rate = True
     element_choice = 'promoter_0'
-    genome_tracker_new = mutation_choices.modify_element(genome_tracker, output_dir, num_genes, deg_rate, element_choice)
+    genome_tracker_new = lib.mutation_choices.modify_element(genome_tracker, output_dir, num_genes, element_choice)
     with open('./inputs/testing_tmp_comp.yml', 'w') as save_yaml:
         yaml.dump(genome_tracker_new, save_yaml)
     assert not filecmp.cmp('./inputs/testing_tmp_comp.yml', './inputs/testing.yml')

@@ -34,7 +34,7 @@ target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=s
 
 target_line_plot
 
-ggsave("../../data/figures/paper_data61_black.png", target_line_plot, width=4, height=4, limitsize=FALSE, units = "in")
+ggsave("../../data/figure_output/paper_data61_black.png", target_line_plot, width=4, height=4, limitsize=FALSE, units = "in")
 #ggsave("test.png", target_line_plot, width=10, height=10, limitsize=FALSE)
 
 ```
@@ -58,7 +58,7 @@ rmse_data_acc <- all_rmse_data %>% filter(Accepted=='yes')
 rmse_line_plot <- ggplot(rmse_data_acc, aes(x=Iteration, y=Sum_of_Squares)) + geom_point(stat="identity") + geom_line(size= 1, stat="identity") + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(color = "black", size=1), axis.ticks = element_line(colour = "black", size = 1), axis.text=element_text(size=30,face="bold"), axis.title=element_text(size=30,face="bold")) + xlab("Generation") + ylab("Sum of Squares")
 rmse_plots <- grid.arrange(rmse_line_plot, nrow=1, top=textGrob("Fitness over Time", gp=gpar(fontsize=30, fontface="bold")))
 #Change name of rmse_graphs to a unique identifier
-ggsave("../../../data/figures/rmse_graphs_paper_data13_rep8_nf1.png", rmse_plots, width=20, height=10)
+ggsave("../../../data/figure_output/rmse_graphs_paper_data13_rep8_nf1.png", rmse_plots, width=20, height=10)
 ```
 
 Evolutionary Analysis of Mutations
@@ -92,7 +92,7 @@ line_plot <-  ggplot(plot_data, aes(fill=species, color=species, size=species, x
   xlab("Time (s)") +
   theme(legend.position = "none")
 
-ggsave("../../../data/figures/supp/paper_data66_lowest.png", line_plot, width=4, height=4, limitsize=FALSE, units="in")
+ggsave("../../../data/figure_output/supp/paper_data66_lowest.png", line_plot, width=4, height=4, limitsize=FALSE, units="in")
 # #Change grant_data name to the target file used
 # target_data <- read.table("../../../data/targets/paper_data1.tsv", header=TRUE)
 # target_data <- filter(target_data, species == "protein1" | species == "protein2" | species == "protein3")
@@ -119,7 +119,7 @@ ggsave("../../../data/figures/supp/paper_data66_lowest.png", line_plot, width=4,
 # #Outputs file with the generated plots
 # evo_plot <- grid.arrange(grobs=plots_list, nrow=ceiling(length(plots_list) / 4), ncol=4, top=textGrob("Evolution of Gene Expression Pattern", gp=gpar(fontsize=30, fontface="bold")))
 # #Change name of saved graphs file to a unique identifier
-# ggsave("../../../data/figures/paper_data139_rep0_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
+# ggsave("../../../data/figure_output/paper_data139_rep0_nf1000.png", evo_plot, width=30, height=30, limitsize=FALSE)
 # # 
 
 
@@ -149,7 +149,7 @@ ggsave("../../../data/figures/supp/paper_data66_lowest.png", line_plot, width=4,
 #   scale_y_continuous(limits = c(0, 3), expand = c(0, 0))
 # 
 # rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc"), y=unit(1, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=60, fontfamily="Arial")))
-# ggsave("../../../data/figures/paper_data1_rep6_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
+# ggsave("../../../data/figure_output/paper_data1_rep6_rmse.png", rmse_line_plot, width=20, height=10, limitsize=FALSE)
 
 ```
 

@@ -7,5 +7,5 @@ How to run an evolutionary simulation:
 
 1) Open the terminal.
 2) Navigate to folder containing "evolution.py" file in the terminal.
-3) In the terminal, enter "python3 evolution.py [target file name (string)] [yaml file name (string)] [run number (int)] [generations (int)] [number of replicates per generation (int)] [display progress bar (bool)]"
+3) In the terminal, enter "python3 evolution.py [target file name with extension (string)] [yaml file name with extension (string)] [run number (int)] [generations (int)] [number of replicates per generation (int)] [display progress bar (bool)]"
 4) Press enter to run.
