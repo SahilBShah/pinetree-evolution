@@ -6,9 +6,6 @@ import random
 from scipy import stats
 import yaml
 
-#lib imports
-import mutation_analysis
-
 #promoter_min_space = 35 nucleotides
 #rnase_min_space = 10 nucleotides
 #terminator_min_space = 30 nucleotides

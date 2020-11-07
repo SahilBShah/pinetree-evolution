@@ -1,8 +1,4 @@
 #Common imports
-import sys
-
-sys.path.insert(1, './lib/')
-
 import argparse
 import copy
 import datetime
@@ -11,17 +7,17 @@ import numpy as np
 import os
 import pandas as pd
 import random
+import sys
 import yaml
 
 #lib imports
-import file_setup
-import fitness_score
-import genome_simulator
-import initialize_yaml
-import mutation_choices
-import mutation_analysis
-import root_mean_square_error
-
+from lib import file_setup
+from lib import fitness_score
+from lib import genome_simulator
+from lib import initialize_yaml
+from lib import mutation_choices
+from lib import mutation_analysis
+from lib import root_mean_square_error
 
 class Command_line_args(object):
     """
@@ -82,7 +78,7 @@ def setup_configuration_files(output_dir, arguments):
 
     #Opens yaml files containing genome coordinates
     starting_genome = output_dir + 'config.yml'
-    with open('../../data/gene_parameters/'+arguments.args.genome_config, 'r') as gene_parameters:
+    with open('../../data/genome_configurations/'+arguments.args.genome_config, 'r') as gene_parameters:
         genome_config = yaml.safe_load(gene_parameters)
     initialize_yaml.create_yaml(starting_genome, genome_config)
     with open(starting_genome, 'r') as gene_elements:
@@ -260,7 +256,7 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
         #Sum of squared error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
         #pinetree called in analyze_mutation
-        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number, 1)
+        rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number)
 
         accept_prob = fitness_score.calc_fitness(rmse_new, rmse_old, generation_number, i)
         all_rmse_list.append(rmse_new)

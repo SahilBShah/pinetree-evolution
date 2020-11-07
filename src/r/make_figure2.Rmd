@@ -307,7 +307,7 @@ final_line_plot_5 <- arrangeGrob(final_line_plot_5, top=textGrob("E", x = unit(0
 Produce figure 2
 ```{r}
 
-setwd("../../data/figures/figure2/")
+setwd("../../data/figure_output/figure2/")
 
 img1 <- readPNG("figure2_final1_genome_arch.png")
 img2 <- readPNG("figure2_final2_genome_arch.png")

@@ -179,7 +179,7 @@ rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc
 Make figure 1
 ```{r}
 
-setwd("../../data/figures/figure1/")
+setwd("../../data/figure_output/figure1/")
 
 #Read in genome architectures
 img1 <- readPNG("figure1_beg_genome_arch.png")

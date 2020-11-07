@@ -82,7 +82,7 @@ Save figure 5.
 
 ```{r}
 
-setwd("../../data/figures/figure5/")
+setwd("../../data/figure_output/figure5/")
 
 #Read in genome architecture
 img_starting <- readPNG("figure5_genome_arch_starting.png")
