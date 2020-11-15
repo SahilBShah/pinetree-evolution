@@ -1,8 +1,4 @@
 #Common imports
-import sys
-
-sys.path.append('../src/python/')
-
 import math
 import os
 import pandas as pd
@@ -10,10 +6,9 @@ import pytest
 import yaml
 
 #lib imports
-from lib.fitness_score import calc_fitness
-from lib.root_mean_square_error import calc_nrmse
-from lib.mutation_analysis import analyze_mutation
-
+from ..fitness_score import calc_fitness
+from ..root_mean_square_error import calc_nrmse
+from ..mutation_analysis import analyze_mutation
 
 def test_calc_nrme():
 
@@ -32,11 +27,11 @@ def test_calc_fitness():
 def test_mutation_analysis():
 
     #Testing if nRMSE value is returned from mutation_analysis
-    with open('./inputs/testing.yml', 'r') as gene_parameters:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
-    df = pd.read_csv('./inputs/pt_expression_data_compare.tsv', header=0, sep='\t')
+    df = pd.read_csv(os.path.dirname(os.path.abspath(__file__))+'/inputs/pt_expression_data_compare.tsv', header=0, sep='\t')
     df = df.set_index([pd.Index([i for i in range(1, 251)])])
     mutation_number = 1
-    nrmse = analyze_mutation(genome_tracker, './', df, mutation_number)
+    nrmse = analyze_mutation(genome_tracker, os.path.dirname(os.path.abspath(__file__))+'/', df, mutation_number)
     assert nrmse != 3.10
-    os.remove('expression_pattern.tsv')
+    os.remove(os.path.dirname(os.path.abspath(__file__))+'/expression_pattern.tsv')

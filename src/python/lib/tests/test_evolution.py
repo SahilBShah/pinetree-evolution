@@ -1,8 +1,4 @@
 #Common imports
-import sys
-
-sys.path.append('../src/python/')
-
 import copy
 import datetime
 import filecmp
@@ -12,16 +8,22 @@ import os
 import pytest
 import yaml
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+import sys
+
+sys.path.insert(1, '../../')
+
 #Evolution package
-import evolution as evo
+from ...evolution import *
 
 
 def test_enumerate_mutation_options():
 
     #Verify the mutation options are correctly assigned
-    with open('./inputs/testing.yml', 'r') as gene_parameters:
+    with open(os.path.dirname(os.path.abspath(__file__))+'/inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
-    mutation_possibilities = evo.enumerate_mutation_options(genome_tracker)
+    mutation_possibilities = enumerate_mutation_options(genome_tracker)
     assert mutation_possibilities != {}
     assert 'promoter_2.remove' in mutation_possibilities
     assert mutation_possibilities['promoter_2.remove'] == 'remove'
@@ -34,7 +36,7 @@ def test_enumerate_mutation_options():
 def test_evolution():
 
     #Change directory to src
-    os.chdir('../src/python/')
+    os.chdir('../../')
     #Run evolutionary program
     os.system('python evolution.py paper_data1.tsv testing.yml 10000 10 3')
     #Check to see if evolutionary run completed
@@ -49,3 +51,4 @@ def test_evolution():
     assert len(glob('../../results/paper_data1/rep10000/expression_pattern_*.tsv')) != 0
     assert len(glob('../../results/paper_data1/rep10000/gene_*.yml'))
     os.system('rm -rf ../../results/paper_data1/rep10000')
+    os.chdir(os.getcwd())

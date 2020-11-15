@@ -1,5 +1,5 @@
 # Pinetree-toys
-Evolutionary program that uses PineTree to evolve genomes based on user's specifications.
+Evolutionary program that uses pinetree to evolve genomes based on user's specifications.
 
 If running on TACC determine number of cores present to maximize the amount of computing time available.
 
