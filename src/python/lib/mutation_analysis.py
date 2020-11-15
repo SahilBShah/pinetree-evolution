@@ -2,9 +2,9 @@
 import pandas as pd
 
 #lib imports
-from lib import genome_simulator
-from lib import file_setup
-from lib import root_mean_square_error
+from .genome_simulator import pt_call
+from .file_setup import rearrange_file
+from .root_mean_square_error import calc_nrmse
 
 def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number):
     """
@@ -24,7 +24,7 @@ def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number):
     #Creates test files from pinetree to find average number of transcripts at each time
     for i in range(1, mutation_number+1):
         #If each individual RNase site's binding strength IS being altered
-        genome_simulator.pt_call(output_dir, genome_tracker_new, df.index[-1])
+        pt_call(output_dir, genome_tracker_new, df.index[-1])
         save_df = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
         save_df['time'] = save_df['time'].round().astype(int)
         dfs.append(save_df)
@@ -37,6 +37,6 @@ def analyze_mutation(genome_tracker_new, output_dir, df, mutation_number):
     df_mean.to_csv(output_dir+'expression_pattern.tsv', sep='\t', index=False)
     #New file is read in as a dataframe
     nf = pd.read_csv(output_dir+"expression_pattern.tsv", header=0, sep='\t')
-    nf = file_setup.rearrange_file(nf, df.index[-1], genome_tracker_new['num_genes'])
+    nf = rearrange_file(nf, df.index[-1], genome_tracker_new['num_genes'])
 
-    return root_mean_square_error.calc_nrmse(df, nf)
+    return calc_nrmse(df, nf)
