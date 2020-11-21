@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "evolution.py", line 369, in <module>
+    main()
+  File "evolution.py", line 353, in main
+    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list, max_rmse)
+  File "evolution.py", line 241, in run_evolution
+    progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
+  File "evolution.py", line 195, in progress_bar
+    bar_len = int(os.get_terminal_size()[0] * 0.6)
+OSError: [Errno 25] Inappropriate ioctl for device
+Traceback (most recent call last):
+  File "evolution.py", line 369, in <module>
+    main()
+  File "evolution.py", line 353, in main
+    evo_vars = run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df, arguments, all_rmse_list, max_rmse)
+  File "evolution.py", line 241, in run_evolution
+    progress_bar(i, generation_number, arguments.args.replicate_mutation_number, 'Simulation running')
+  File "evolution.py", line 195, in progress_bar
+    bar_len = int(os.get_terminal_size()[0] * 0.6)
+OSError: [Errno 25] Inappropriate ioctl for device

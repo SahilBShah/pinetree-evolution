@@ -43,7 +43,7 @@ def calc_accepted_rmse_range(df_target, num_genes):
     for n_genes in range(1, num_genes+1):
         protein_list.append("protein{}".format(n_genes))
 
-    df_altered = df_target[protein_list] * 0.95
+    df_altered = df_target[protein_list] * 0.90
     #Calculates the sum of squared error between the reduced values and the target values and returns it
     max_rmse = calc_nrmse(df_target, df_altered)
     return max_rmse
