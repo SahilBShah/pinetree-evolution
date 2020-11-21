@@ -5,10 +5,10 @@ import sim_success
 import sys
 import yaml
 
-sys.path.insert(1, '../lib/')
+sys.path.insert(1, '../')
 
 #lib imports
-import file_setup
+from lib.file_setup import rearrange_file
 
 def get_architecture(genome_tracker):
 	"""
@@ -89,7 +89,7 @@ def main():
 	#User inputted data to determine successful simulations
 	target_file_name = input("Please input the name of the target file with the extension: ")
 	target_file = pd.read_csv("../../../data/targets/{}".format(target_file_name), header=0, sep='\t')
-	target_df = file_setup.rearrange_file(target_file, target_file.iloc[-1]['time'], 3)
+	target_df = rearrange_file(target_file, target_file.iloc[-1]['time'], 3)
 	num_folders = int(input("Please input number of directories to access: "))
 
 	successes = sim_success.calc_success(target_df, target_file_name, num_folders, True)
