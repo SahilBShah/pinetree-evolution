@@ -18,9 +18,8 @@ from lib.mutation_choices import remove_element
 def calc_success(target_df, target_name, n_folders, successes_out=False):
 
 	success = 0
-	max_rmse = calc_accepted_rmse_range(target_df, 3)
-	print(max_rmse)
-	#max_rmse = 0.10
+	#max_rmse = calc_accepted_rmse_range(target_df, 3)
+	max_rmse = 0.10
 	success_list = []
 
 	print("Successes:")
