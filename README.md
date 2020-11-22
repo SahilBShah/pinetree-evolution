@@ -22,19 +22,24 @@ The genome_configuration files have a few restrictions when creating them.
 1) Open the terminal.
 2) Using the terminal, navigate to the folder containing the "evolution.py" file. If in the pinetree-evolution directory type: 
 ```
-./src/python
+cd ./src/python
 ```
 3) In the terminal, the command structure to run the evolutionary program is:
 ```
 "python3 evolution.py [target file name with extension (string)] [yaml file name with extension (string)] [run number (int)] [generations (int)] [number of replicates per generation (int)] [display progress bar (bool)]".
 ```
 
-  **target files are found in the "pinetree-evolution/data/targets/" folder.**
+  **target files are found in the folder:**
+  ```
+  pinetree-evolution/data/targets/
+  ```
   
-  **YAML files are found in the "pinetree-evolution/data/genome_configurations" folder.**
+  **YAML files are found in the folder: **
+  ```
+  pinetree-evolution/data/genome_configurations
+  ```
   
 4) Press enter to run.
-
 5) Outputs will be saved in the "results" directory based on the target file's name and the simulations replicate number.
 
 ## Examples
