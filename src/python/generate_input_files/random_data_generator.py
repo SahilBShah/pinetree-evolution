@@ -18,18 +18,6 @@ for i in range(1, 301):
     transcript_list.append([i, "protein8", (0.05 * i)])
     transcript_list.append([i, "protein9", (0.04 * i)])
     transcript_list.append([i, "protein10", (0.03 * i)])
-    # if i == 100:
-    #     protein1_list.append(0.12 * i)
-    #     protein2_list.append(0.07 * i)
-    #     protein3_list.append(0.04 * i)
-# for i in range(101, 251):
-#     transcript_list.append([i, "protein1", protein1_list[-1]])
-#     transcript_list.append([i, "protein2", protein2_list[-1]])
-#     transcript_list.append([i, "protein3", (0.04 * i)])
-# for i in range(251, 301):
-#     transcript_list.append([i, "protein1", (-0.05 * i + 24.5)])
-#     transcript_list.append([i, "protein2", protein2_list[-1]])
-#     transcript_list.append([i, "protein3", (0.04 * i)])
 
 
 file = open("../../../data/targets/paper_data145.tsv", "w")
