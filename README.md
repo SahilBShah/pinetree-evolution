@@ -29,12 +29,12 @@ cd ./src/python
 "python3 evolution.py [target file name with extension (string)] [yaml file name with extension (string)] [run number (int)] [generations (int)] [number of replicates per generation (int)] [display progress bar (bool)]".
 ```
 
-  **target files are found in the folder:**
+  **Target files are found in the folder:**
   ```
   pinetree-evolution/data/targets/
   ```
   
-  **YAML files are found in the folder: **
+  **YAML files are found in the folder:**
   ```
   pinetree-evolution/data/genome_configurations
   ```
