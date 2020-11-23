@@ -26,7 +26,7 @@ Produce target data plot
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("positive_control3.tsv", header=TRUE)
+target_data <- read.table("positive_control.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
@@ -55,7 +55,7 @@ Produce generation 0 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the template genome data is contained in 
-setwd("../../results/positive_control3/rep5/")
+setwd("../../results/positive_control/rep5/")
 
 #List all transcript output files
 best_files <- list.files(pattern="expression_pattern_")
@@ -88,7 +88,7 @@ Produce generation 1 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/positive_control3/rep5/")
+setwd("../../results/positive_control/rep5/")
 
 #List all transcript output files
 plot_data <- read.table("expression_pattern_488.tsv", header=TRUE)
@@ -119,7 +119,7 @@ Produce final generation plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../results/positive_control3/rep5/final/")
+setwd("../../results/positive_control/rep5/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -149,7 +149,7 @@ Produce fitness over time plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the results are contained in
-setwd("../../results/positive_control3/rep5/final/")
+setwd("../../results/positive_control/rep5/final/")
 
 #Filter sum of squares data
 all_rmse_data <- read.table("rmse_data.tsv", header=TRUE)
@@ -179,7 +179,7 @@ rmse_line_plot <- arrangeGrob(rmse_line_plot, top=textGrob("B", x = unit(0, "npc
 Make figure 1
 ```{r}
 
-setwd("../../data/figure_output/figure1/")
+setwd("../../figure_output/figure1/")
 
 #Read in genome architectures
 img1 <- readPNG("figure1_beg_genome_arch.png")

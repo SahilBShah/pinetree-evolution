@@ -145,7 +145,7 @@ Save nRMSE figure
 
 nrmse_supp <- grid.arrange(nrmse_plots[[1]], nrmse_plots[[2]], nrmse_plots[[3]], nrmse_plots[[4]], nrmse_plots[[5]], nrmse_plots[[6]], nrmse_bar, beta_plot, layout_matrix=rbind(cbind(c(1,2,3,4,5,6), c(7)), c(8)), left=textGrob("Normalized RMSE", gp=gpar(fontsize=15), rot=90, y=unit(0.6, "npc")), top=textGrob("A",just=c("left","top"), x = unit(-0.01, "npc"), y=unit(0.4, "npc"), gp=gpar(col="black", font="bold", fontsize=20,fontfamily="Arial")), heights=c(1,1,1,1,1,1.35,2,1))
 
-ggsave("../../manuscript_figures/si_figures/nrmse_supplemental.png", nrmse_supp, height=12, width=9, limitsize=FALSE, units="in")
+ggsave("../../figure_output/figure_nrmse/nrmse_supplemental.png", nrmse_supp, height=12, width=9, limitsize=FALSE, units="in")
 
 ```
 
