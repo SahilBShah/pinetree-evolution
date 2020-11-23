@@ -211,7 +211,7 @@ rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) +
 Produce paramters figure
 ```{r}
 
-setwd("../../data/parameter_testing/figure_output/")
+setwd("../../figure_output/figure_element_strengths/")
 
 #Read in genome architecture images
 prom_arch <- readPNG("promoter_genome_arch.png")

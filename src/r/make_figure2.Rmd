@@ -26,7 +26,7 @@ Produce the first set of plots
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data1.tsv", header=TRUE)
+target_data <- read.table("paper_data1_arrange1.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
@@ -52,7 +52,7 @@ target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data1/rep18/final/")
+setwd("../../results/paper_data1_arrange1/rep18/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -85,7 +85,7 @@ Produce the second set of plots
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data5.tsv", header=TRUE)
+target_data <- read.table("paper_data1_arrange5.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
@@ -108,7 +108,7 @@ target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data5/rep8/final/")
+setwd("../../results/paper_data1_arrange5/rep8/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -142,7 +142,7 @@ Produce the third set of plots
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data19.tsv", header=TRUE)
+target_data <- read.table("paper_data5_arrange1.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
@@ -165,7 +165,7 @@ target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data19/rep20/final/")
+setwd("../../results/paper_data5_arrange1/rep20/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -199,7 +199,7 @@ Produce the fourth set of plots
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data7.tsv", header=TRUE)
+target_data <- read.table("paper_data6_arrange1.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
@@ -222,7 +222,7 @@ target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data7/rep21/final/")
+setwd("../../results/paper_data6_arrange1/rep21/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -256,7 +256,7 @@ Produce the fifth set of plots
 setwd("../../data/targets/")
 
 #Change grant_data name to the target file used
-target_data <- read.table("paper_data59.tsv", header=TRUE)
+target_data <- read.table("paper_data8_arrange5.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
 
 #Create plot
@@ -279,7 +279,7 @@ target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data59/rep8/final/")
+setwd("../../results/paper_data8_arrange5/rep8/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -307,7 +307,7 @@ final_line_plot_5 <- arrangeGrob(final_line_plot_5, top=textGrob("E", x = unit(0
 Produce figure 2
 ```{r}
 
-setwd("../../data/figure_output/figure2/")
+setwd("../../figure_output/figure2/")
 
 img1 <- readPNG("figure2_final1_genome_arch.png")
 img2 <- readPNG("figure2_final2_genome_arch.png")

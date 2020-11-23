@@ -27,7 +27,7 @@ Create 10 gene target plot.
 setwd("../../data/targets/")
 
 #Read in target tsv file and filter for only proteins
-target_data <- read.table("paper_data145.tsv", header=TRUE)
+target_data <- read.table("ten_genes.tsv", header=TRUE)
 target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3" | species == "protein4" | species == "protein5" | species == "protein6" | species == "protein7" | species == "protein8" | species == "protein9" | species == "protein10") & time != 301)
 
 #Create line plot
@@ -51,7 +51,7 @@ Create simulated plot.
 
 ```{r, echo=FALSE}
 
-setwd("../../results/paper_data145/rep14/final/")
+setwd("../../results/ten_genes/rep14/final/")
 
 #Read in simulated tsv file an filter based on proteins
 simulated_data <- read.table("expression_pattern_best.tsv", header=TRUE)
@@ -82,7 +82,7 @@ Save figure 5.
 
 ```{r}
 
-setwd("../../data/figure_output/figure5/")
+setwd("../../figure_output/figure5/")
 
 #Read in genome architecture
 img_starting <- readPNG("figure5_genome_arch_starting.png")
@@ -97,6 +97,6 @@ img_final <- arrangeGrob(rasterGrob(img_final, vjust=-12.25), top=textGrob("Fina
 figure5 <- grid.arrange(target_line_plot, simulated_line_plot, img_starting, img_final, layout_matrix=rbind(c(1, 2), c(3), c(4)), widths=c(2.4, 2))
 
 #Save as figure 5
-ggsave("./figure5.png", figure5, height=7, width=5, limitsize=FALSE, units="in")
+ggsave("figure5.png", figure5, height=7, width=5, limitsize=FALSE, units="in")
 
 ```
