@@ -20,7 +20,7 @@ library(reshape2)
 Creates dataframe of each normalized RMSE values for each subpattern simulated x number of times.
 ```{r}
 
-setwd("../../results/")
+setwd("../../results/figs_3_and_4/")
 
 pattern <- c()
 nrmse <- c()
