@@ -6,6 +6,10 @@
 
 Pre-print available at: <link>
 
+**Data availibility**
+
+To generate all figures in the manuscript, please go to zenodo.org/xyz to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
+
 ## Overview and restrictions
 
 This is an evolutionary program that uses pinetree to evolve phage genomes based on user's specifications. These specifications entail target data related to a user-specified gene expression pattern (.tsv file) and the genome configuration of the phage (.yml file). These can be created using the given python files: `gene_expression_generator.py` and `create_genome_configurations.py`. We have provided multiple gene expression and genome configuration files found in the `target` and `genome_configuration` folders, respectively.
