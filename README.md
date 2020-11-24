@@ -6,7 +6,7 @@
 
 Pre-print available at: <link>
 
-**Data availibility**
+**Data availibility:**
 
 To generate all figures in the manuscript, please go to zenodo.org/xyz to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
 
