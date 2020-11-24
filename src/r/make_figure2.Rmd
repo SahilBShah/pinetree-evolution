@@ -52,7 +52,7 @@ target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data1_arrange1/rep18/final/")
+setwd("../../results/fig2/paper_data1_arrange1/rep18/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -108,7 +108,7 @@ target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data1_arrange5/rep8/final/")
+setwd("../../results/fig2/paper_data1_arrange5/rep8/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -165,7 +165,7 @@ target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data5_arrange1/rep20/final/")
+setwd("../../results/fig2/paper_data5_arrange1/rep20/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -222,7 +222,7 @@ target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data6_arrange1/rep21/final/")
+setwd("../../results/fig2/paper_data6_arrange1/rep21/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -279,7 +279,7 @@ target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../results/paper_data8_arrange5/rep8/final/")
+setwd("../../results/fig2/paper_data8_arrange5/rep8/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
