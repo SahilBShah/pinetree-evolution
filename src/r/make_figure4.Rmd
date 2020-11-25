@@ -86,6 +86,6 @@ entropy_bar_plot <- entropy_df %>% ggplot(aes(x=Pattern, y=Entropy)) +
         axis.ticks.length = unit(2, "mm"))
 
 #Save entropy bar plot
-ggsave("../../figure_output/figure4/entropy_bar_plot.png", entropy_bar_plot, height=4, width=8, limitsize=FALSE, units="in")
+ggsave("../../figure_output/figure4/entropy_bar_plot.png", entropy_bar_plot, height=3, width=8, limitsize=FALSE, units="in")
   
 ```
