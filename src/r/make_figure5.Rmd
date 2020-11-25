@@ -98,7 +98,7 @@ img_starting <- arrangeGrob(img_starting, top=textGrob("Starting architecture", 
 img_final <- arrangeGrob(rasterGrob(img_final, vjust=-12.25), top=textGrob("Final architecture", x = unit(0.37, "npc"), y=unit(8.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=12, fontfamily="Arial")))
 
 #Arrange plots
-figure5 <- grid.arrange(target_line_plot, simulated_line_plot, img_starting, img_final, layout_matrix=rbind(c(1, 2), c(3), c(4)), widths=c(2.4, 2))
+figure5 <- grid.arrange(target_line_plot, simulated_line_plot, img_starting, img_final, layout_matrix=rbind(c(1, 2), c(3), c(4)), widths=c(2.3, 2))
 
 #Save as figure 5
 ggsave("figure5.png", figure5, height=7, width=5, limitsize=FALSE, units="in")
