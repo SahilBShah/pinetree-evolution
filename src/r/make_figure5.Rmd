@@ -39,8 +39,10 @@ target_line_plot <-  ggplot(target_data, aes(fill=species, color=species, size=s
   xlab("Time (s)") +
   ggtitle("Target pattern") +
   theme(legend.position = "none",
-        plot.title = element_text(size=12, face="bold"),
-        axis.ticks.length = unit(2, "mm")) +
+        plot.title = element_text(size=10, face="bold"),
+        axis.ticks.length = unit(2, "mm"),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=11)) +
   scale_color_manual(values=color_palette) +
   panel_border()
 
@@ -70,8 +72,10 @@ simulated_line_plot <-  ggplot(simulated_data, aes(fill=species, color=species, 
         axis.ticks.y = element_blank(),
         axis.text.y = element_blank(),
         axis.title.y = element_blank(),
-        plot.title = element_text(size=12, face="bold"),
-        axis.ticks.length = unit(2, "mm")) +
+        plot.title = element_text(size=10, face="bold"),
+        axis.ticks.length = unit(2, "mm"),
+        axis.text = element_text(size=8),
+        axis.title = element_text(size=11)) +
   scale_color_manual(values=color_palette) +
   panel_border()
 
