@@ -8,7 +8,7 @@ Pre-print available at: <https://www.biorxiv.org/content/10.1101/2020.11.25.3982
 
 **Data availibility:**
 
-To generate all figures in the manuscript, please go to <to be updated> to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
+To generate all figures in the manuscript, please go to (to be updated) to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
 
 ## Overview and restrictions
 
