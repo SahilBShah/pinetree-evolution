@@ -1,6 +1,6 @@
 # pinetree-evolution
 
-*Sahil B. Shah, Adam J. Hockenberry, and Claus O. Wilke*
+*Sahil B. Shah, Alexis M. Hill, Claus O. Wilke, and Adam J. Hockenberry*
 
 **Reference:**
 
