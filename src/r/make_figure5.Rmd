@@ -53,7 +53,7 @@ Create simulated plot.
 
 ```{r, echo=FALSE}
 
-setwd("../../results/fig5/ten_genes/rep14/final/")
+setwd("../../data/figures_data/fig5/ten_genes/rep14/final/")
 
 #Read in simulated tsv file an filter based on proteins
 simulated_data <- read.table("expression_pattern_best.tsv", header=TRUE)

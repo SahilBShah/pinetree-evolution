@@ -31,7 +31,7 @@ df <- data.frame(betas, nrmse_ratios)
 df$betas <- format(df$betas, scientific = FALSE)
 
 nrmse_bar <- df %>% ggplot(aes(x=as.character(betas), y=nrmse_ratios)) + 
-  geom_bar(stat='identity', fill="white", color="black") + 
+  geom_bar(stat='identity', fill="grey", color="grey", width=0.75) + 
   theme_cowplot() + 
   xlab("Beta values") + 
   ylab("Fraction of deleterious accepted mutations") +

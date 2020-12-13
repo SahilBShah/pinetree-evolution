@@ -89,6 +89,8 @@ prom_log_plot <- ggplot(prom_data, aes(x=strengths, y=values)) +
   geom_vline(xintercept = 1e7, linetype="dashed", color = "dark grey") +
   theme(plot.margin = unit(c(4.5, 5, 4.5, 5), "mm"))
 
+prom_log_plot <- arrangeGrob(prom_log_plot, top=textGrob("A", x = unit(0, "npc"), y=unit(2.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
+
 ```
 Plot terminator parameters
 
@@ -152,6 +154,8 @@ term_line_plot <- ggplot(term_data, aes(x=strengths, y=values)) +
   geom_vline(xintercept = 0.2, linetype="dashed", color = "dark grey") +
   theme(plot.margin = unit(c(4.5, 7, 4.5, 3), "mm"))
 
+term_line_plot <- arrangeGrob(term_line_plot, top=textGrob("B", x = unit(0.04, "npc"), y=unit(2.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
+
 ```
 Plot RNAse parameters
 ```{r, echo=FALSE}
@@ -198,7 +202,7 @@ rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) +
   geom_point(stat='identity', color='#009E73', size=2) + 
   geom_line(size=1, stat='identity', color='#009E73') + 
   theme_cowplot() +
-  xlab("RNAse strength (log scale)") + 
+  xlab("RNase strength (log scale)") + 
   ylab("Normalized transcript abundance\n(log scale)") + 
   panel_border() +
   geom_errorbar(aes(ymin=rnase_y_data-rnase_means, ymax=rnase_y_data+rnase_means)) +
@@ -206,6 +210,8 @@ rnase_log_plot <- ggplot(rnase_data, aes(x=strengths, y=values)) +
   scale_x_log10() +
   geom_vline(xintercept = 5e-3, linetype="dashed", color = "dark grey") +
   theme(plot.margin = unit(c(4.5, 1.0, 4.5, 0.5), "mm"))
+
+rnase_log_plot <- arrangeGrob(rnase_log_plot, top=textGrob("C", x = unit(0.04, "npc"), y=unit(2.0, "npc"), just=c("left","top"), gp=gpar(col="black", font="bold", fontsize=20, fontfamily="Arial")))
 
 ```
 Produce paramters figure
@@ -218,7 +224,7 @@ prom_arch <- readPNG("promoter_genome_arch.png")
 term_arch <- readPNG("terminator_genome_arch.png")
 rnase_arch <- readPNG("rnase_genome_arch.png")
 
-param_figure <- grid.arrange(rasterGrob(prom_arch, vjust=5.0, hjust=0.4, width=0.80), rasterGrob(term_arch, vjust=5.0, hjust=0.45, width=0.80), rasterGrob(rnase_arch, vjust=5.0, hjust=0.4, width=0.80), prom_log_plot, term_line_plot, rnase_log_plot, layout_matrix=rbind(c(1,2,3), c(4,5,6)))
+param_figure <- grid.arrange(rasterGrob(prom_arch, vjust=5.75, hjust=0.4, width=0.80), rasterGrob(term_arch, vjust=5.75, hjust=0.45, width=0.80), rasterGrob(rnase_arch, vjust=5.75, hjust=0.4, width=0.80), prom_log_plot, term_line_plot, rnase_log_plot, layout_matrix=rbind(c(1,2,3), c(4,5,6)))
 
 ggsave("parameters_figure.png", param_figure, height=9, width=14, limitsize=FALSE, units="in")
 ```
