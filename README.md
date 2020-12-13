@@ -1,14 +1,14 @@
 # pinetree-evolution
 
-*Sahil B. Shah, Adam J. Hockenberry, and Claus O. Wilke*
+*Sahil B. Shah, Alexis M. Hill, Claus O. Wilke, and Adam J. Hockenberry*
 
 **Reference:**
 
-Pre-print available at: <link>
+Pre-print available at: <https://www.biorxiv.org/content/10.1101/2020.11.25.398248v1>
 
 **Data availibility:**
 
-To generate all figures in the manuscript, please go to zenodo.org/xyz to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
+To generate all figures in the manuscript, please go to (to be updated) to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
 
 ## Overview and restrictions
 
