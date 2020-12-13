@@ -65,16 +65,14 @@ Note that the `echo = FALSE` parameter was added to the code chunk to prevent pr
 
 ```{r}
 
-setwd("../../data/targets/")
+setwd("../../data/figures_data/fig4/")
 
-#Set entropy values for each pattern
-patterns <- c(1,2,3,4,5,6,7,8,9,10)
-entropy <- c(3.5588108279845434, 3.990009704040741, 3.676440908696869, 3.813566073017023, 4.945038697540245, 3.121928094887363, 3.6732696895151085, 4.152518266288632, 3.646439344671015, 1.0)
-entropy_df <- data.frame(Pattern=patterns, Entropy=entropy)
+#Read in file containing entropy values for each pattern
+entropy_df <- read.csv("figure4_data.csv", header = TRUE)
 
 #Create entropy plot
 entropy_bar_plot <- entropy_df %>% ggplot(aes(x=Pattern, y=Entropy)) +
-  geom_bar(stat='identity', fill="grey", color="black") +
+  geom_bar(stat='identity', fill="grey", color="grey", width=0.5) +
   theme_cowplot() +
   xlab("Pattern") +
   ylab("Entropy (bits)") +
