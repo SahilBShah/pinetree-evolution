@@ -132,6 +132,7 @@ def enumerate_mutation_options(genome_tracker_new):
 
     possibilities = {}
     modify_possibilities = {}
+    gene_possibilities = {}
 
     #Possible addition and removal mutation choices are enumerated
     for gene in range(genome_tracker_new['num_genes']+1):
@@ -156,6 +157,7 @@ def enumerate_mutation_options(genome_tracker_new):
                 possibilities[rnase+'.add'] = 'add'
             elif genome_tracker_new[rnase]['start'] > 0:
                 possibilities[rnase+'.remove'] = 'remove'
+
     #Enumerate modification possibilities
     for gene in range(genome_tracker_new['num_genes']+1):
         promoter = 'promoter_{}'.format(gene)
@@ -175,6 +177,11 @@ def enumerate_mutation_options(genome_tracker_new):
                 for rna in range(len(possibilities)*13):
                     modify_possibilities[rnase+'.modify{}'.format(rna)] = 'modify'
     possibilities.update(modify_possibilities)
+
+    #Enumerate possible genes to swap locations
+    for gene_index in range(1, genome_tracker_new['num_genes']+1):
+    	gene = 'gene_{}'.format(gene_index)
+    	gene_possibilities[gene+'.swap'] = 'swap'
 
     return possibilities
 
@@ -229,9 +236,14 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
     rmse_iter_list = [0]
     is_accepted = ['yes']
     i = 1
+    gene_list = []
     generation_number = arguments.args.generation_number
     rmse_old = all_rmse_list[0]
     found_arch = False
+
+    #Populate genes into list
+    for g in range(1, genome_tracker_new['num_genes']+1):
+    	gene_list.append('gene_{}'.format(g))
 
     #Start of evolution program
     while i <= generation_number:
@@ -250,10 +262,18 @@ def run_evolution(output_dir, genome_tracker_new, genome_tracker_old, target_df,
             genome_tracker_new = mutation_choices.add_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], item.split('.')[0])
         elif possibilities[item] == 'remove':
             genome_tracker_new = mutation_choices.remove_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], item.split('.')[0])
+        elif possibilities[item] == 'modify':
+            genome_tracker_new = mutation_choices.modify_element(genome_tracker_new, output_dir, item.split('.')[0])
         else:
-            genome_tracker_new = mutation_choices.modify_element(genome_tracker_new, output_dir, genome_tracker_new['num_genes'], item.split('.')[0])
+        	#List of genes to modify
+        	gene_choices = [random.choice(gene_list)]
+        	g2 = random.choice(gene_list)
+        	while g2 == gene_choices[0]:
+        		g2 = random.choice(gene_list)
+        	gene_choices.append(g2)
+        	genome_tracker_new = mutation_choices.swap_genes(genome_tracker_new, output_dir, gene_choices)
 
-        #Sum of squared error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
+        #Root mean square error is calculated and the mutation is accepted or rejected based off of its calculated fitness value
 
         #pinetree called in analyze_mutation
         rmse_new = mutation_analysis.analyze_mutation(genome_tracker_new, output_dir, target_df, arguments.args.replicate_mutation_number)
