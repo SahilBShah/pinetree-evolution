@@ -51,11 +51,11 @@ python3 evolution.py [target file name with extension (string)] [yaml file name 
 
 Example command to run the program with a progress bar displayed:
 ```
-python3 evolution.py paper_data1.tsv testing.yml 1 5000 10 True
+python3 evolution.py paper_data1_arrange1.tsv starting.yml 1 5000 10 True
 ```
 Without the progress bar:
 ```
-python3 evolution.py paper_data1.tsv testing.yml 1 5000 10
+python3 evolution.py paper_data1_arrange1.tsv starting.yml 1 5000 10
 ```
 
 ## Next steps
