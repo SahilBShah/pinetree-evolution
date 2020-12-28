@@ -119,13 +119,12 @@ def remove_element(genome_tracker_new, output_dir, num_genes, element_choice):
 
     return genome_tracker_new
 
-def modify_element(genome_tracker_new, output_dir, num_genes, element_choice):
+def modify_element(genome_tracker_new, output_dir, element_choice):
     """
     Modify an element's (that is present on the genome) strength.
     Input(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     output_dir is the path to the directory in which all the saved files are stored by the program.
-    num_genes refers to the number of genes in the genome.
     element_choice is the element selected to be modified.
     Output(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
@@ -137,6 +136,31 @@ def modify_element(genome_tracker_new, output_dir, num_genes, element_choice):
     #If the modified strength goes below the minimum threshold or above the maximum threshold, continue to modify the element's strength
     while genome_tracker_new[element_choice]['current_strength'] < element_strengths_range[element_choice.split('_')[0]][0] or genome_tracker_new[element_choice]['current_strength'] > element_strengths_range[element_choice.split('_')[0]][1]:
         genome_tracker_new[element_choice]['current_strength'] = genome_tracker_new[element_choice]['previous_strength'] * np.random.normal(1, 0.1)
+
+    return genome_tracker_new
+
+def swap_genes(genome_tracker_new, output_dir, gene_choices):
+    """
+    Swap the positions of two genes.
+    Input(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    output_dir is the path to the directory in which all the saved files are stored by the program.
+    gene_choices is a list containing the genes selected to be modified.
+    Output(s):
+    genome_tracker_new is the dataframe containing the most recently edited genomic data.
+    """
+
+    #Saves the start and stop locations of the first gene in the list
+    tmp_start = genome_tracker_new[gene_choices[0]]['start']
+    tmp_stop = genome_tracker_new[gene_choices[0]]['stop']
+
+    #Assigns the start and stop positions of the second gene to the first
+    genome_tracker_new[gene_choices[0]]['start'] = genome_tracker_new[gene_choices[1]]['start']
+    genome_tracker_new[gene_choices[0]]['stop'] = genome_tracker_new[gene_choices[1]]['stop']
+
+    #Assigns the start and stop positions of the first gene to the second
+    genome_tracker_new[gene_choices[1]]['start'] = tmp_start
+    genome_tracker_new[gene_choices[1]]['stop'] = tmp_stop
 
     return genome_tracker_new
 
