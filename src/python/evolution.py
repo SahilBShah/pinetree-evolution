@@ -182,6 +182,7 @@ def enumerate_mutation_options(genome_tracker_new):
     for gene_index in range(1, genome_tracker_new['num_genes']+1):
     	gene = 'gene_{}'.format(gene_index)
     	gene_possibilities[gene+'.swap'] = 'swap'
+    possibilities.update(gene_possibilities)
 
     return possibilities
 
