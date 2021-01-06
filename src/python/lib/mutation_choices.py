@@ -205,7 +205,7 @@ def expand_genome(genome_tracker_new, genome_shift, element_choice):
     #Increases the genome size if an element is added
     for key in genome_tracker_new:
         if key != "length_of_genome" and key != "num_genes":
-            if genome_tracker_new[key]['start'] >= genome_tracker_new[element_choice]['stop'] or genome_tracker_new[key]['stop'] >= genome_tracker_new[element_choice]['start']:
+            if genome_tracker_new[key]['stop'] >= genome_tracker_new[element_choice]['start']:
                 #Don't add bases to start of intragenic region containing new element unless the element is a gene
                 if "region_{}".format(element_choice.split("_")[1]) != key or "gene" in element_choice:
                     genome_tracker_new[key]['start']+=genome_shift
@@ -231,7 +231,7 @@ def shrink_genome(genome_tracker_new, genome_shift, element_choice):
     #Decreases the genome size if an element is added
     for key in genome_tracker_new:
         if key != "length_of_genome" and key != "num_genes":
-            if genome_tracker_new[key]['start'] >= genome_tracker_new[element_choice]['stop'] or genome_tracker_new[key]['stop'] >= genome_tracker_new[element_choice]['start']:
+            if genome_tracker_new[key]['stop'] >= genome_tracker_new[element_choice]['start']:
                 #Don't remove bases to start of intragenic region containing new element unless the element is a gene
                 if "region_{}".format(element_choice.split("_")[1]) != key or "gene" in element_choice:
                     genome_tracker_new[key]['start']-=genome_shift
