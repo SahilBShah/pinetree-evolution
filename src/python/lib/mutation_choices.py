@@ -93,7 +93,7 @@ def add_element(genome_tracker_new, output_dir, num_genes, element_choice):
     genome_tracker_new[element_choice]['previous_strength'] = genome_tracker_new[element_choice]['current_strength']
     genome_tracker_new[element_choice]['current_strength'] = element_dict[element_choice.split('_')[0]][1]
     #Increase the length of the genome by the genome_shift value
-    genome_tracker_new = expand_genome(genome_tracker_new, num_genes, int(region_choice.split('_')[1]), genome_shift, element_choice)
+    genome_tracker_new = expand_genome(genome_tracker_new, genome_shift, element_choice)
 
     return genome_tracker_new
 
@@ -110,7 +110,7 @@ def remove_element(genome_tracker_new, output_dir, num_genes, element_choice):
     """
 
     #Decrease the length of the genome by the genome_shift value
-    genome_tracker_new = shrink_genome(genome_tracker_new, num_genes, int(element_choice.split('_')[1]), element_dict[element_choice.split('_')[0]][0]+1, element_choice)
+    genome_tracker_new = shrink_genome(genome_tracker_new, element_dict[element_choice.split('_')[0]][0]+1, element_choice)
     #Removes the selected element from the genome
     genome_tracker_new[element_choice]['start'] = 0
     genome_tracker_new[element_choice]['stop'] = 0
@@ -141,7 +141,7 @@ def modify_element(genome_tracker_new, output_dir, element_choice):
 
 def swap_genes(genome_tracker_new, output_dir, gene_choices):
     """
-    Swap the positions of two genes.
+    Swap the positions of two genes and modify the length of the genome.
     Input(s):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     output_dir is the path to the directory in which all the saved files are stored by the program.
@@ -150,21 +150,46 @@ def swap_genes(genome_tracker_new, output_dir, gene_choices):
     genome_tracker_new is the dataframe containing the most recently edited genomic data.
     """
 
+    #Get lengths of genes
+    first_gene_diff = genome_tracker_new[gene_choices[0]]['stop'] - genome_tracker_new[gene_choices[0]]['start']
+    second_gene_diff = genome_tracker_new[gene_choices[1]]['stop'] - genome_tracker_new[gene_choices[1]]['start']
+
     #Saves the start and stop locations of the first gene in the list
     tmp_start = genome_tracker_new[gene_choices[0]]['start']
-    tmp_stop = genome_tracker_new[gene_choices[0]]['stop']
 
     #Assigns the start and stop positions of the second gene to the first
     genome_tracker_new[gene_choices[0]]['start'] = genome_tracker_new[gene_choices[1]]['start']
-    genome_tracker_new[gene_choices[0]]['stop'] = genome_tracker_new[gene_choices[1]]['stop']
+    genome_tracker_new[gene_choices[0]]['stop'] = genome_tracker_new[gene_choices[0]]['start'] + first_gene_diff
 
     #Assigns the start and stop positions of the first gene to the second
     genome_tracker_new[gene_choices[1]]['start'] = tmp_start
-    genome_tracker_new[gene_choices[1]]['stop'] = tmp_stop
+    genome_tracker_new[gene_choices[1]]['stop'] = tmp_start + second_gene_diff
+
+
+    #If gene lengths are not equal
+    if first_gene_diff != second_gene_diff:
+        #Base pairs to add or remove from genome
+        genome_shift = max(first_gene_diff, second_gene_diff) - min(first_gene_diff, second_gene_diff)
+
+        #Assign longer and shorter genes
+        if first_gene_diff < second_gene_diff:
+            short_gene = gene_choices[0]
+            long_gene = gene_choices[1]
+        else:
+            long_gene = gene_choices[0]
+            short_gene = gene_choices[1]
+
+        #Modify genome length based on gene lengths
+        if genome_tracker_new[long_gene]['start'] > genome_tracker_new[short_gene]['stop']:
+            genome_tracker_new = expand_genome(genome_tracker_new, genome_shift, long_gene)
+            genome_tracker_new = shrink_genome(genome_tracker_new, genome_shift, short_gene)
+        else:
+            genome_tracker_new = shrink_genome(genome_tracker_new, genome_shift, short_gene)
+            genome_tracker_new = expand_genome(genome_tracker_new, genome_shift, long_gene)
 
     return genome_tracker_new
 
-def expand_genome(genome_tracker_new, num_genes, region_choice, genome_shift, element_choice):
+def expand_genome(genome_tracker_new, genome_shift, element_choice):
     """
     When an element is added, the genome length increases.
     Input(s):
@@ -178,52 +203,19 @@ def expand_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
     """
 
     #Increases the genome size if an element is added
-    for beg_point in range(region_choice, num_genes+1):
-
-        #List possible elements on the genome
-        region = 'region_{}'.format(beg_point)
-        terminator = 'terminator_{}'.format(beg_point)
-        promoter = 'promoter_{}'.format(beg_point)
-        rnase = 'rnase_{}'.format(beg_point)
-        gene_offsetted = 'gene_{}'.format(beg_point+1)
-
-        #Increase the end of the selected region
-        genome_tracker_new[region]['stop']+=genome_shift
-        #If the iteration is not the current region or region before the first gene, increase the beginning position of the curent region
-        if beg_point != region_choice and region != 'region_0':
-            genome_tracker_new[region]['start']+=genome_shift
-        #If the iteration is not the region before the first gene or the region after the last gene
-        if region != 'region_0' and beg_point != num_genes:
-            #If the selected element is not a promoter
-            if element_choice != promoter:
-                #If the promoter come after the selected element and is present on the genome, increase the position of the promoter
-                if genome_tracker_new[promoter]['start'] >= genome_tracker_new[element_choice]['start'] and genome_tracker_new[promoter]['start'] > 0:
-                    genome_tracker_new[promoter]['start']+=genome_shift
-                    genome_tracker_new[promoter]['stop']+=genome_shift
-        #If the iteration is not the region before the first gene
-        if region != 'region_0':
-            #If the selected element is not a terminator
-            if element_choice != terminator:
-                #If the terminator come after the selected element and is present on the genome, increase the position of the terminator
-                if genome_tracker_new[terminator]['start'] >= genome_tracker_new[element_choice]['start'] and genome_tracker_new[terminator]['start'] > 0:
-                    genome_tracker_new[terminator]['start']+=genome_shift
-                    genome_tracker_new[terminator]['stop']+=genome_shift
-        #If the iteration is not the region after the last gene, increase the position of all the genes after the selected element
-        if beg_point != num_genes:
-            genome_tracker_new[gene_offsetted]['start']+=genome_shift
-            genome_tracker_new[gene_offsetted]['stop']+= genome_shift
-            #If the selected element is not an rnase
-            if element_choice != rnase:
-                #If the rnase come after the selected element and is present on the genome, increase the position of the rnase
-                if genome_tracker_new[rnase]['start'] >= genome_tracker_new[element_choice]['start'] and genome_tracker_new[rnase]['start'] > 0:
-                    genome_tracker_new[rnase]['start']+=genome_shift
-                    genome_tracker_new[rnase]['stop']+=genome_shift
-    #Increase the overall length of the genome
-    genome_tracker_new['length_of_genome']+=genome_shift
+    for key in genome_tracker_new:
+        if key != "length_of_genome" and key != "num_genes":
+            if genome_tracker_new[key]['start'] >= genome_tracker_new[element_choice]['stop'] or genome_tracker_new[key]['stop'] >= genome_tracker_new[element_choice]['start']:
+                #Don't add bases to start of intragenic region containing new element unless the element is a gene
+                if "region_{}".format(element_choice.split("_")[1]) != key or "gene" in element_choice:
+                    genome_tracker_new[key]['start']+=genome_shift
+                genome_tracker_new[key]['stop']+=genome_shift
+        elif key == "length_of_genome":
+            genome_tracker_new["length_of_genome"]+=genome_shift
 
     return genome_tracker_new
 
-def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, element_choice):
+def shrink_genome(genome_tracker_new, genome_shift, element_choice):
     """
     When an element is removed, the genome length decreases.
     Input(s):
@@ -237,47 +229,14 @@ def shrink_genome(genome_tracker_new, num_genes, region_choice, genome_shift, el
     """
 
     #Decreases the genome size if an element is added
-    for beg_point in range(region_choice, num_genes+1):
-
-        #List possible elements on the genome
-        region = 'region_{}'.format(beg_point)
-        terminator = 'terminator_{}'.format(beg_point)
-        promoter = 'promoter_{}'.format(beg_point)
-        rnase = 'rnase_{}'.format(beg_point)
-        gene_offsetted = 'gene_{}'.format(beg_point+1)
-
-        #Decrease the end of the selected region
-        genome_tracker_new[region]['stop']-=genome_shift
-        #If the iteration is not the current region or region before the first gene, decrease the beginning position of the curent region
-        if beg_point != region_choice and region != 'region_0':
-            genome_tracker_new[region]['start']-=genome_shift
-        #If the iteration is not the region before the first gene or the region after the last gene
-        if region != 'region_0' and beg_point != num_genes:
-            #If the selected element is not a promoter
-            if element_choice != promoter:
-                #If the promoter come after the selected element and is present on the genome, decrease the position of the promoter
-                if genome_tracker_new[promoter]['start'] >= genome_tracker_new[element_choice]['start'] and genome_tracker_new[promoter]['start'] > 0:
-                    genome_tracker_new[promoter]['start']-=genome_shift
-                    genome_tracker_new[promoter]['stop']-=genome_shift
-        #If the iteration is not the region before the first gene
-        if region != 'region_0':
-            #If the selected element is not a terminator
-            if element_choice != terminator:
-                #If the terminator come after the selected element and is present on the genome, decrease the position of the terminator
-                if genome_tracker_new[terminator]['start'] >= genome_tracker_new[element_choice]['start'] and genome_tracker_new[terminator]['start'] > 0:
-                    genome_tracker_new[terminator]['start']-=genome_shift
-                    genome_tracker_new[terminator]['stop']-=genome_shift
-        #If the iteration is not the region after the last gene, decrease the position of all the genes after the selected element
-        if beg_point != num_genes:
-            genome_tracker_new[gene_offsetted]['start']-=genome_shift
-            genome_tracker_new[gene_offsetted]['stop']-= genome_shift
-            #If the selected element is not an rnase
-            if element_choice != rnase:
-                #If the rnase come after the selected element and is present on the genome, decrease the position of the rnase
-                if genome_tracker_new[rnase]['start'] >= genome_tracker_new[element_choice]['start'] and genome_tracker_new[rnase]['start'] > 0:
-                    genome_tracker_new[rnase]['start']-=genome_shift
-                    genome_tracker_new[rnase]['stop']-=genome_shift
-    #Decrease the overall length of the genome
-    genome_tracker_new['length_of_genome']-=genome_shift
+    for key in genome_tracker_new:
+        if key != "length_of_genome" and key != "num_genes":
+            if genome_tracker_new[key]['start'] >= genome_tracker_new[element_choice]['stop'] or genome_tracker_new[key]['stop'] >= genome_tracker_new[element_choice]['start']:
+                #Don't remove bases to start of intragenic region containing new element unless the element is a gene
+                if "region_{}".format(element_choice.split("_")[1]) != key or "gene" in element_choice:
+                    genome_tracker_new[key]['start']-=genome_shift
+                genome_tracker_new[key]['stop']-=genome_shift
+        elif key == "length_of_genome":
+            genome_tracker_new["length_of_genome"]-=genome_shift
 
     return genome_tracker_new

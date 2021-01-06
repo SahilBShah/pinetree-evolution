@@ -38,17 +38,17 @@ def test_evolution():
     #Change directory to src
     os.chdir('../../')
     #Run evolutionary program
-    os.system('python evolution.py paper_data1.tsv testing.yml 10000 10 3')
+    os.system('python evolution.py paper_data1_arrange1.tsv starting.yml 10000 10 3')
     #Check to see if evolutionary run completed
-    assert os.path.isfile('../../results/paper_data1/rep10000/final/rmse_data.tsv')
-    assert os.path.isfile('../../results/paper_data1/rep10000/final/expression_pattern_best.tsv')
-    assert os.path.isfile('../../results/paper_data1/rep10000/final/gene_best.yml')
+    assert os.path.isfile('../../results/paper_data1_arrange1/rep10000/final/rmse_data.tsv')
+    assert os.path.isfile('../../results/paper_data1_arrange1/rep10000/final/expression_pattern_best.tsv')
+    assert os.path.isfile('../../results/paper_data1_arrange1/rep10000/final/gene_best.yml')
     #Check if starting genome yaml file was created
-    assert os.path.isfile('../../results/paper_data1/rep10000/config.yml')
-    assert os.path.isfile('../../results/paper_data1/rep10000/gene_0.yml')
-    assert os.path.isfile('../../results/paper_data1/rep10000/expression_pattern_0.tsv')
+    assert os.path.isfile('../../results/paper_data1_arrange1/rep10000/config.yml')
+    assert os.path.isfile('../../results/paper_data1_arrange1/rep10000/gene_0.yml')
+    assert os.path.isfile('../../results/paper_data1_arrange1/rep10000/expression_pattern_0.tsv')
     #Check if expression data and genome files are saved for each accepted mutation
-    assert len(glob('../../results/paper_data1/rep10000/expression_pattern_*.tsv')) != 0
-    assert len(glob('../../results/paper_data1/rep10000/gene_*.yml'))
-    os.system('rm -rf ../../results/paper_data1/rep10000')
+    assert len(glob('../../results/paper_data1_arrange1/rep10000/expression_pattern_*.tsv')) != 0
+    assert len(glob('../../results/paper_data1_arrange1/rep10000/gene_*.yml'))
+    os.system('rm -rf ../../results/paper_data1_arrange1/rep10000')
     os.chdir(os.getcwd())
