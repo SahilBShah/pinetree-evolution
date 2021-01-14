@@ -50,5 +50,5 @@ def test_evolution():
     #Check if expression data and genome files are saved for each accepted mutation
     assert len(glob('../../results/paper_data1_arrange1/rep10000/expression_pattern_*.tsv')) != 0
     assert len(glob('../../results/paper_data1_arrange1/rep10000/gene_*.yml'))
-    os.system('rm -rf ../../results/paper_data1_arrange1/rep10000')
+    os.system('rm -rf ../../results/paper_data1_arrange1')
     os.chdir(os.getcwd())

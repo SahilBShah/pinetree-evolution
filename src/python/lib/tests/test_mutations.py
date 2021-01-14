@@ -87,7 +87,6 @@ def test_modify_element():
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
     output_dir = os.path.dirname(os.path.abspath(__file__))+'/inputs/'
-    num_genes = 3
     element_choice = 'promoter_0'
     genome_tracker_new = modify_element(genome_tracker, output_dir, element_choice)
     with open(os.path.dirname(os.path.abspath(__file__))+'/inputs/testing_tmp_comp.yml', 'w') as save_yaml:
