@@ -15,10 +15,10 @@ def test_expand_genome():
     with open(os.path.dirname(os.path.abspath(__file__))+'/inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
+    num_genes = 3
     region_choice = 2
     element_choice = 'promoter_2'
     genome_shift = 35
-    num_genes = 3
     genome_tracker_new = expand_genome(genome_tracker, num_genes, region_choice, genome_shift, element_choice)
     assert genome_tracker_new['length_of_genome'] > genome_tracker_old['length_of_genome']
     assert genome_tracker_new['length_of_genome'] - 35 == genome_tracker_old['length_of_genome']
@@ -31,10 +31,10 @@ def test_shrink_genome():
     with open(os.path.dirname(os.path.abspath(__file__))+'/inputs/testing.yml', 'r') as gene_parameters:
         genome_tracker = yaml.safe_load(gene_parameters)
     genome_tracker_old = copy.deepcopy(genome_tracker)
+    num_genes = 3
     region_choice = 2
     element_choice = 'promoter_2'
     genome_shift = 35
-    num_genes = 3
     genome_tracker_new = shrink_genome(genome_tracker, num_genes, region_choice, genome_shift, element_choice)
     assert genome_tracker_new['length_of_genome'] < genome_tracker_old['length_of_genome']
     assert genome_tracker_new['length_of_genome'] + 35 == genome_tracker_old['length_of_genome']
