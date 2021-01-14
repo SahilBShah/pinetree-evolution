@@ -1,0 +1,11 @@
+gene_1:
+  start: 100
+  stop: 250
+gene_2:
+  start: 400
+  stop: 550
+gene_3:
+  start: 700
+  stop: 850
+length_of_genome: 900
+num_genes: 3
