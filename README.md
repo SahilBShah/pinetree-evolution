@@ -8,11 +8,15 @@ Pre-print available at: <https://www.biorxiv.org/content/10.1101/2020.11.25.3982
 
 **Data availibility:**
 
-To generate all figures in the manuscript, please go to (to be updated) to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `src` directory.
+To generate all figures in the manuscript, please go to (to be updated) to download output from all runs and unzip into a folder called `results` that resides in the home directory. At this point, you should be able to run the R scripts that reside in the `manuscript/code` directory.
 
 ## Overview and restrictions
 
 This is an evolutionary program that uses pinetree to evolve phage genomes based on user's specifications. These specifications entail target data related to a user-specified gene expression pattern (.tsv file) and the genome configuration of the phage (.yml file). These can be created using the given python files: `gene_expression_generator.py` and `create_genome_configurations.py`. We have provided multiple gene expression and genome configuration files found in the `target` and `genome_configuration` folders, respectively.
+
+**Organization**
+
+The repository is organized into two distinct sections. The first of which is a folder called `manuscript` that contains all the code and data needed to recreate the main figures in the manuscript. The second part of this repository is the `src/python` folder containing the evolutionary simulator that may be used freely.
 
 **Genome restrictions**
 
@@ -61,5 +65,5 @@ python3 evolution.py paper_data1_arrange1.tsv starting.yml 1 5000 10
 ## Next steps
 
 Some next steps we have planned to expand the simulator's functionality are:
-1. Implementing a swapping genes function so that each gene combination does not have to be simulated. 
+1. Implementing a swapping genes function so that each gene combination does not have to be simulated. (Currently in development and located in the gene_swaps branch)
 2. Convert into a package for ease of access.
