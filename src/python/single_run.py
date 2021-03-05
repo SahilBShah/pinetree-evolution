@@ -19,7 +19,7 @@ def main():
     """
 
     #Sets output directory
-    output_dir = "../../tests/single_run_outputs/"
+    output_dir = "./tests/single_run_outputs/"
     #Opens yaml files containing genome coordinates
     starting_genome = output_dir + 'config.yml'
     #Opens yaml file
