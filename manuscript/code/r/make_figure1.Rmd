@@ -23,7 +23,7 @@ Produce target data plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../data/targets/")
+setwd("../../../data/targets/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("positive_control.tsv", header=TRUE)
@@ -55,7 +55,7 @@ Produce generation 0 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the template genome data is contained in 
-setwd("../../data/figures_data/fig1/positive_control/rep5/")
+setwd("../../figure_data/fig1/")
 
 #List all transcript output files
 plot_data <- read.table("expression_pattern_0.tsv", header=TRUE)
@@ -87,7 +87,7 @@ Produce generation 1 plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../data/figures_data/fig1/positive_control/rep5/")
+setwd("../../figure_data/fig1/")
 
 #List all transcript output files
 plot_data <- read.table("expression_pattern_488.tsv", header=TRUE)
@@ -118,7 +118,7 @@ Produce final generation plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the first output data is contained in 
-setwd("../../data/figures_data/fig1/positive_control/rep5/final/")
+setwd("../../figure_data/fig1/final/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -148,7 +148,7 @@ Produce fitness over time plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the results are contained in
-setwd("../../data/figures_data/fig1/positive_control/rep5/final/")
+setwd("../../figure_data/fig1/final/")
 
 #Filter sum of squares data
 all_rmse_data <- read.table("rmse_data.tsv", header=TRUE)

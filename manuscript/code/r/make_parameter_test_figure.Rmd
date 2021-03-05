@@ -38,7 +38,7 @@ get_limits <- function(all_files){
 Plot promoter parameters
 ```{r}
 
-setwd('../../results/element_strength_testing/promoter/average/')
+setwd('../../../results/element_strength_testing/promoter/average/')
 
 #List promoter files
 prom_files <- list.files(pattern="promoter_average_test_")
@@ -96,7 +96,7 @@ Plot terminator parameters
 
 ```{r, echo=FALSE}
 
-setwd('../../results/element_strength_testing/terminator/average/')
+setwd('../../../results/element_strength_testing/terminator/average/')
 
 #List terminator files
 term_files <- list.files(pattern="terminator_average_test_")
@@ -160,7 +160,7 @@ term_line_plot <- arrangeGrob(term_line_plot, top=textGrob("B", x = unit(0.04, "
 Plot RNAse parameters
 ```{r, echo=FALSE}
 
-setwd('../../results/element_strength_testing/rnase/average/')
+setwd('../../../results/element_strength_testing/rnase/average/')
 
 #List all rnase files
 rnase_files <- list.files(pattern="rnase_average_test_")

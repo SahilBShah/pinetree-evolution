@@ -24,7 +24,7 @@ Create 10 gene target plot.
 
 ```{r}
 
-setwd("../../data/targets/")
+setwd("../../../data/targets/")
 
 #Read in target tsv file and filter for only proteins
 target_data <- read.table("ten_genes.tsv", header=TRUE)
@@ -53,7 +53,7 @@ Create simulated plot.
 
 ```{r, echo=FALSE}
 
-setwd("../../data/figures_data/fig5/ten_genes/rep14/final/")
+setwd("../../figure_data/fig5/")
 
 #Read in simulated tsv file an filter based on proteins
 simulated_data <- read.table("expression_pattern_best.tsv", header=TRUE)
