@@ -18,7 +18,7 @@ Create first target plot.
 
 ```{r}
 
-setwd("../../data/targets/")
+setwd("../../../data/targets/")
 
 #Read in file to create target pattern graph
 target_data1 <- read.table("paper_data1_arrange5.tsv", header=TRUE)
@@ -35,14 +35,14 @@ target_line_plot1 <-  ggplot(target_data1, aes(fill=species, color=species, size
   theme(legend.position = "none",
         axis.ticks.length = unit(2, "mm"))
 
-ggsave("../../figure_output/figure4/first_target_plot.png", target_line_plot1, height=3, width=3, limitsize=FALSE, units="in")
+ggsave("../../manuscript/figure_output/figure4/first_target_plot.png", target_line_plot1, height=3, width=3, limitsize=FALSE, units="in")
 ```
 
 Create second target plot.
 
 ```{r}
 
-setwd("../../data/targets/")
+setwd("../../../data/targets/")
 
 #Read in file to create target pattern graph
 target_data2 <- read.table("paper_data5_arrange1.tsv", header=TRUE)
@@ -58,14 +58,14 @@ target_line_plot2 <-  ggplot(target_data2, aes(fill=species, color=species, size
   theme(legend.position = "none",
         axis.ticks.length = unit(2, "mm"))
 
-ggsave("../../figure_output/figure4/second_target_plot.png", target_line_plot2, height=3, width=3, limitsize=FALSE, units="in")
+ggsave("../../manuscript/figure_output/figure4/second_target_plot.png", target_line_plot2, height=3, width=3, limitsize=FALSE, units="in")
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
 
 ```{r}
 
-setwd("../../data/figures_data/fig4/")
+setwd("../../figure_data/fig4/")
 
 #Read in file containing entropy values for each pattern
 entropy_df <- read.csv("figure4_data.csv", header = TRUE)

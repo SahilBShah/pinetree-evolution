@@ -20,7 +20,7 @@ Creates dataframe of each normalized RMSE values for each subpattern simulated x
 
 ```{r}
 
-setwd("../../results/figs_3_and_4/")
+setwd("../../../results/figs_3_and_4/")
 
 pattern <- c()
 nrmse <- c()
@@ -77,6 +77,6 @@ Output CSV file containing the best gene arrangements and their respective nRMSE
 
 ```{r}
 
-write.csv(df, file="../../results/figure3_data.csv", row.names=FALSE)
+write.csv(df, file="../../figure_output/fig3/figure3_data.csv", row.names=FALSE)
 
 ```

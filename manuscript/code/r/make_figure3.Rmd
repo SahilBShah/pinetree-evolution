@@ -22,7 +22,7 @@ Creates boxplot of the normalized RMSE values per pattern.
 ```{r}
 
 #Read in CSV file containing processed data
-df <- read.csv("../../data/figures_data/fig3/figure3_data.csv")
+df <- read.csv("../../figure_data/fig3/figure3_data.csv")
 
   nrmse_bp <- df %>% ggplot(aes(x=pattern, y=nrmse)) + 
     geom_boxplot(outlier.shape = NA) + 
@@ -54,7 +54,7 @@ skip <- 6
 
 #Reads in tsv files containing transcript abundances
 for(dat in 1:10){
-  target_data <- read.table(paste0("../../data/targets/paper_data", dat, "_arrange1.tsv"), header=TRUE)
+  target_data <- read.table(paste0("../../../data/targets/paper_data", dat, "_arrange1.tsv"), header=TRUE)
   target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
   #Plots each pattern and modifies based on position of plot in outputted figure
   if(starting == 1){
