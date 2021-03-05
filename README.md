@@ -65,5 +65,5 @@ python3 evolution.py paper_data1_arrange1.tsv starting.yml 1 5000 10
 ## Next steps
 
 Some next steps we have planned to expand the simulator's functionality are:
-1. Implementing a swapping genes function so that each gene combination does not have to be simulated. 
+1. Implementing a swapping genes function so that each gene combination does not have to be simulated. (Currently in development and located in the gene_swaps branch)
 2. Convert into a package for ease of access.
