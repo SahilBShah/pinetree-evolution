@@ -23,7 +23,7 @@ Produce the first set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig2/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data1_arrange1.tsv", header=TRUE)
@@ -52,8 +52,7 @@ target_line_plot_1 <- arrangeGrob(target_line_plot_1, top=textGrob("A", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../manuscript/figure_data/fig2/paper_data1_arrange1/")
-
+setwd("../../figure_data/fig2/paper_data1_arrange1/")
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
 plot_data <- filter(plot_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
@@ -82,7 +81,7 @@ Produce the second set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig2/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data1_arrange5.tsv", header=TRUE)
@@ -108,7 +107,7 @@ target_line_plot_2 <- arrangeGrob(target_line_plot_2, top=textGrob("B", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../manuscript/figure_data/fig2/paper_data1_arrange5/")
+setwd("../../figure_data/fig2/paper_data1_arrange5/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -139,7 +138,7 @@ Produce the third set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig2/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data5_arrange1.tsv", header=TRUE)
@@ -165,7 +164,7 @@ target_line_plot_3 <- arrangeGrob(target_line_plot_3, top=textGrob("C", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../manuscript/figure_data/fig2/paper_data5_arrange1/")
+setwd("../../figure_data/fig2/paper_data5_arrange1/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -196,7 +195,7 @@ Produce the fourth set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig2/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data6_arrange1.tsv", header=TRUE)
@@ -222,7 +221,7 @@ target_line_plot_4 <- arrangeGrob(target_line_plot_4, top=textGrob("D", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../manuscript/figure_data/fig2/paper_data6_arrange1/")
+setwd("../../figure_data/fig2/paper_data6_arrange1/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)
@@ -253,7 +252,7 @@ Produce the fifth set of plots
 #Target
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig2/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("paper_data8_arrange5.tsv", header=TRUE)
@@ -279,7 +278,7 @@ target_line_plot_5 <- arrangeGrob(target_line_plot_5, top=textGrob("E", x = unit
 #Final
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../manuscript/figure_data/fig2/paper_data8_arrange5/")
+setwd("../../figure_data/fig2/paper_data8_arrange5/")
 
 #List all transcript output files
 plot_data <- read.table('expression_pattern_best.tsv', header=TRUE)

@@ -24,7 +24,7 @@ Create 10 gene target plot.
 
 ```{r}
 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig5/")
 
 #Read in target tsv file and filter for only proteins
 target_data <- read.table("ten_genes.tsv", header=TRUE)

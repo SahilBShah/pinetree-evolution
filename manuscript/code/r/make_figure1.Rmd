@@ -23,7 +23,7 @@ Produce target data plot
 ```{r, echo=FALSE}
 
 #Set working directory to the directory in which the target data is contained in 
-setwd("../../../data/targets/")
+setwd("../../figure_data/fig1/")
 
 #Change grant_data name to the target file used
 target_data <- read.table("positive_control.tsv", header=TRUE)

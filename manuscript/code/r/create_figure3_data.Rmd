@@ -20,7 +20,7 @@ Creates dataframe of each normalized RMSE values for each subpattern simulated x
 
 ```{r}
 
-setwd("../../../results/figs_3_and_4/")
+setwd("../../manuscript_results/figs_3_and_4/")
 
 pattern <- c()
 nrmse <- c()
