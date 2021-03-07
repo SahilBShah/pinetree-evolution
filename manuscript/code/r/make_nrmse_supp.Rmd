@@ -63,7 +63,7 @@ for(rep in c(107, 115, 130, 131, 145, 152)){
     beta <- "2.000"
   }
   
-  nrmse <- read.table(paste0("../../../results/nrmse_evaluation/paper_data1_rep", rep, "_nmut10/final/rmse_data.tsv"), 
+  nrmse <- read.table(paste0("../../manuscript_results/SI_Fig_evaluating_nRMSE/paper_data1_rep", rep, "_nmut10/final/rmse_data.tsv"), 
                      header=TRUE)
   nrmse <- nrmse %>% filter(Accepted=='yes')
   if(!(5000 %in% nrmse$Iteration)){

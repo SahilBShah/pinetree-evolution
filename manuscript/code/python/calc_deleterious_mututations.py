@@ -8,7 +8,7 @@ for i in range(151, 161):
 
 	deleterious = 0
 
-	df = pd.read_csv('../../../results/nrmse_evaluation/paper_data1_rep{}_nmut10/final/rmse_data.tsv'.format(i), header=0, sep='\t')
+	df = pd.read_csv('../../manuscript_results/SI_Fig_evaluating_nRMSE/paper_data1_rep{}_nmut10/final/rmse_data.tsv'.format(i), header=0, sep='\t')
 	df = df[df['Accepted'] == 'yes']
 	for i in range(1, len(df)):
 		if df.iloc[i]['NRMSE'] > df.iloc[i-1]['NRMSE']:

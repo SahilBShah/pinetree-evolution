@@ -54,7 +54,7 @@ skip <- 6
 
 #Reads in tsv files containing transcript abundances
 for(dat in 1:10){
-  target_data <- read.table(paste0("../../../data/targets/paper_data", dat, "_arrange1.tsv"), header=TRUE)
+  target_data <- read.table(paste0("../../figure_data/fig3/paper_data", dat, "_arrange1.tsv"), header=TRUE)
   target_data <- filter(target_data, (species == "protein1" | species == "protein2" | species == "protein3") & time != 301)
   #Plots each pattern and modifies based on position of plot in outputted figure
   if(starting == 1){

@@ -1,0 +1,32 @@
+gene_1:
+  start: 100
+  stop: 200
+gene_10:
+  start: 1900
+  stop: 2000
+gene_2:
+  start: 300
+  stop: 400
+gene_3:
+  start: 500
+  stop: 600
+gene_4:
+  start: 700
+  stop: 800
+gene_5:
+  start: 900
+  stop: 1000
+gene_6:
+  start: 1100
+  stop: 1200
+gene_7:
+  start: 1300
+  stop: 1400
+gene_8:
+  start: 1500
+  stop: 1600
+gene_9:
+  start: 1700
+  stop: 1800
+length_of_genome: 2050
+num_genes: 10

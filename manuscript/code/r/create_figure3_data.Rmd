@@ -77,6 +77,6 @@ Output CSV file containing the best gene arrangements and their respective nRMSE
 
 ```{r}
 
-write.csv(df, file="../../figure_output/fig3/figure3_data.csv", row.names=FALSE)
+write.csv(df, file="../../figure_output/figure3/figure3_data.csv", row.names=FALSE)
 
 ```
