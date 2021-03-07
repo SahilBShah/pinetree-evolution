@@ -47,9 +47,9 @@ cd ./src/python
 **Run-time expectations:**
 For a three-gene model, running for 5,000 generations, users can expect a run-time on the order of 3-5 hours per replicate. Replicate simulations can be parallelized in bash scripts for users looking to run hundreds or thousands of replicates. This is why we include the `run number (int)` command line option as results will get written with this run number appended to them. Thus, running multiple parallel replicates with different run numbers will ensure that results are not over-written (as would be the case if multiple replicate simulations run simultaneously with the same `run number (int)`). 
 
-# Recreate large-scale simulations
+# Recreating large-scale simulations
 
-In order to simulate all expression patterns used in the manuscript, run the bash script found in `manuscript/code/bash/evolution_execute.sh`. This should run 50 replicates of each of the expression pattern files (.tsv) used in the study for a total of 3000 simulations.
+In order to simulate all expression patterns used in the manuscript, run the bash script found in `manuscript/code/bash/evolution_execute.sh`. This should run 50 replicates of each of the expression pattern files (`.tsv` format) used in the study for a total of 3000 simulations.
 
 ## Working examples
 
