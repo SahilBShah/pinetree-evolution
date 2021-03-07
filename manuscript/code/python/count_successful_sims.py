@@ -24,8 +24,8 @@ def calc_success(target_df, target_name, n_folders, successes_out=False):
 
 	print("Successes:")
 	for i in range(1, n_folders+1):
-		if os.path.isdir("../../../results/{}/rep{}".format(target_name.strip(".tsv"), i)):
-			rmse_df = pd.read_csv("../../../results/{}/rep{}/final/rmse_data.tsv".format(target_name.strip(".tsv"), i), header=0, sep='\t')
+		if os.path.isdir("../../manuscript_results/{}/rep{}".format(target_name.strip(".tsv"), i)):
+			rmse_df = pd.read_csv("../../manuscript_results/{}/rep{}/final/rmse_data.tsv".format(target_name.strip(".tsv"), i), header=0, sep='\t')
 			#Get index with lowest sum of squared error value
 			rmse_df = rmse_df[rmse_df['Accepted'] == 'yes']
 			min_rmse_df = rmse_df[rmse_df.NRMSE == rmse_df.NRMSE.min()]
@@ -44,7 +44,7 @@ def calc_success(target_df, target_name, n_folders, successes_out=False):
 def main():
 
 	target_file_name = input("Please input the name of the target file with the extension: ")
-	target_file = pd.read_csv("../../../data/targets/{}".format(target_file_name), header=0, sep='\t')
+	target_file = pd.read_csv("../../figure_data/targets/{}".format(target_file_name), header=0, sep='\t')
 	target_df = rearrange_file(target_file, target_file.iloc[-1]['time'], 3)
 	num_folders = int(input("Please input number of directories to access: "))
 

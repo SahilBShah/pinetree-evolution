@@ -88,7 +88,7 @@ def main():
 
 	#User inputted data to determine successful simulations
 	target_file_name = input("Please input the name of the target file with the extension: ")
-	target_file = pd.read_csv("../../../data/targets/{}".format(target_file_name), header=0, sep='\t')
+	target_file = pd.read_csv("../../figure_data/targets/{}".format(target_file_name), header=0, sep='\t')
 	target_df = rearrange_file(target_file, target_file.iloc[-1]['time'], 3)
 	num_folders = int(input("Please input number of directories to access: "))
 
@@ -96,7 +96,7 @@ def main():
 
 	#Iterate through directories containing yaml files
 	for i in (successes):
-		output_dir = '../../../results/{}/rep{}/'.format(target_file_name.strip('.tsv'), i)
+		output_dir = '../../manuscript_results/{}/rep{}/'.format(target_file_name.strip('.tsv'), i)
 		with open(output_dir+'final/gene_clean.yml', 'r') as gene_elements:
 			genome_tracker = yaml.safe_load(gene_elements)
 		#Get string representation of architectures and add to list
