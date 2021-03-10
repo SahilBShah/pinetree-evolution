@@ -4,21 +4,22 @@
 
 # Project overview
 
-This repository contains the code and (most) of the data required to replicate the analyses found in the manuscript "Generating complex patterns of gene expression without regulatory circuits" (see article pre-print at: <https://www.biorxiv.org/content/10.1101/2020.11.25.398248v1>). Briefly, this manuscript describes an evolutionary program that uses `pinetree` (see:<https://github.com/clauswilke/pinetree>) to evolve phage genomes to match a pre-defined user phenotype (a target set of gene expression time-courses). 
+This repository contains the code and (most) of the data required to replicate the analyses found in the manuscript "Generating complex patterns of gene expression without regulatory circuits" (the article pre-print can be found at: <https://www.biorxiv.org/content/10.1101/2020.11.25.398248v1>). Briefly, this manuscript describes an evolutionary program that uses `pinetree` (see:<https://github.com/clauswilke/pinetree>) to evolve phage genomes to match a pre-defined user phenotype (a target set of gene expression time-courses). 
 
-To generate all figures in the manuscript, please go to zenodo repository (ADD FINAL ZENODO LINK) to download output from all runs and unzip into a folder called `manuscript/manuscript_results/`. At this point, you should be able to run the R scripts that reside in the `manuscript/code/r/` directory.
+Many mauscript figures can be generated from processed data found within this directory, but generating this processed data from the raw data requires downloading and unzipping a zenodo data repository (<http://doi.org/10.5281/zenodo.4592577>) into a folder called `manuscript/manuscript_results/`. At this point, you should be able to run all of the R scripts that reside in the `manuscript/code/r/` directory.
 
 ## Requirements
 
-Most packages used are part of standard scientific/numeric python distributions. However, as previously noted this repository relies on the user having previously installed `pinetree` (version 0.3.0 or greater).
+Most packages that this code base relies on are part of standard scientific/numeric python distributions. However, as previously noted, this repository relies on the user having previously installed `pinetree` (version 0.3.0 or greater, <https://github.com/clauswilke/pinetree>).
 
 
 # Usage notes
 
 The repository is organized into two distinct sections with separate goals / use cases. 
 
-1. Users looking to interrogate and / or replicate the results found in our manuscript can navigate to `manuscript/`, which contains all the code and data needed to recreate the main figures from processed data.
-2. Users looking to run their own evolutionary simulations can find the relevant code for this use case within the `src/python/` folder.
+1. Users looking to run their own evolutionary simulations can find the relevant code for this more general use case within the `src/python/` folder. Further, this `README.md` file illustrates several basic examples below.
+
+2. Alternatively, users looking to interrogate and / or replicate the results found in our manuscript can navigate to `manuscript/`, which contains code necessary to recreate the main figures from processed data (see note above about gaining access to raw data via the zenodo repository (<http://doi.org/10.5281/zenodo.4592577>).
 
 ## Input files
 
@@ -46,10 +47,6 @@ cd ./src/python
 
 **Run-time expectations:**
 For a three-gene model, running for 5,000 generations, users can expect a run-time on the order of 3-5 hours per replicate. Replicate simulations can be parallelized in bash scripts for users looking to run hundreds or thousands of replicates. This is why we include the `run number (int)` command line option as results will get written with this run number appended to them. Thus, running multiple parallel replicates with different run numbers will ensure that results are not over-written (as would be the case if multiple replicate simulations run simultaneously with the same `run number (int)`). 
-
-# Recreating large-scale simulations
-
-In order to simulate all expression patterns used in the manuscript, run the bash script found in `manuscript/code/bash/evolution_execute.sh`. This should run 50 replicates of each of the expression pattern files (`.tsv` format) used in the study for a total of 3000 simulations.
 
 ## Working examples
 
