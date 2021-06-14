@@ -24,9 +24,11 @@ Creates boxplot of the normalized RMSE values per pattern.
 #Read in CSV file containing processed data
 df <- read.csv("../../figure_data/fig3/figure3_data.csv")
 
-  nrmse_bp <- df %>% ggplot(aes(x=pattern, y=nrmse)) + 
-    geom_boxplot(outlier.shape = NA) + 
-    geom_jitter(color="black", size=0.5) + 
+df$pattern <- as.factor(df$pattern)
+
+nrmse_bp <- df %>% ggplot(aes(x=pattern, y=nrmse)) + 
+  geom_boxplot(outlier.shape = NA) + 
+  geom_jitter(color="black", size=0.5) + 
   theme_cowplot() +
   xlab("Pattern") +
   ylab("Normalized RMSE") +
