@@ -22,16 +22,28 @@ def create_yaml(starting_file, gene_file):
 
     #Adds promoters to yaml file
     for num_prom in range(1, gene_file['num_genes']):
-        data['promoter_{}'.format(num_prom)] = dict(start=0, stop=0, current_strength=0, previous_strength=0)
+        if 'promoter_{}'.format(num_prom) not in gene_file.keys():
+            data['promoter_{}'.format(num_prom)] = dict(start=0, stop=0, current_strength=0, previous_strength=0)
+        else:
+            data['promoter_{}'.format(num_prom)] = gene_file['promoter_{}'.format(num_prom)]
     #Adds terminators to yaml file
     for num_term in range(1, gene_file['num_genes']+1):
-        data['terminator_{}'.format(num_term)] = dict(start=0, stop=0, current_strength=0, previous_strength=0)
+        if 'terminator_{}'.format(num_term) not in gene_file.keys():
+            data['terminator_{}'.format(num_term)] = dict(start=0, stop=0, current_strength=0, previous_strength=0)
+        else:
+            data['terminator_{}'.format(num_term)] = gene_file['terminator_{}'.format(num_term)]
     #Adds rnases to yaml file
     for num_rnase in range(gene_file['num_genes']):
-        data['rnase_{}'.format(num_rnase)] = dict(start=0, stop=0, current_strength=0, previous_strength=0)
+        if 'rnase_{}'.format(num_rnase) not in gene_file.keys():
+            data['rnase_{}'.format(num_rnase)] = dict(start=0, stop=0, current_strength=0, previous_strength=0)
+        else:
+            data['rnase_{}'.format(num_rnase)] = gene_file['rnase_{}'.format(num_rnase)]
     #Adds regions to yaml file
     for num_region in range(1, gene_file['num_genes']):
-        data['region_{}'.format(num_region)] = dict(start=gene_file['gene_{}'.format(num_region)]['stop'], stop=gene_file['gene_{}'.format(num_region+1)]['start']-30)
+        if 'region_{}'.format(num_region) not in gene_file.keys():
+            data['region_{}'.format(num_region)] = dict(start=gene_file['gene_{}'.format(num_region)]['stop'], stop=gene_file['gene_{}'.format(num_region+1)]['start']-30)
+        else:
+            data['region_{}'.format(num_region)] = gene_file['region_{}'.format(num_region)]
         if num_region == gene_file['num_genes'] - 1:
             data['region_{}'.format(num_region+1)] = dict(start=gene_file['gene_{}'.format(num_region+1)]['stop'], stop=gene_file['length_of_genome'])
         if data['region_{}'.format(num_region)]['start'] > data['region_{}'.format(num_region)]['stop']:
@@ -39,7 +51,10 @@ def create_yaml(starting_file, gene_file):
             sys.exit()
     #Adds genes to yaml file
     for gene_num in range(1, gene_file['num_genes']+1):
-        data['gene_{}'.format(gene_num)] = dict(start=gene_file['gene_{}'.format(gene_num)]['start'], stop=gene_file['gene_{}'.format(gene_num)]['stop'])
+        if 'gene_{}'.format(gene_num) not in gene_file.keys():
+            data['gene_{}'.format(gene_num)] = dict(start=gene_file['gene_{}'.format(gene_num)]['start'], stop=gene_file['gene_{}'.format(gene_num)]['stop'])
+        else:
+            data['gene_{}'.format(gene_num)] = gene_file['gene_{}'.format(gene_num)]
     data['length_of_genome'] = gene_file['length_of_genome']
     data['num_genes'] = gene_file['num_genes']
     #Exports yaml file with data
